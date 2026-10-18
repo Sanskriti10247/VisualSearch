@@ -42,6 +42,7 @@ EXPERIMENTS = {
     "throughput": performance.throughput,
     "latency": performance.query_latency,
 }
+log = logging.getLogger("experiments")
 
 
 def main() -> None:
@@ -57,9 +58,9 @@ def main() -> None:
     ctx = EvalContext(load_settings(args.config))
     for name in args.only or list(EXPERIMENTS):
         t = time.time()
-        logging.info("=== %s ===", name)
+        log.info("=== %s ===", name)
         EXPERIMENTS[name](ctx)
-        logging.info("=== %s done in %.0fs ===", name, time.time() - t)
+        log.info("=== %s done in %.0fs ===", name, time.time() - t)
 
 
 if __name__ == "__main__":

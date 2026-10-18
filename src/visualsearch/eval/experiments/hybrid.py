@@ -169,7 +169,7 @@ def _run(ctx, name, builder, tune_split, eval_split, metric, reg):
     rows, raw, charts_ = [], {}, []
     for im in IMAGE_MODELS:
         tune, _ = builder(ctx, tune_split, im, reg)
-        test, clusters = builder(ctx, eval_split, im, reg)
+        test, _ = builder(ctx, eval_split, im, reg)
         text_only = test.evaluate("zscore", 1.0)
         image_only = test.evaluate("zscore", 0.0)
         base = {"text only (CLIP B/32)": text_only, f"image only ({im})": image_only}

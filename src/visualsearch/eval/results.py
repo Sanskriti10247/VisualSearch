@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import math
 import os
 import platform
 import subprocess
@@ -72,7 +73,7 @@ def _clean(o: Any) -> Any:
         return o.item()
     if isinstance(o, np.ndarray):
         return _clean(o.tolist())
-    if isinstance(o, float) and (o != o or o in (float("inf"), float("-inf"))):
+    if isinstance(o, float) and not math.isfinite(o):
         return None
     return o
 
