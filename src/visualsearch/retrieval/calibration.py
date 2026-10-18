@@ -21,10 +21,13 @@ split only:
 from __future__ import annotations
 
 import json
+import logging
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
 
 import numpy as np
+
+log = logging.getLogger(__name__)
 
 
 @dataclass
@@ -58,7 +61,9 @@ class ScoreCalibration:
 
     @classmethod
     def load(cls, path: Path) -> ScoreCalibration:
-        return cls(**json.loads(Path(path).read_text()))
+        # Ignore fields written by newer versions so old servers keep starting.
+        data = json.loads(Path(path).read_text())
+        return cls(**{k: v for k, v in data.items() if k in cls.__dataclass_fields__})
 
 
 # Dense in the upper tail, where search results live (top 1% down to 1e-5).
@@ -135,7 +140,11 @@ class CalibrationRegistry:
         self._items: dict[tuple[str, str], ScoreCalibration] = {}
         if self.directory.exists():
             for p in self.directory.glob("*.json"):
-                c = ScoreCalibration.load(p)
+                try:
+                    c = ScoreCalibration.load(p)
+                except (OSError, ValueError, TypeError) as e:
+                    log.warning("ignoring unreadable calibration %s: %s", p, e)
+                    continue
                 self._items[(c.space, c.query_modality)] = c
 
     def get(self, space: str, query_modality: str, fingerprint: str | None = None

@@ -78,3 +78,17 @@ def test_prf_and_mix():
     assert np.argsort(-out)[:2].tolist() in ([0, 3], [3, 0])
     assert np.allclose(prf_scores(first, vecs, m=1, lam=0.0), first)
     assert np.argmax(mix(first, np.array([0, 0, 1.0, 0]), 1.0)) == 2
+
+
+def test_registry_skips_bad_files_and_unknown_fields(tmp_path):
+    from visualsearch.retrieval.calibration import CalibrationRegistry
+
+    good = ScoreCalibration("m", "fp", "text", 0.1, 0.2, [0.0, 1.0], levels=[0.0, 1.0])
+    good.save(tmp_path)
+    p = tmp_path / "m__text.json"
+    import json
+
+    p.write_text(json.dumps({**json.loads(p.read_text()), "added_in_a_later_version": 1}))
+    (tmp_path / "broken.json").write_text("{not json")
+    reg = CalibrationRegistry(tmp_path)
+    assert reg.get("m", "text", "fp").mean == 0.1

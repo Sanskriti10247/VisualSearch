@@ -1,0 +1,560 @@
+{
+  "name": "calibration",
+  "generated_at": "2026-10-18T22:55:10+00:00",
+  "seed": 1234,
+  "environment": {
+    "python": "3.12.12",
+    "platform": "Linux-7.2.5-3-omarchy-x86_64-with-glibc2.44",
+    "cpu": "13th Gen Intel(R) Core(TM) i5-13420H",
+    "cpu_count": 12,
+    "torch": "2.14.1+cu130",
+    "transformers": "5.20.1",
+    "faiss": "1.15.1",
+    "numpy": "2.5.4",
+    "cuda_available": true,
+    "gpu": "NVIDIA GeForce RTX 4050 Laptop GPU",
+    "gpu_memory_gb": 6.1,
+    "git_commit": "6ae6368",
+    "git_dirty": true
+  },
+  "datasets": {
+    "flickr30k": {
+      "source": {
+        "repo": "nlphuji/flickr30k",
+        "revision": "2b239befc81b6e3f035ce6bd52f5f4d60f5625f7",
+        "annotations_sha256": "395990db603ab8bafd5c7ab2746b22058bb1e75b78b3eb56ad755931364ac137",
+        "split_scheme": "karpathy"
+      },
+      "seed": 1234,
+      "catalog_counts": {
+        "train": 28994,
+        "val": 1014,
+        "test": 1000
+      },
+      "distractor_filenames_sha256": "4263c74a397679e135e18ec42b4cfe0d31d48846f02a452f70914a06f32a88f4"
+    },
+    "imagewoof": {
+      "source": {
+        "url": "https://s3.amazonaws.com/fast-ai-imageclas/imagewoof2-320.tgz",
+        "archive_sha256": "7db6120fdb9ae079e26346f89e7b00d7f184f8137791609b97fd0405d3f92305"
+      },
+      "seed": 1234,
+      "catalog_counts": {
+        "train": 1050,
+        "val": 3928
+      }
+    }
+  },
+  "results": {
+    "clip-vit-b32/image": {
+      "mean": 0.4866011427873462,
+      "std": 0.0871238027270033,
+      "platt": [
+        10.826762412120697,
+        -9.769167601768695
+      ],
+      "diagnostics": {
+        "train": {
+          "ece": 0.011278291523122349,
+          "brier": 0.08389442782912421,
+          "base_rate": 0.10104680194289346
+        },
+        "test_imagewoof_val": {
+          "ece": 0.016888548825645312,
+          "brier": 0.084330397166253,
+          "base_rate": 0.10187137250752921
+        }
+      },
+      "fitted_on": "background: flickr30k/val image pairs; platt: imagewoof/train same-class pairs"
+    },
+    "clip-vit-b32/text": {
+      "mean": 0.1695255993101706,
+      "std": 0.04231657980236473,
+      "platt": [
+        78.96511415292949,
+        -26.164826508609426
+      ],
+      "diagnostics": {
+        "val": {
+          "ece": 6.409725664965702e-05,
+          "brier": 0.0006532902813705216,
+          "base_rate": 0.0009861932938856018
+        },
+        "test": {
+          "ece": 7.773119916294203e-05,
+          "brier": 0.0006875833225488136,
+          "base_rate": 0.001
+        },
+        "positive_mean": 0.3145586848258972
+      },
+      "fitted_on": "flickr30k/val caption->image"
+    },
+    "clip-vit-b16/image": {
+      "mean": 0.5070603696619682,
+      "std": 0.0851075150411484,
+      "platt": [
+        12.159373802643191,
+        -10.771919165870456
+      ],
+      "diagnostics": {
+        "train": {
+          "ece": 0.012648398910947446,
+          "brier": 0.08219571731722855,
+          "base_rate": 0.10104680194289346
+        },
+        "test_imagewoof_val": {
+          "ece": 0.016909311764787445,
+          "brier": 0.0829823464525071,
+          "base_rate": 0.10187137250752921
+        }
+      },
+      "fitted_on": "background: flickr30k/val image pairs; platt: imagewoof/train same-class pairs"
+    },
+    "clip-vit-b16/text": {
+      "mean": 0.16903116841902877,
+      "std": 0.042177852497300425,
+      "platt": [
+        78.77517963458884,
+        -26.229722292028377
+      ],
+      "diagnostics": {
+        "val": {
+          "ece": 6.067904415069844e-05,
+          "brier": 0.0006234645064665239,
+          "base_rate": 0.0009861932938856018
+        },
+        "test": {
+          "ece": 0.00010077891554303601,
+          "brier": 0.0006804037793416422,
+          "base_rate": 0.001
+        },
+        "positive_mean": 0.3184244930744171
+      },
+      "fitted_on": "flickr30k/val caption->image"
+    },
+    "clip-vit-l14/image": {
+      "mean": 0.5170419920817169,
+      "std": 0.0771165603152754,
+      "platt": [
+        13.635220074172443,
+        -11.522721582969426
+      ],
+      "diagnostics": {
+        "train": {
+          "ece": 0.01420764722499321,
+          "brier": 0.07868927742894755,
+          "base_rate": 0.10104680194289346
+        },
+        "test_imagewoof_val": {
+          "ece": 0.017226761786683774,
+          "brier": 0.07885389819164772,
+          "base_rate": 0.10187137250752921
+        }
+      },
+      "fitted_on": "background: flickr30k/val image pairs; platt: imagewoof/train same-class pairs"
+    },
+    "clip-vit-l14/text": {
+      "mean": 0.10325987315470447,
+      "std": 0.04410737826880686,
+      "platt": [
+        73.8350682719197,
+        -20.679167302080685
+      ],
+      "diagnostics": {
+        "val": {
+          "ece": 6.801481162421634e-05,
+          "brier": 0.0005873001640788856,
+          "base_rate": 0.0009861932938856018
+        },
+        "test": {
+          "ece": 0.00010962790477123471,
+          "brier": 0.0006523827269721854,
+          "base_rate": 0.001
+        },
+        "positive_mean": 0.2694256901741028
+      },
+      "fitted_on": "flickr30k/val caption->image"
+    },
+    "dinov2-small/image": {
+      "mean": 0.08585157149652985,
+      "std": 0.0907536251235462,
+      "platt": [
+        13.824416785534297,
+        -5.0784333970290865
+      ],
+      "diagnostics": {
+        "train": {
+          "ece": 0.007848317251622357,
+          "brier": 0.047496714413465785,
+          "base_rate": 0.10104680194289346
+        },
+        "test_imagewoof_val": {
+          "ece": 0.007459413846866492,
+          "brier": 0.04570127970008858,
+          "base_rate": 0.10187137250752921
+        }
+      },
+      "fitted_on": "background: flickr30k/val image pairs; platt: imagewoof/train same-class pairs"
+    },
+    "dinov2-base/image": {
+      "mean": 0.058667726217255856,
+      "std": 0.07480324640302222,
+      "platt": [
+        14.685279287305134,
+        -4.669129319685699
+      ],
+      "diagnostics": {
+        "train": {
+          "ece": 0.016289073692875744,
+          "brier": 0.03926368212921889,
+          "base_rate": 0.10104680194289346
+        },
+        "test_imagewoof_val": {
+          "ece": 0.014808955685273064,
+          "brier": 0.037102540764984655,
+          "base_rate": 0.10187137250752921
+        }
+      },
+      "fitted_on": "background: flickr30k/val image pairs; platt: imagewoof/train same-class pairs"
+    }
+  },
+  "abstention": [
+    [
+      0.0,
+      1.0,
+      0.5884
+    ],
+    [
+      0.05,
+      0.8718,
+      0.6246845606790549
+    ],
+    [
+      0.1,
+      0.7648,
+      0.6553347280334728
+    ],
+    [
+      0.2,
+      0.6236,
+      0.6959589480436177
+    ],
+    [
+      0.3,
+      0.5154,
+      0.7283663174233604
+    ],
+    [
+      0.5,
+      0.3606,
+      0.778702163061564
+    ],
+    [
+      0.7,
+      0.2284,
+      0.8493870402802102
+    ]
+  ],
+  "top1_reliability": [
+    [
+      "[0.00, 0.05)",
+      641,
+      0.025073783995060963,
+      0.3416536661466459
+    ],
+    [
+      "[0.05, 0.10)",
+      535,
+      0.07376686782497689,
+      0.405607476635514
+    ],
+    [
+      "[0.10, 0.20)",
+      706,
+      0.14560918314392243,
+      0.47592067988668557
+    ],
+    [
+      "[0.20, 0.30)",
+      541,
+      0.2481576144724944,
+      0.5415896487985212
+    ],
+    [
+      "[0.30, 0.50)",
+      774,
+      0.39002702513228726,
+      0.6111111111111112
+    ],
+    [
+      "[0.50, 0.70)",
+      661,
+      0.5961918742576132,
+      0.6565809379727685
+    ],
+    [
+      "[0.70, 1.00)",
+      1142,
+      0.8618189811908216,
+      0.8493870402802102
+    ]
+  ],
+  "report": {
+    "title": "Score calibration",
+    "description": "Background statistics and Platt scaling are fitted on validation data only; ECE/Brier on held-out data. Text: P(caption's annotated image) on Flickr30k. Image: P(same Imagewoof breed). Both use the true (heavily imbalanced) base rate via weighted negative sampling. The abstention table thresholds the calibrated P(match) of the top-1 text\u2192image result on the test split.",
+    "tables": [
+      {
+        "title": "Calibration per embedding space and query modality",
+        "columns": [
+          "Model",
+          "Query",
+          "bg mean",
+          "bg std",
+          "bg p99",
+          "ECE (fit split)",
+          "ECE (held-out)",
+          "Brier (held-out)",
+          "base rate"
+        ],
+        "rows": [
+          [
+            "clip-vit-b32",
+            "image",
+            0.4866,
+            0.0871,
+            0.6962,
+            0.011278291523122349,
+            0.016888548825645312,
+            0.084330397166253,
+            0.10187137250752921
+          ],
+          [
+            "clip-vit-b32",
+            "text",
+            0.1695,
+            0.0423,
+            0.2715,
+            6.409725664965702e-05,
+            7.773119916294203e-05,
+            0.0006875833225488136,
+            0.001
+          ],
+          [
+            "clip-vit-b16",
+            "image",
+            0.5071,
+            0.0851,
+            0.7154,
+            0.012648398910947446,
+            0.016909311764787445,
+            0.0829823464525071,
+            0.10187137250752921
+          ],
+          [
+            "clip-vit-b16",
+            "text",
+            0.169,
+            0.0422,
+            0.2717,
+            6.067904415069844e-05,
+            0.00010077891554303601,
+            0.0006804037793416422,
+            0.001
+          ],
+          [
+            "clip-vit-l14",
+            "image",
+            0.517,
+            0.0771,
+            0.7042,
+            0.01420764722499321,
+            0.017226761786683774,
+            0.07885389819164772,
+            0.10187137250752921
+          ],
+          [
+            "clip-vit-l14",
+            "text",
+            0.1033,
+            0.0441,
+            0.2128,
+            6.801481162421634e-05,
+            0.00010962790477123471,
+            0.0006523827269721854,
+            0.001
+          ],
+          [
+            "dinov2-small",
+            "image",
+            0.0859,
+            0.0908,
+            0.3739,
+            0.007848317251622357,
+            0.007459413846866492,
+            0.04570127970008858,
+            0.10187137250752921
+          ],
+          [
+            "dinov2-base",
+            "image",
+            0.0587,
+            0.0748,
+            0.3219,
+            0.016289073692875744,
+            0.014808955685273064,
+            0.037102540764984655,
+            0.10187137250752921
+          ]
+        ],
+        "notes": "",
+        "highlight_best": []
+      },
+      {
+        "title": "Abstention: answer only if top-1 P(match) \u2265 threshold (CLIP B/32, T\u2192I test)",
+        "columns": [
+          "Threshold",
+          "Coverage",
+          "Precision@1 on answered"
+        ],
+        "rows": [
+          [
+            0.0,
+            1.0,
+            0.5884
+          ],
+          [
+            0.05,
+            0.8718,
+            0.6246845606790549
+          ],
+          [
+            0.1,
+            0.7648,
+            0.6553347280334728
+          ],
+          [
+            0.2,
+            0.6236,
+            0.6959589480436177
+          ],
+          [
+            0.3,
+            0.5154,
+            0.7283663174233604
+          ],
+          [
+            0.5,
+            0.3606,
+            0.778702163061564
+          ],
+          [
+            0.7,
+            0.2284,
+            0.8493870402802102
+          ]
+        ],
+        "notes": "",
+        "highlight_best": []
+      },
+      {
+        "title": "Top-1 reliability (CLIP B/32, T\u2192I test): predicted vs. observed",
+        "columns": [
+          "P(match) bin",
+          "Queries",
+          "Mean predicted",
+          "Observed precision@1"
+        ],
+        "rows": [
+          [
+            "[0.00, 0.05)",
+            641,
+            0.025073783995060963,
+            0.3416536661466459
+          ],
+          [
+            "[0.05, 0.10)",
+            535,
+            0.07376686782497689,
+            0.405607476635514
+          ],
+          [
+            "[0.10, 0.20)",
+            706,
+            0.14560918314392243,
+            0.47592067988668557
+          ],
+          [
+            "[0.20, 0.30)",
+            541,
+            0.2481576144724944,
+            0.5415896487985212
+          ],
+          [
+            "[0.30, 0.50)",
+            774,
+            0.39002702513228726,
+            0.6111111111111112
+          ],
+          [
+            "[0.50, 0.70)",
+            661,
+            0.5961918742576132,
+            0.6565809379727685
+          ],
+          [
+            "[0.70, 1.00)",
+            1142,
+            0.8618189811908216,
+            0.8493870402802102
+          ]
+        ],
+        "notes": "P(match) is calibrated for a random (caption, image) pair, not for the top-ranked one; systematic under-prediction here is expected.",
+        "highlight_best": []
+      }
+    ],
+    "charts": [
+      {
+        "title": "Coverage vs. precision@1 of the top result",
+        "type": "line",
+        "x_label": "coverage",
+        "y_label": "precision@1",
+        "log_x": false,
+        "series": [
+          {
+            "name": "CLIP B/32",
+            "points": [
+              [
+                0.2284,
+                0.8493870402802102
+              ],
+              [
+                0.3606,
+                0.778702163061564
+              ],
+              [
+                0.5154,
+                0.7283663174233604
+              ],
+              [
+                0.6236,
+                0.6959589480436177
+              ],
+              [
+                0.7648,
+                0.6553347280334728
+              ],
+              [
+                0.8718,
+                0.6246845606790549
+              ],
+              [
+                1.0,
+                0.5884
+              ]
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

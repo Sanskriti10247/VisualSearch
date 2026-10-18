@@ -1,0 +1,1324 @@
+{
+  "name": "models_image_image",
+  "generated_at": "2026-10-18T23:00:23+00:00",
+  "seed": 1234,
+  "environment": {
+    "python": "3.12.12",
+    "platform": "Linux-7.2.5-3-omarchy-x86_64-with-glibc2.44",
+    "cpu": "13th Gen Intel(R) Core(TM) i5-13420H",
+    "cpu_count": 12,
+    "torch": "2.14.1+cu130",
+    "transformers": "5.20.1",
+    "faiss": "1.15.1",
+    "numpy": "2.5.4",
+    "cuda_available": true,
+    "gpu": "NVIDIA GeForce RTX 4050 Laptop GPU",
+    "gpu_memory_gb": 6.1,
+    "git_commit": "6ae6368",
+    "git_dirty": true
+  },
+  "datasets": {
+    "flickr30k": {
+      "source": {
+        "repo": "nlphuji/flickr30k",
+        "revision": "2b239befc81b6e3f035ce6bd52f5f4d60f5625f7",
+        "annotations_sha256": "395990db603ab8bafd5c7ab2746b22058bb1e75b78b3eb56ad755931364ac137",
+        "split_scheme": "karpathy"
+      },
+      "seed": 1234,
+      "catalog_counts": {
+        "train": 28994,
+        "val": 1014,
+        "test": 1000
+      },
+      "distractor_filenames_sha256": "4263c74a397679e135e18ec42b4cfe0d31d48846f02a452f70914a06f32a88f4"
+    },
+    "imagewoof": {
+      "source": {
+        "url": "https://s3.amazonaws.com/fast-ai-imageclas/imagewoof2-320.tgz",
+        "archive_sha256": "7db6120fdb9ae079e26346f89e7b00d7f184f8137791609b97fd0405d3f92305"
+      },
+      "seed": 1234,
+      "catalog_counts": {
+        "train": 1050,
+        "val": 3928
+      }
+    }
+  },
+  "results": {
+    "category/clip-vit-b32": {
+      "task": "i2i_category",
+      "config": {
+        "model": "clip-vit-b32",
+        "overrides": {},
+        "dataset": "imagewoof",
+        "split": "val",
+        "gallery_size": 3927,
+        "n_queries": 3928,
+        "fingerprint": "2d2d8dbfe0ccede7"
+      },
+      "metrics": {
+        "R@1": 0.7991344195519349,
+        "R@5": 0.9488289205702648,
+        "R@10": 0.97479633401222,
+        "MRR": 0.8653881413276421,
+        "mAP": 0.368346398505151,
+        "median_rank": 1.0,
+        "n_queries": 3928,
+        "ci95": {
+          "R@1": [
+            0.7856415478615071,
+            0.8113543788187373
+          ],
+          "R@5": [
+            0.9422097759674134,
+            0.9557090122199593
+          ],
+          "R@10": [
+            0.969959266802444,
+            0.9796334012219959
+          ],
+          "MRR": [
+            0.8566747998275619,
+            0.8737953124322752
+          ],
+          "mAP": [
+            0.36367198870788703,
+            0.3737370536200407
+          ]
+        },
+        "P@10": 0.7296334012219959,
+        "mAP_per_class": {
+          "Australian terrier": 0.3315907804136309,
+          "Border terrier": 0.44783120818812877,
+          "English foxhound": 0.23250448291276773,
+          "Old English sheepdog": 0.2710336366808931,
+          "Rhodesian ridgeback": 0.3603227599056879,
+          "Samoyed": 0.42191767164592386,
+          "Shih-Tzu": 0.3828480380187851,
+          "beagle": 0.33636502534778423,
+          "dingo": 0.5092146858893358,
+          "golden retriever": 0.33002420707114843
+        }
+      },
+      "timings": {
+        "index_build_s": 0.03603114299767185,
+        "search_total_s": 1.046769774002314,
+        "search_per_query_ms": 0.26648925000058915,
+        "index_stats": {
+          "kind": "flat",
+          "dim": 512,
+          "params": {},
+          "ntotal": 3928,
+          "resolved": {},
+          "tombstones": 0,
+          "trained_on": 0,
+          "index_bytes": 8044589,
+          "vector_bytes": 8044544
+        }
+      }
+    },
+    "instance/clip-vit-b32": {
+      "task": "i2i_instance",
+      "config": {
+        "model": "clip-vit-b32",
+        "overrides": {},
+        "split": "test",
+        "distractors": true,
+        "gallery_size": 29994,
+        "n_queries": 1000,
+        "seed": 1234,
+        "augmentations": [
+          "crop",
+          "color",
+          "blur_jpeg",
+          "rotate",
+          "flip_crop"
+        ],
+        "fingerprint": "2d2d8dbfe0ccede7"
+      },
+      "metrics": {
+        "R@1": 0.964,
+        "R@5": 0.98,
+        "R@10": 0.986,
+        "MRR": 0.9724536368183676,
+        "median_rank": 1.0,
+        "n_queries": 1000,
+        "ci95": {
+          "R@1": [
+            0.952,
+            0.976
+          ],
+          "R@5": [
+            0.971,
+            0.988
+          ],
+          "R@10": [
+            0.978,
+            0.992
+          ],
+          "MRR": [
+            0.9628073100675845,
+            0.9815272624382739
+          ]
+        },
+        "by_augmentation": {
+          "crop": {
+            "R@1": 0.955,
+            "R@5": 0.97,
+            "R@10": 0.97,
+            "MRR": 0.9626390284405368,
+            "median_rank": 1.0,
+            "n_queries": 200
+          },
+          "color": {
+            "R@1": 1.0,
+            "R@5": 1.0,
+            "R@10": 1.0,
+            "MRR": 1.0,
+            "median_rank": 1.0,
+            "n_queries": 200
+          },
+          "blur_jpeg": {
+            "R@1": 0.96,
+            "R@5": 0.98,
+            "R@10": 0.995,
+            "MRR": 0.9717692236938926,
+            "median_rank": 1.0,
+            "n_queries": 200
+          },
+          "rotate": {
+            "R@1": 0.99,
+            "R@5": 0.995,
+            "R@10": 1.0,
+            "MRR": 0.9932142857142857,
+            "median_rank": 1.0,
+            "n_queries": 200
+          },
+          "flip_crop": {
+            "R@1": 0.915,
+            "R@5": 0.955,
+            "R@10": 0.965,
+            "MRR": 0.9346456462431229,
+            "median_rank": 1.0,
+            "n_queries": 200
+          }
+        }
+      },
+      "timings": {
+        "index_build_s": 0.16712393399939174,
+        "search_total_s": 0.7911659630044596,
+        "search_per_query_ms": 0.7911659630044596,
+        "index_stats": {
+          "kind": "flat",
+          "dim": 512,
+          "params": {},
+          "ntotal": 29994,
+          "resolved": {},
+          "tombstones": 0,
+          "trained_on": 0,
+          "index_bytes": 61427757,
+          "vector_bytes": 61427712
+        }
+      }
+    },
+    "category/clip-vit-b16": {
+      "task": "i2i_category",
+      "config": {
+        "model": "clip-vit-b16",
+        "overrides": {},
+        "dataset": "imagewoof",
+        "split": "val",
+        "gallery_size": 3927,
+        "n_queries": 3928,
+        "fingerprint": "9f54addf30ea5098"
+      },
+      "metrics": {
+        "R@1": 0.840122199592668,
+        "R@5": 0.9653767820773931,
+        "R@10": 0.9816700610997964,
+        "MRR": 0.8961946616017448,
+        "mAP": 0.4002373290529996,
+        "median_rank": 1.0,
+        "n_queries": 3928,
+        "ci95": {
+          "R@1": [
+            0.8279022403258656,
+            0.8520875763747454
+          ],
+          "R@5": [
+            0.959775967413442,
+            0.9707230142566191
+          ],
+          "R@10": [
+            0.9778513238289206,
+            0.9854951629327902
+          ],
+          "MRR": [
+            0.8885004086423145,
+            0.9042101808248354
+          ],
+          "mAP": [
+            0.395240757924294,
+            0.4054821787325942
+          ]
+        },
+        "P@10": 0.7765529531568228,
+        "mAP_per_class": {
+          "Australian terrier": 0.3530706116034715,
+          "Border terrier": 0.461649080989037,
+          "English foxhound": 0.2707696055249042,
+          "Old English sheepdog": 0.3108014087170268,
+          "Rhodesian ridgeback": 0.37760214618619903,
+          "Samoyed": 0.48897833352837544,
+          "Shih-Tzu": 0.4226190238276643,
+          "beagle": 0.3385246208079668,
+          "dingo": 0.5685393825658829,
+          "golden retriever": 0.3508061627503532
+        }
+      },
+      "timings": {
+        "index_build_s": 0.005251655995380133,
+        "search_total_s": 0.9829963200027123,
+        "search_per_query_ms": 0.25025364562187175,
+        "index_stats": {
+          "kind": "flat",
+          "dim": 512,
+          "params": {},
+          "ntotal": 3928,
+          "resolved": {},
+          "tombstones": 0,
+          "trained_on": 0,
+          "index_bytes": 8044589,
+          "vector_bytes": 8044544
+        }
+      }
+    },
+    "instance/clip-vit-b16": {
+      "task": "i2i_instance",
+      "config": {
+        "model": "clip-vit-b16",
+        "overrides": {},
+        "split": "test",
+        "distractors": true,
+        "gallery_size": 29994,
+        "n_queries": 1000,
+        "seed": 1234,
+        "augmentations": [
+          "crop",
+          "color",
+          "blur_jpeg",
+          "rotate",
+          "flip_crop"
+        ],
+        "fingerprint": "9f54addf30ea5098"
+      },
+      "metrics": {
+        "R@1": 0.972,
+        "R@5": 0.988,
+        "R@10": 0.99,
+        "MRR": 0.9785146903467165,
+        "median_rank": 1.0,
+        "n_queries": 1000,
+        "ci95": {
+          "R@1": [
+            0.961,
+            0.981
+          ],
+          "R@5": [
+            0.981,
+            0.994
+          ],
+          "R@10": [
+            0.983,
+            0.996
+          ],
+          "MRR": [
+            0.9701050883982324,
+            0.9860301119210756
+          ]
+        },
+        "by_augmentation": {
+          "crop": {
+            "R@1": 0.96,
+            "R@5": 0.98,
+            "R@10": 0.98,
+            "MRR": 0.9685783279586785,
+            "median_rank": 1.0,
+            "n_queries": 200
+          },
+          "color": {
+            "R@1": 1.0,
+            "R@5": 1.0,
+            "R@10": 1.0,
+            "MRR": 1.0,
+            "median_rank": 1.0,
+            "n_queries": 200
+          },
+          "blur_jpeg": {
+            "R@1": 0.96,
+            "R@5": 0.985,
+            "R@10": 0.99,
+            "MRR": 0.9685573409694738,
+            "median_rank": 1.0,
+            "n_queries": 200
+          },
+          "rotate": {
+            "R@1": 1.0,
+            "R@5": 1.0,
+            "R@10": 1.0,
+            "MRR": 1.0,
+            "median_rank": 1.0,
+            "n_queries": 200
+          },
+          "flip_crop": {
+            "R@1": 0.94,
+            "R@5": 0.975,
+            "R@10": 0.98,
+            "MRR": 0.9554377828054298,
+            "median_rank": 1.0,
+            "n_queries": 200
+          }
+        }
+      },
+      "timings": {
+        "index_build_s": 0.15805442499549827,
+        "search_total_s": 0.4441661929959082,
+        "search_per_query_ms": 0.4441661929959082,
+        "index_stats": {
+          "kind": "flat",
+          "dim": 512,
+          "params": {},
+          "ntotal": 29994,
+          "resolved": {},
+          "tombstones": 0,
+          "trained_on": 0,
+          "index_bytes": 61427757,
+          "vector_bytes": 61427712
+        }
+      }
+    },
+    "category/clip-vit-l14": {
+      "task": "i2i_category",
+      "config": {
+        "model": "clip-vit-l14",
+        "overrides": {},
+        "dataset": "imagewoof",
+        "split": "val",
+        "gallery_size": 3927,
+        "n_queries": 3928,
+        "fingerprint": "5417bc672e9f8ddf"
+      },
+      "metrics": {
+        "R@1": 0.8958757637474541,
+        "R@5": 0.975050916496945,
+        "R@10": 0.9859979633401222,
+        "MRR": 0.9311387236587393,
+        "mAP": 0.4964002763803587,
+        "median_rank": 1.0,
+        "n_queries": 3928,
+        "ci95": {
+          "R@1": [
+            0.8867107942973523,
+            0.9055498981670062
+          ],
+          "R@5": [
+            0.9704684317718941,
+            0.979887983706721
+          ],
+          "R@10": [
+            0.9824338085539714,
+            0.9895621181262729
+          ],
+          "MRR": [
+            0.9248530906687712,
+            0.9379586870494722
+          ],
+          "mAP": [
+            0.490727354380557,
+            0.5018625526892929
+          ]
+        },
+        "P@10": 0.8554226069246437,
+        "mAP_per_class": {
+          "Australian terrier": 0.4288092139952583,
+          "Border terrier": 0.5817902388514586,
+          "English foxhound": 0.3335717671482613,
+          "Old English sheepdog": 0.4396643234938112,
+          "Rhodesian ridgeback": 0.4939950659436803,
+          "Samoyed": 0.5558145219341368,
+          "Shih-Tzu": 0.5118290690635361,
+          "beagle": 0.4461197941252316,
+          "dingo": 0.6693035412708671,
+          "golden retriever": 0.42926530599162577
+        }
+      },
+      "timings": {
+        "index_build_s": 0.008572735998313874,
+        "search_total_s": 1.105918200002634,
+        "search_per_query_ms": 0.28154740325932637,
+        "index_stats": {
+          "kind": "flat",
+          "dim": 768,
+          "params": {},
+          "ntotal": 3928,
+          "resolved": {},
+          "tombstones": 0,
+          "trained_on": 0,
+          "index_bytes": 12066861,
+          "vector_bytes": 12066816
+        }
+      }
+    },
+    "instance/clip-vit-l14": {
+      "task": "i2i_instance",
+      "config": {
+        "model": "clip-vit-l14",
+        "overrides": {},
+        "split": "test",
+        "distractors": true,
+        "gallery_size": 29994,
+        "n_queries": 1000,
+        "seed": 1234,
+        "augmentations": [
+          "crop",
+          "color",
+          "blur_jpeg",
+          "rotate",
+          "flip_crop"
+        ],
+        "fingerprint": "5417bc672e9f8ddf"
+      },
+      "metrics": {
+        "R@1": 0.965,
+        "R@5": 0.984,
+        "R@10": 0.989,
+        "MRR": 0.9736806650071939,
+        "median_rank": null,
+        "n_queries": 1000,
+        "ci95": {
+          "R@1": [
+            0.9529749999999999,
+            0.975
+          ],
+          "R@5": [
+            0.975,
+            0.991
+          ],
+          "R@10": [
+            0.982,
+            0.995
+          ],
+          "MRR": [
+            0.9640335320542609,
+            0.9815376167537876
+          ]
+        },
+        "by_augmentation": {
+          "crop": {
+            "R@1": 0.98,
+            "R@5": 0.985,
+            "R@10": 0.99,
+            "MRR": 0.9826590501792115,
+            "median_rank": 1.0,
+            "n_queries": 200
+          },
+          "color": {
+            "R@1": 0.995,
+            "R@5": 1.0,
+            "R@10": 1.0,
+            "MRR": 0.9975,
+            "median_rank": 1.0,
+            "n_queries": 200
+          },
+          "blur_jpeg": {
+            "R@1": 0.93,
+            "R@5": 0.96,
+            "R@10": 0.97,
+            "MRR": 0.9465684227640958,
+            "median_rank": null,
+            "n_queries": 200
+          },
+          "rotate": {
+            "R@1": 1.0,
+            "R@5": 1.0,
+            "R@10": 1.0,
+            "MRR": 1.0,
+            "median_rank": 1.0,
+            "n_queries": 200
+          },
+          "flip_crop": {
+            "R@1": 0.92,
+            "R@5": 0.975,
+            "R@10": 0.985,
+            "MRR": 0.9416758520926618,
+            "median_rank": null,
+            "n_queries": 200
+          }
+        }
+      },
+      "timings": {
+        "index_build_s": 0.21488910199695965,
+        "search_total_s": 0.6247922629991081,
+        "search_per_query_ms": 0.6247922629991081,
+        "index_stats": {
+          "kind": "flat",
+          "dim": 768,
+          "params": {},
+          "ntotal": 29994,
+          "resolved": {},
+          "tombstones": 0,
+          "trained_on": 0,
+          "index_bytes": 92141613,
+          "vector_bytes": 92141568
+        }
+      }
+    },
+    "category/dinov2-small": {
+      "task": "i2i_category",
+      "config": {
+        "model": "dinov2-small",
+        "overrides": {},
+        "dataset": "imagewoof",
+        "split": "val",
+        "gallery_size": 3927,
+        "n_queries": 3928,
+        "fingerprint": "4a0d9ab4eff1c9d7"
+      },
+      "metrics": {
+        "R@1": 0.9366089613034623,
+        "R@5": 0.9834521384928717,
+        "R@10": 0.9893075356415478,
+        "MRR": 0.9571892565508484,
+        "mAP": 0.7501700336017056,
+        "median_rank": 1.0,
+        "n_queries": 3928,
+        "ci95": {
+          "R@1": [
+            0.9282013747454175,
+            0.9442464358452138
+          ],
+          "R@5": [
+            0.9793724541751527,
+            0.9875254582484725
+          ],
+          "R@10": [
+            0.9859979633401222,
+            0.9923625254582484
+          ],
+          "MRR": [
+            0.9511678184655851,
+            0.9627095103043812
+          ],
+          "mAP": [
+            0.7431120038493271,
+            0.7566143841590105
+          ]
+        },
+        "P@10": 0.9117871690427699,
+        "mAP_per_class": {
+          "Australian terrier": 0.6677774442533726,
+          "Border terrier": 0.785230017331753,
+          "English foxhound": 0.4285438175294733,
+          "Old English sheepdog": 0.765986543396182,
+          "Rhodesian ridgeback": 0.8212019216084161,
+          "Samoyed": 0.9203810202882975,
+          "Shih-Tzu": 0.7571494278489072,
+          "beagle": 0.6794312505504263,
+          "dingo": 0.7539397854646415,
+          "golden retriever": 0.7702363998084477
+        }
+      },
+      "timings": {
+        "index_build_s": 0.0036182019975967705,
+        "search_total_s": 0.5496947929932503,
+        "search_per_query_ms": 0.13994266624064416,
+        "index_stats": {
+          "kind": "flat",
+          "dim": 384,
+          "params": {},
+          "ntotal": 3928,
+          "resolved": {},
+          "tombstones": 0,
+          "trained_on": 0,
+          "index_bytes": 6033453,
+          "vector_bytes": 6033408
+        }
+      }
+    },
+    "instance/dinov2-small": {
+      "task": "i2i_instance",
+      "config": {
+        "model": "dinov2-small",
+        "overrides": {},
+        "split": "test",
+        "distractors": true,
+        "gallery_size": 29994,
+        "n_queries": 1000,
+        "seed": 1234,
+        "augmentations": [
+          "crop",
+          "color",
+          "blur_jpeg",
+          "rotate",
+          "flip_crop"
+        ],
+        "fingerprint": "4a0d9ab4eff1c9d7"
+      },
+      "metrics": {
+        "R@1": 0.977,
+        "R@5": 0.991,
+        "R@10": 0.993,
+        "MRR": 0.982880598912894,
+        "median_rank": null,
+        "n_queries": 1000,
+        "ci95": {
+          "R@1": [
+            0.966,
+            0.986
+          ],
+          "R@5": [
+            0.984,
+            0.996
+          ],
+          "R@10": [
+            0.987,
+            0.997
+          ],
+          "MRR": [
+            0.9752697540726818,
+            0.9896962296564196
+          ]
+        },
+        "by_augmentation": {
+          "crop": {
+            "R@1": 0.99,
+            "R@5": 1.0,
+            "R@10": 1.0,
+            "MRR": 0.995,
+            "median_rank": 1.0,
+            "n_queries": 200
+          },
+          "color": {
+            "R@1": 1.0,
+            "R@5": 1.0,
+            "R@10": 1.0,
+            "MRR": 1.0,
+            "median_rank": 1.0,
+            "n_queries": 200
+          },
+          "blur_jpeg": {
+            "R@1": 0.99,
+            "R@5": 1.0,
+            "R@10": 1.0,
+            "MRR": 0.9933333333333333,
+            "median_rank": 1.0,
+            "n_queries": 200
+          },
+          "rotate": {
+            "R@1": 0.995,
+            "R@5": 1.0,
+            "R@10": 1.0,
+            "MRR": 0.9975,
+            "median_rank": 1.0,
+            "n_queries": 200
+          },
+          "flip_crop": {
+            "R@1": 0.91,
+            "R@5": 0.955,
+            "R@10": 0.965,
+            "MRR": 0.9285696612311369,
+            "median_rank": null,
+            "n_queries": 200
+          }
+        }
+      },
+      "timings": {
+        "index_build_s": 0.11123195400432451,
+        "search_total_s": 0.35905921799712814,
+        "search_per_query_ms": 0.35905921799712814,
+        "index_stats": {
+          "kind": "flat",
+          "dim": 384,
+          "params": {},
+          "ntotal": 29994,
+          "resolved": {},
+          "tombstones": 0,
+          "trained_on": 0,
+          "index_bytes": 46070829,
+          "vector_bytes": 46070784
+        }
+      }
+    },
+    "category/dinov2-base": {
+      "task": "i2i_category",
+      "config": {
+        "model": "dinov2-base",
+        "overrides": {},
+        "dataset": "imagewoof",
+        "split": "val",
+        "gallery_size": 3927,
+        "n_queries": 3928,
+        "fingerprint": "c898a603c52d46b2"
+      },
+      "metrics": {
+        "R@1": 0.9478105906313645,
+        "R@5": 0.9809063136456212,
+        "R@10": 0.9877800407331976,
+        "MRR": 0.9634959436121846,
+        "mAP": 0.8253072089866621,
+        "median_rank": 1.0,
+        "n_queries": 3928,
+        "ci95": {
+          "R@1": [
+            0.9404276985743381,
+            0.954938900203666
+          ],
+          "R@5": [
+            0.9765784114052953,
+            0.984979633401222
+          ],
+          "R@10": [
+            0.9842158859470469,
+            0.9908350305498982
+          ],
+          "MRR": [
+            0.9582779391659095,
+            0.9684284181977922
+          ],
+          "mAP": [
+            0.8179751468101367,
+            0.8315964373478489
+          ]
+        },
+        "P@10": 0.932662932790224,
+        "mAP_per_class": {
+          "Australian terrier": 0.7352758242571494,
+          "Border terrier": 0.8920215157181982,
+          "English foxhound": 0.437417703838249,
+          "Old English sheepdog": 0.8764610265351082,
+          "Rhodesian ridgeback": 0.8807104249885618,
+          "Samoyed": 0.962539860465937,
+          "Shih-Tzu": 0.8501206911899758,
+          "beagle": 0.756949281269467,
+          "dingo": 0.8186628543595321,
+          "golden retriever": 0.8625370204292282
+        }
+      },
+      "timings": {
+        "index_build_s": 0.005494505996466614,
+        "search_total_s": 0.779514185996959,
+        "search_per_query_ms": 0.19845065834953132,
+        "index_stats": {
+          "kind": "flat",
+          "dim": 768,
+          "params": {},
+          "ntotal": 3928,
+          "resolved": {},
+          "tombstones": 0,
+          "trained_on": 0,
+          "index_bytes": 12066861,
+          "vector_bytes": 12066816
+        }
+      }
+    },
+    "instance/dinov2-base": {
+      "task": "i2i_instance",
+      "config": {
+        "model": "dinov2-base",
+        "overrides": {},
+        "split": "test",
+        "distractors": true,
+        "gallery_size": 29994,
+        "n_queries": 1000,
+        "seed": 1234,
+        "augmentations": [
+          "crop",
+          "color",
+          "blur_jpeg",
+          "rotate",
+          "flip_crop"
+        ],
+        "fingerprint": "c898a603c52d46b2"
+      },
+      "metrics": {
+        "R@1": 0.983,
+        "R@5": 0.995,
+        "R@10": 0.995,
+        "MRR": 0.987044722317788,
+        "median_rank": 1.0,
+        "n_queries": 1000,
+        "ci95": {
+          "R@1": [
+            0.973,
+            0.99
+          ],
+          "R@5": [
+            0.99,
+            0.999
+          ],
+          "R@10": [
+            0.99,
+            0.999
+          ],
+          "MRR": [
+            0.9797993024340094,
+            0.9928195293196319
+          ]
+        },
+        "by_augmentation": {
+          "crop": {
+            "R@1": 0.99,
+            "R@5": 0.995,
+            "R@10": 0.995,
+            "MRR": 0.9916749311294766,
+            "median_rank": 1.0,
+            "n_queries": 200
+          },
+          "color": {
+            "R@1": 1.0,
+            "R@5": 1.0,
+            "R@10": 1.0,
+            "MRR": 1.0,
+            "median_rank": 1.0,
+            "n_queries": 200
+          },
+          "blur_jpeg": {
+            "R@1": 0.98,
+            "R@5": 1.0,
+            "R@10": 1.0,
+            "MRR": 0.9891666666666665,
+            "median_rank": 1.0,
+            "n_queries": 200
+          },
+          "rotate": {
+            "R@1": 1.0,
+            "R@5": 1.0,
+            "R@10": 1.0,
+            "MRR": 1.0,
+            "median_rank": 1.0,
+            "n_queries": 200
+          },
+          "flip_crop": {
+            "R@1": 0.945,
+            "R@5": 0.98,
+            "R@10": 0.98,
+            "MRR": 0.9543820137927969,
+            "median_rank": 1.0,
+            "n_queries": 200
+          }
+        }
+      },
+      "timings": {
+        "index_build_s": 0.209906130003219,
+        "search_total_s": 0.5886089649939095,
+        "search_per_query_ms": 0.5886089649939095,
+        "index_stats": {
+          "kind": "flat",
+          "dim": 768,
+          "params": {},
+          "ntotal": 29994,
+          "resolved": {},
+          "tombstones": 0,
+          "trained_on": 0,
+          "index_bytes": 92141613,
+          "vector_bytes": 92141568
+        }
+      }
+    },
+    "category/dinov2-small [pooling=mean]": {
+      "task": "i2i_category",
+      "config": {
+        "model": "dinov2-small",
+        "overrides": {
+          "pooling": "mean"
+        },
+        "dataset": "imagewoof",
+        "split": "val",
+        "gallery_size": 3927,
+        "n_queries": 3928,
+        "fingerprint": "74aa8877532d6605"
+      },
+      "metrics": {
+        "R@1": 0.8057535641547862,
+        "R@5": 0.9478105906313645,
+        "R@10": 0.9775967413441955,
+        "MRR": 0.8689651770457719,
+        "mAP": 0.3773694058621055,
+        "median_rank": 1.0,
+        "n_queries": 3928,
+        "ci95": {
+          "R@1": [
+            0.7935336048879837,
+            0.8182281059063137
+          ],
+          "R@5": [
+            0.9406822810590632,
+            0.9549452647657841
+          ],
+          "R@10": [
+            0.9732688391038696,
+            0.9821792260692465
+          ],
+          "MRR": [
+            0.8603944340304048,
+            0.8782635316956557
+          ],
+          "mAP": [
+            0.37323792936100403,
+            0.3824684099109254
+          ]
+        },
+        "P@10": 0.7144348268839105,
+        "mAP_per_class": {
+          "Australian terrier": 0.40243450708137685,
+          "Border terrier": 0.3081643647130414,
+          "English foxhound": 0.26415030112044546,
+          "Old English sheepdog": 0.37480529964107256,
+          "Rhodesian ridgeback": 0.36971418093595343,
+          "Samoyed": 0.4809346023386991,
+          "Shih-Tzu": 0.410543533480582,
+          "beagle": 0.3165579765458149,
+          "dingo": 0.4155598156004606,
+          "golden retriever": 0.37440283802601654
+        }
+      },
+      "timings": {
+        "index_build_s": 0.003878110997902695,
+        "search_total_s": 0.593456567999965,
+        "search_per_query_ms": 0.15108364765783225,
+        "index_stats": {
+          "kind": "flat",
+          "dim": 384,
+          "params": {},
+          "ntotal": 3928,
+          "resolved": {},
+          "tombstones": 0,
+          "trained_on": 0,
+          "index_bytes": 6033453,
+          "vector_bytes": 6033408
+        }
+      }
+    },
+    "category/dinov2-small [pooling=cls+mean]": {
+      "task": "i2i_category",
+      "config": {
+        "model": "dinov2-small",
+        "overrides": {
+          "pooling": "cls+mean"
+        },
+        "dataset": "imagewoof",
+        "split": "val",
+        "gallery_size": 3927,
+        "n_queries": 3928,
+        "fingerprint": "590624ed4263c022"
+      },
+      "metrics": {
+        "R@1": 0.9302443991853361,
+        "R@5": 0.9809063136456212,
+        "R@10": 0.9887983706720977,
+        "MRR": 0.9526486333195254,
+        "mAP": 0.7204620759062162,
+        "median_rank": 1.0,
+        "n_queries": 3928,
+        "ci95": {
+          "R@1": [
+            0.9218431771894093,
+            0.9381364562118126
+          ],
+          "R@5": [
+            0.9763238289205702,
+            0.9852342158859471
+          ],
+          "R@10": [
+            0.9852342158859471,
+            0.9921079429735234
+          ],
+          "MRR": [
+            0.9467891726447971,
+            0.9582480261067051
+          ],
+          "mAP": [
+            0.7135729972765963,
+            0.7268175145862145
+          ]
+        },
+        "P@10": 0.9031313645621182,
+        "mAP_per_class": {
+          "Australian terrier": 0.6533372995968254,
+          "Border terrier": 0.7452648959422915,
+          "English foxhound": 0.4272144982917604,
+          "Old English sheepdog": 0.7255702738214007,
+          "Rhodesian ridgeback": 0.7797199308606764,
+          "Samoyed": 0.8907224237060413,
+          "Shih-Tzu": 0.7300888327999601,
+          "beagle": 0.6517974312170378,
+          "dingo": 0.7239060751720019,
+          "golden retriever": 0.7380780310008312
+        }
+      },
+      "timings": {
+        "index_build_s": 0.008595688996138051,
+        "search_total_s": 0.7489222709991736,
+        "search_per_query_ms": 0.19066249261689758,
+        "index_stats": {
+          "kind": "flat",
+          "dim": 768,
+          "params": {},
+          "ntotal": 3928,
+          "resolved": {},
+          "tombstones": 0,
+          "trained_on": 0,
+          "index_bytes": 12066861,
+          "vector_bytes": 12066816
+        }
+      }
+    },
+    "category/dinov2-base [pooling=cls+mean]": {
+      "task": "i2i_category",
+      "config": {
+        "model": "dinov2-base",
+        "overrides": {
+          "pooling": "cls+mean"
+        },
+        "dataset": "imagewoof",
+        "split": "val",
+        "gallery_size": 3927,
+        "n_queries": 3928,
+        "fingerprint": "25f01595e05dff78"
+      },
+      "metrics": {
+        "R@1": 0.9473014256619144,
+        "R@5": 0.9826883910386965,
+        "R@10": 0.9890529531568228,
+        "MRR": 0.9634007154155669,
+        "mAP": 0.8093495031105481,
+        "median_rank": 1.0,
+        "n_queries": 3928,
+        "ci95": {
+          "R@1": [
+            0.939918533604888,
+            0.9544297352342159
+          ],
+          "R@5": [
+            0.9786150712830958,
+            0.9867617107942973
+          ],
+          "R@10": [
+            0.9857433808553971,
+            0.9921079429735234
+          ],
+          "MRR": [
+            0.9579179936928391,
+            0.968324191759586
+          ],
+          "mAP": [
+            0.8022848582176015,
+            0.815661597709884
+          ]
+        },
+        "P@10": 0.9302443991853361,
+        "mAP_per_class": {
+          "Australian terrier": 0.7290451610726422,
+          "Border terrier": 0.8715950872426558,
+          "English foxhound": 0.4433952472374364,
+          "Old English sheepdog": 0.8486565421110644,
+          "Rhodesian ridgeback": 0.8609057126241831,
+          "Samoyed": 0.9496347999706835,
+          "Shih-Tzu": 0.8354750381099985,
+          "beagle": 0.738697185754112,
+          "dingo": 0.797143658574079,
+          "golden retriever": 0.8487664898425924
+        }
+      },
+      "timings": {
+        "index_build_s": 0.011462578004284296,
+        "search_total_s": 1.4182000649961992,
+        "search_per_query_ms": 0.3610488963839611,
+        "index_stats": {
+          "kind": "flat",
+          "dim": 1536,
+          "params": {},
+          "ntotal": 3928,
+          "resolved": {},
+          "tombstones": 0,
+          "trained_on": 0,
+          "index_bytes": 24133677,
+          "vector_bytes": 24133632
+        }
+      }
+    }
+  },
+  "report": {
+    "title": "Image\u2194image retrieval: CLIP vs. DINOv2",
+    "description": "Category level: Imagewoof val (3,928 images, 10 dog breeds), every image queries all others; relevant = same breed (~390 per query), so mAP is meaningful. Instance level: one transformed copy of each Flickr30k test image (crop 30-60% area, colour jitter, blur+JPEG q15-35, rotation \u00b125\u00b0, flip+crop; cycled) searched against the 30,000-image gallery; relevant = the untransformed original.",
+    "tables": [
+      {
+        "title": "Category-level (Imagewoof)",
+        "columns": [
+          "Model",
+          "mAP",
+          "R@1 (P@1)",
+          "P@10",
+          "MRR",
+          "\u0394mAP vs CLIP B/32"
+        ],
+        "rows": [
+          [
+            "clip-vit-b32",
+            0.368346398505151,
+            0.7991344195519349,
+            0.7296334012219959,
+            0.8653881413276421,
+            ""
+          ],
+          [
+            "clip-vit-b16",
+            0.4002373290529996,
+            0.840122199592668,
+            0.7765529531568228,
+            0.8961946616017448,
+            "+3.2 (p=0.000)"
+          ],
+          [
+            "clip-vit-l14",
+            0.4964002763803587,
+            0.8958757637474541,
+            0.8554226069246437,
+            0.9311387236587393,
+            "+12.8 (p=0.000)"
+          ],
+          [
+            "dinov2-small",
+            0.7501700336017056,
+            0.9366089613034623,
+            0.9117871690427699,
+            0.9571892565508484,
+            "+38.2 (p=0.000)"
+          ],
+          [
+            "dinov2-base",
+            0.8253072089866621,
+            0.9478105906313645,
+            0.932662932790224,
+            0.9634959436121846,
+            "+45.7 (p=0.000)"
+          ],
+          [
+            "dinov2-small [pooling=mean]",
+            0.3773694058621055,
+            0.8057535641547862,
+            0.7144348268839105,
+            0.8689651770457719,
+            "+0.9 (p=0.000)"
+          ],
+          [
+            "dinov2-small [pooling=cls+mean]",
+            0.7204620759062162,
+            0.9302443991853361,
+            0.9031313645621182,
+            0.9526486333195254,
+            "+35.2 (p=0.000)"
+          ],
+          [
+            "dinov2-base [pooling=cls+mean]",
+            0.8093495031105481,
+            0.9473014256619144,
+            0.9302443991853361,
+            0.9634007154155669,
+            "+44.1 (p=0.000)"
+          ]
+        ],
+        "notes": "",
+        "highlight_best": [
+          1,
+          2,
+          3,
+          4
+        ]
+      },
+      {
+        "title": "Instance-level copy detection (Flickr30k test vs 30K gallery)",
+        "columns": [
+          "Model",
+          "R@1",
+          "R@10",
+          "MRR",
+          "R@1 crop",
+          "R@1 color",
+          "R@1 blur_jpeg",
+          "R@1 rotate",
+          "R@1 flip_crop"
+        ],
+        "rows": [
+          [
+            "clip-vit-b32",
+            0.964,
+            0.986,
+            0.9724536368183676,
+            0.955,
+            1.0,
+            0.96,
+            0.99,
+            0.915
+          ],
+          [
+            "clip-vit-b16",
+            0.972,
+            0.99,
+            0.9785146903467165,
+            0.96,
+            1.0,
+            0.96,
+            1.0,
+            0.94
+          ],
+          [
+            "clip-vit-l14",
+            0.965,
+            0.989,
+            0.9736806650071939,
+            0.98,
+            0.995,
+            0.93,
+            1.0,
+            0.92
+          ],
+          [
+            "dinov2-small",
+            0.977,
+            0.993,
+            0.982880598912894,
+            0.99,
+            1.0,
+            0.99,
+            0.995,
+            0.91
+          ],
+          [
+            "dinov2-base",
+            0.983,
+            0.995,
+            0.987044722317788,
+            0.99,
+            1.0,
+            0.98,
+            1.0,
+            0.945
+          ]
+        ],
+        "notes": "",
+        "highlight_best": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,725 @@
+{
+  "name": "models_text_image",
+  "generated_at": "2026-10-18T22:55:51+00:00",
+  "seed": 1234,
+  "environment": {
+    "python": "3.12.12",
+    "platform": "Linux-7.2.5-3-omarchy-x86_64-with-glibc2.44",
+    "cpu": "13th Gen Intel(R) Core(TM) i5-13420H",
+    "cpu_count": 12,
+    "torch": "2.14.1+cu130",
+    "transformers": "5.20.1",
+    "faiss": "1.15.1",
+    "numpy": "2.5.4",
+    "cuda_available": true,
+    "gpu": "NVIDIA GeForce RTX 4050 Laptop GPU",
+    "gpu_memory_gb": 6.1,
+    "git_commit": "6ae6368",
+    "git_dirty": true
+  },
+  "datasets": {
+    "flickr30k": {
+      "source": {
+        "repo": "nlphuji/flickr30k",
+        "revision": "2b239befc81b6e3f035ce6bd52f5f4d60f5625f7",
+        "annotations_sha256": "395990db603ab8bafd5c7ab2746b22058bb1e75b78b3eb56ad755931364ac137",
+        "split_scheme": "karpathy"
+      },
+      "seed": 1234,
+      "catalog_counts": {
+        "train": 28994,
+        "val": 1014,
+        "test": 1000
+      },
+      "distractor_filenames_sha256": "4263c74a397679e135e18ec42b4cfe0d31d48846f02a452f70914a06f32a88f4"
+    },
+    "imagewoof": {
+      "source": {
+        "url": "https://s3.amazonaws.com/fast-ai-imageclas/imagewoof2-320.tgz",
+        "archive_sha256": "7db6120fdb9ae079e26346f89e7b00d7f184f8137791609b97fd0405d3f92305"
+      },
+      "seed": 1234,
+      "catalog_counts": {
+        "train": 1050,
+        "val": 3928
+      }
+    }
+  },
+  "results": {
+    "t2i/1K/clip-vit-b32": {
+      "task": "t2i",
+      "config": {
+        "model": "clip-vit-b32",
+        "overrides": {},
+        "split": "test",
+        "distractors": false,
+        "gallery_size": 1000,
+        "n_queries": 5000,
+        "index": "flat",
+        "index_params": {},
+        "depth": 1000,
+        "text_template": "{}",
+        "fingerprint": "2d2d8dbfe0ccede7"
+      },
+      "metrics": {
+        "R@1": 0.5884,
+        "R@5": 0.8344,
+        "R@10": 0.9008,
+        "MRR": 0.6973172701058518,
+        "median_rank": 1.0,
+        "n_queries": 5000,
+        "ci95": {
+          "R@1": [
+            0.56558,
+            0.6078
+          ],
+          "R@5": [
+            0.819195,
+            0.848605
+          ],
+          "R@10": [
+            0.889,
+            0.9120050000000001
+          ],
+          "MRR": [
+            0.6785529825246456,
+            0.7135312422677933
+          ]
+        }
+      },
+      "timings": {
+        "index_build_s": 0.013034556002821773,
+        "search_total_s": 0.37504765500489157,
+        "search_per_query_ms": 0.07500953100097832,
+        "index_stats": {
+          "kind": "flat",
+          "dim": 512,
+          "params": {},
+          "ntotal": 1000,
+          "resolved": {},
+          "tombstones": 0,
+          "trained_on": 0,
+          "index_bytes": 2048045,
+          "vector_bytes": 2048000
+        }
+      }
+    },
+    "t2i/1K/clip-vit-b16": {
+      "task": "t2i",
+      "config": {
+        "model": "clip-vit-b16",
+        "overrides": {},
+        "split": "test",
+        "distractors": false,
+        "gallery_size": 1000,
+        "n_queries": 5000,
+        "index": "flat",
+        "index_params": {},
+        "depth": 1000,
+        "text_template": "{}",
+        "fingerprint": "9f54addf30ea5098"
+      },
+      "metrics": {
+        "R@1": 0.622,
+        "R@5": 0.856,
+        "R@10": 0.9194,
+        "MRR": 0.725838626469003,
+        "median_rank": 1.0,
+        "n_queries": 5000,
+        "ci95": {
+          "R@1": [
+            0.600995,
+            0.6408050000000001
+          ],
+          "R@5": [
+            0.8409949999999999,
+            0.8688
+          ],
+          "R@10": [
+            0.908395,
+            0.9288
+          ],
+          "MRR": [
+            0.7088364170462289,
+            0.7402626764455343
+          ]
+        }
+      },
+      "timings": {
+        "index_build_s": 0.0030738900022697635,
+        "search_total_s": 0.5318809449963737,
+        "search_per_query_ms": 0.10637618899927474,
+        "index_stats": {
+          "kind": "flat",
+          "dim": 512,
+          "params": {},
+          "ntotal": 1000,
+          "resolved": {},
+          "tombstones": 0,
+          "trained_on": 0,
+          "index_bytes": 2048045,
+          "vector_bytes": 2048000
+        }
+      },
+      "vs_baseline_R@1": {
+        "diff": 0.0336,
+        "ci95": [
+          0.016395000000000003,
+          0.05020499999999997
+        ],
+        "p_value": 0.0
+      }
+    },
+    "t2i/1K/clip-vit-l14": {
+      "task": "t2i",
+      "config": {
+        "model": "clip-vit-l14",
+        "overrides": {},
+        "split": "test",
+        "distractors": false,
+        "gallery_size": 1000,
+        "n_queries": 5000,
+        "index": "flat",
+        "index_params": {},
+        "depth": 1000,
+        "text_template": "{}",
+        "fingerprint": "5417bc672e9f8ddf"
+      },
+      "metrics": {
+        "R@1": 0.647,
+        "R@5": 0.8706,
+        "R@10": 0.9216,
+        "MRR": 0.746063165940902,
+        "median_rank": 1.0,
+        "n_queries": 5000,
+        "ci95": {
+          "R@1": [
+            0.6272,
+            0.667
+          ],
+          "R@5": [
+            0.857395,
+            0.8838
+          ],
+          "R@10": [
+            0.911395,
+            0.9314
+          ],
+          "MRR": [
+            0.7304216266476933,
+            0.7615977551739009
+          ]
+        }
+      },
+      "timings": {
+        "index_build_s": 0.0017857869970612228,
+        "search_total_s": 0.41187532599724364,
+        "search_per_query_ms": 0.08237506519944873,
+        "index_stats": {
+          "kind": "flat",
+          "dim": 768,
+          "params": {},
+          "ntotal": 1000,
+          "resolved": {},
+          "tombstones": 0,
+          "trained_on": 0,
+          "index_bytes": 3072045,
+          "vector_bytes": 3072000
+        }
+      },
+      "vs_baseline_R@1": {
+        "diff": 0.0586,
+        "ci95": [
+          0.039,
+          0.0776
+        ],
+        "p_value": 0.0
+      }
+    },
+    "t2i/full/clip-vit-b32": {
+      "task": "t2i",
+      "config": {
+        "model": "clip-vit-b32",
+        "overrides": {},
+        "split": "test",
+        "distractors": true,
+        "gallery_size": 29994,
+        "n_queries": 5000,
+        "index": "flat",
+        "index_params": {},
+        "depth": 1000,
+        "text_template": "{}",
+        "fingerprint": "2d2d8dbfe0ccede7"
+      },
+      "metrics": {
+        "R@1": 0.1984,
+        "R@5": 0.4028,
+        "R@10": 0.4978,
+        "MRR": 0.2987157091509726,
+        "median_rank": null,
+        "n_queries": 5000,
+        "ci95": {
+          "R@1": [
+            0.181595,
+            0.214205
+          ],
+          "R@5": [
+            0.38199500000000003,
+            0.4234
+          ],
+          "R@10": [
+            0.47659500000000005,
+            0.5192
+          ],
+          "MRR": [
+            0.2816420310873549,
+            0.314679656244375
+          ]
+        }
+      },
+      "timings": {
+        "index_build_s": 0.1603520189964911,
+        "search_total_s": 5.812578658005805,
+        "search_per_query_ms": 1.162515731601161,
+        "index_stats": {
+          "kind": "flat",
+          "dim": 512,
+          "params": {},
+          "ntotal": 29994,
+          "resolved": {},
+          "tombstones": 0,
+          "trained_on": 0,
+          "index_bytes": 61427757,
+          "vector_bytes": 61427712
+        }
+      }
+    },
+    "t2i/full/clip-vit-b16": {
+      "task": "t2i",
+      "config": {
+        "model": "clip-vit-b16",
+        "overrides": {},
+        "split": "test",
+        "distractors": true,
+        "gallery_size": 29994,
+        "n_queries": 5000,
+        "index": "flat",
+        "index_params": {},
+        "depth": 1000,
+        "text_template": "{}",
+        "fingerprint": "9f54addf30ea5098"
+      },
+      "metrics": {
+        "R@1": 0.2318,
+        "R@5": 0.4356,
+        "R@10": 0.5418,
+        "MRR": 0.33252998900545855,
+        "median_rank": null,
+        "n_queries": 5000,
+        "ci95": {
+          "R@1": [
+            0.2128,
+            0.2492
+          ],
+          "R@5": [
+            0.4134,
+            0.45741
+          ],
+          "R@10": [
+            0.5194,
+            0.563605
+          ],
+          "MRR": [
+            0.3143363384471228,
+            0.3501096624472987
+          ]
+        }
+      },
+      "timings": {
+        "index_build_s": 0.23195426399615826,
+        "search_total_s": 5.94499538999662,
+        "search_per_query_ms": 1.188999077999324,
+        "index_stats": {
+          "kind": "flat",
+          "dim": 512,
+          "params": {},
+          "ntotal": 29994,
+          "resolved": {},
+          "tombstones": 0,
+          "trained_on": 0,
+          "index_bytes": 61427757,
+          "vector_bytes": 61427712
+        }
+      },
+      "vs_baseline_R@1": {
+        "diff": 0.0334,
+        "ci95": [
+          0.018195000000000003,
+          0.04860499999999997
+        ],
+        "p_value": 0.0
+      }
+    },
+    "t2i/full/clip-vit-l14": {
+      "task": "t2i",
+      "config": {
+        "model": "clip-vit-l14",
+        "overrides": {},
+        "split": "test",
+        "distractors": true,
+        "gallery_size": 29994,
+        "n_queries": 5000,
+        "index": "flat",
+        "index_params": {},
+        "depth": 1000,
+        "text_template": "{}",
+        "fingerprint": "5417bc672e9f8ddf"
+      },
+      "metrics": {
+        "R@1": 0.2736,
+        "R@5": 0.4868,
+        "R@10": 0.5842,
+        "MRR": 0.3763064783615535,
+        "median_rank": null,
+        "n_queries": 5000,
+        "ci95": {
+          "R@1": [
+            0.253595,
+            0.292205
+          ],
+          "R@5": [
+            0.4644,
+            0.5092
+          ],
+          "R@10": [
+            0.5629949999999999,
+            0.6066
+          ],
+          "MRR": [
+            0.3567944149261325,
+            0.39449009083905395
+          ]
+        }
+      },
+      "timings": {
+        "index_build_s": 0.3696212110007764,
+        "search_total_s": 6.612257359003706,
+        "search_per_query_ms": 1.3224514718007412,
+        "index_stats": {
+          "kind": "flat",
+          "dim": 768,
+          "params": {},
+          "ntotal": 29994,
+          "resolved": {},
+          "tombstones": 0,
+          "trained_on": 0,
+          "index_bytes": 92141613,
+          "vector_bytes": 92141568
+        }
+      },
+      "vs_baseline_R@1": {
+        "diff": 0.0752,
+        "ci95": [
+          0.0572,
+          0.09300499999999998
+        ],
+        "p_value": 0.0
+      }
+    },
+    "i2t/1K/clip-vit-b32": {
+      "task": "i2t",
+      "config": {
+        "model": "clip-vit-b32",
+        "overrides": {},
+        "split": "test",
+        "gallery_size": 5000,
+        "n_queries": 1000,
+        "index": "flat",
+        "fingerprint": "2d2d8dbfe0ccede7"
+      },
+      "metrics": {
+        "R@1": 0.793,
+        "R@5": 0.95,
+        "R@10": 0.981,
+        "MRR": 0.8600388652936305,
+        "mAP": 0.6417616814424814,
+        "median_rank": 1.0,
+        "n_queries": 1000,
+        "ci95": {
+          "R@1": [
+            0.767,
+            0.818
+          ],
+          "R@5": [
+            0.935,
+            0.962
+          ],
+          "R@10": [
+            0.973,
+            0.989
+          ],
+          "MRR": [
+            0.8420874363624362,
+            0.8765727160096416
+          ],
+          "mAP": [
+            0.6238124496619307,
+            0.658970223708906
+          ]
+        }
+      },
+      "timings": {
+        "index_build_s": 0.006459582000388764,
+        "search_total_s": 0.2997120250001899,
+        "search_per_query_ms": 0.2997120250001899,
+        "index_stats": {
+          "kind": "flat",
+          "dim": 512,
+          "params": {},
+          "ntotal": 5000,
+          "resolved": {},
+          "tombstones": 0,
+          "trained_on": 0,
+          "index_bytes": 10240045,
+          "vector_bytes": 10240000
+        }
+      }
+    },
+    "i2t/1K/clip-vit-b16": {
+      "task": "i2t",
+      "config": {
+        "model": "clip-vit-b16",
+        "overrides": {},
+        "split": "test",
+        "gallery_size": 5000,
+        "n_queries": 1000,
+        "index": "flat",
+        "fingerprint": "9f54addf30ea5098"
+      },
+      "metrics": {
+        "R@1": 0.824,
+        "R@5": 0.967,
+        "R@10": 0.99,
+        "MRR": 0.8858176587749168,
+        "mAP": 0.669987338026432,
+        "median_rank": 1.0,
+        "n_queries": 1000,
+        "ci95": {
+          "R@1": [
+            0.799,
+            0.8460249999999999
+          ],
+          "R@5": [
+            0.955,
+            0.977
+          ],
+          "R@10": [
+            0.983,
+            0.996
+          ],
+          "MRR": [
+            0.8692453132284382,
+            0.9012388605875905
+          ],
+          "mAP": [
+            0.6529129422041001,
+            0.6866863414063117
+          ]
+        }
+      },
+      "timings": {
+        "index_build_s": 0.0074592070013750345,
+        "search_total_s": 0.3086293669985025,
+        "search_per_query_ms": 0.3086293669985025,
+        "index_stats": {
+          "kind": "flat",
+          "dim": 512,
+          "params": {},
+          "ntotal": 5000,
+          "resolved": {},
+          "tombstones": 0,
+          "trained_on": 0,
+          "index_bytes": 10240045,
+          "vector_bytes": 10240000
+        }
+      }
+    },
+    "i2t/1K/clip-vit-l14": {
+      "task": "i2t",
+      "config": {
+        "model": "clip-vit-l14",
+        "overrides": {},
+        "split": "test",
+        "gallery_size": 5000,
+        "n_queries": 1000,
+        "index": "flat",
+        "fingerprint": "5417bc672e9f8ddf"
+      },
+      "metrics": {
+        "R@1": 0.853,
+        "R@5": 0.974,
+        "R@10": 0.993,
+        "MRR": 0.9049368778136732,
+        "mAP": 0.7102123382315491,
+        "median_rank": 1.0,
+        "n_queries": 1000,
+        "ci95": {
+          "R@1": [
+            0.829,
+            0.875
+          ],
+          "R@5": [
+            0.964,
+            0.983
+          ],
+          "R@10": [
+            0.988,
+            0.998
+          ],
+          "MRR": [
+            0.8892947639332239,
+            0.9188939276553489
+          ],
+          "mAP": [
+            0.694458815413017,
+            0.724643128291936
+          ]
+        }
+      },
+      "timings": {
+        "index_build_s": 0.04034972000226844,
+        "search_total_s": 0.3894003130044439,
+        "search_per_query_ms": 0.3894003130044439,
+        "index_stats": {
+          "kind": "flat",
+          "dim": 768,
+          "params": {},
+          "ntotal": 5000,
+          "resolved": {},
+          "tombstones": 0,
+          "trained_on": 0,
+          "index_bytes": 15360045,
+          "vector_bytes": 15360000
+        }
+      }
+    }
+  },
+  "report": {
+    "title": "Text\u2194image retrieval: CLIP model comparison (Flickr30k test)",
+    "description": "Zero-shot retrieval on the Karpathy test split (1,000 images, 5,000 captions). 'full' adds all 29,000 Flickr30k train images as distractors (30,000-image gallery). Exact (flat) search. Significance: clustered paired bootstrap over test images vs. the CLIP ViT-B/32 baseline.",
+    "tables": [
+      {
+        "title": "Retrieval quality",
+        "columns": [
+          "Model",
+          "Task",
+          "R@1",
+          "R@5",
+          "R@10",
+          "MRR",
+          "Median rank",
+          "vs. B/32 (R@1)"
+        ],
+        "rows": [
+          [
+            "clip-vit-b32",
+            "T\u2192I (1000 imgs)",
+            0.5884,
+            0.8344,
+            0.9008,
+            0.6973172701058518,
+            1.0,
+            ""
+          ],
+          [
+            "clip-vit-b16",
+            "T\u2192I (1000 imgs)",
+            0.622,
+            0.856,
+            0.9194,
+            0.725838626469003,
+            1.0,
+            "+3.4 pts (p=0.000)"
+          ],
+          [
+            "clip-vit-l14",
+            "T\u2192I (1000 imgs)",
+            0.647,
+            0.8706,
+            0.9216,
+            0.746063165940902,
+            1.0,
+            "+5.9 pts (p=0.000)"
+          ],
+          [
+            "clip-vit-b32",
+            "T\u2192I (29994 imgs)",
+            0.1984,
+            0.4028,
+            0.4978,
+            0.2987157091509726,
+            null,
+            ""
+          ],
+          [
+            "clip-vit-b16",
+            "T\u2192I (29994 imgs)",
+            0.2318,
+            0.4356,
+            0.5418,
+            0.33252998900545855,
+            null,
+            "+3.3 pts (p=0.000)"
+          ],
+          [
+            "clip-vit-l14",
+            "T\u2192I (29994 imgs)",
+            0.2736,
+            0.4868,
+            0.5842,
+            0.3763064783615535,
+            null,
+            "+7.5 pts (p=0.000)"
+          ],
+          [
+            "clip-vit-b32",
+            "I\u2192T (5000 captions)",
+            0.793,
+            0.95,
+            0.981,
+            0.8600388652936305,
+            1.0,
+            "mAP=64.2"
+          ],
+          [
+            "clip-vit-b16",
+            "I\u2192T (5000 captions)",
+            0.824,
+            0.967,
+            0.99,
+            0.8858176587749168,
+            1.0,
+            "mAP=67.0"
+          ],
+          [
+            "clip-vit-l14",
+            "I\u2192T (5000 captions)",
+            0.853,
+            0.974,
+            0.993,
+            0.9049368778136732,
+            1.0,
+            "mAP=71.0"
+          ]
+        ],
+        "notes": "",
+        "highlight_best": [
+          2,
+          3,
+          4,
+          5
+        ]
+      }
+    ]
+  }
+}
