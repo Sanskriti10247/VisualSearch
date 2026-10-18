@@ -1,0 +1,36 @@
+# Embedding models available to VisualSearch.
+#
+# Adding a model whose family already exists (clip, dinov2) only requires a new
+# entry here. A new family needs one Embedder subclass registered with
+# @register_family (see src/visualsearch/embeddings/).
+#
+# Revisions are pinned to Hub commits so that embeddings are reproducible and
+# the index fingerprint changes if anyone bumps them.
+models:
+  clip-vit-b32:
+    family: clip
+    hf_id: openai/clip-vit-base-patch32
+    revision: 3d74acf9a28c67741b2f4f2ea7635f0aaf6f0268
+    description: "CLIP ViT-B/32 (OpenAI). Shared text-image space; baseline."
+  clip-vit-b16:
+    family: clip
+    hf_id: openai/clip-vit-base-patch16
+    revision: 57c216476eefef5ab752ec549e440a49ae4ae5f3
+    description: "CLIP ViT-B/16 (OpenAI). Finer patches, ~4.4x image FLOPs of B/32."
+  clip-vit-l14:
+    family: clip
+    hf_id: openai/clip-vit-large-patch14
+    revision: 32bd64288804d66eefd0ccbe215aa642df71cc41
+    description: "CLIP ViT-L/14 (OpenAI). Largest model here; 768-d space."
+  dinov2-small:
+    family: dinov2
+    hf_id: facebook/dinov2-small
+    revision: ed25f3a31f01632728cabb09d1542f84ab7b0056
+    pooling: cls
+    description: "DINOv2 ViT-S/14. Self-supervised visual features; image-only."
+  dinov2-base:
+    family: dinov2
+    hf_id: facebook/dinov2-base
+    revision: f9e44c814b77203eaa57a6bdbbd535f21ede1415
+    pooling: cls
+    description: "DINOv2 ViT-B/14. Self-supervised visual features; image-only."

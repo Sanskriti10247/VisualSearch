@@ -5,7 +5,6 @@ description = "Multimodal semantic image retrieval engine (CLIP + DINOv2 + FAISS
 readme = "README.md"
 requires-python = ">=3.11,<3.13"
 dependencies = [
-    "torch>=2.4",
     "transformers>=4.45",
     "huggingface-hub>=0.25",
     "safetensors>=0.4",
@@ -24,6 +23,10 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
+# Pick exactly one torch build: `uv sync --extra cpu` (portable, ~0.8 GB) or
+# `uv sync --extra cuda` (CUDA 13.0 wheels, ~4 GB, needs an NVIDIA driver >= 580).
+cpu = ["torch>=2.4"]
+cuda = ["torch>=2.4"]
 qdrant = ["qdrant-client>=1.11"]
 report = ["matplotlib>=3.9"]
 dev = ["pytest>=8.3", "httpx>=0.27", "ruff>=0.6"]
@@ -39,14 +42,22 @@ build-backend = "hatchling.build"
 packages = ["src/visualsearch"]
 
 [tool.uv]
-# CPU wheels by default: ~0.8 GB instead of ~5 GB for CUDA builds.
-# For GPU, remove this source mapping (or set UV_INDEX) and reinstall.
+conflicts = [[{ extra = "cpu" }, { extra = "cuda" }]]
+
 [tool.uv.sources]
-torch = { index = "pytorch-cpu" }
+torch = [
+    { index = "pytorch-cpu", extra = "cpu" },
+    { index = "pytorch-cu130", extra = "cuda" },
+]
 
 [[tool.uv.index]]
 name = "pytorch-cpu"
 url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[[tool.uv.index]]
+name = "pytorch-cu130"
+url = "https://download.pytorch.org/whl/cu130"
 explicit = true
 
 [tool.pytest.ini_options]

@@ -1,0 +1,39 @@
+# Runtime configuration. Every key can be overridden by an environment variable
+# prefixed with VS_ (e.g. VS_DATA_DIR=/data, VS_DEVICE=cuda).
+data_dir: data
+models_file: configs/models.yaml
+seed: 1234
+
+# Models loaded by the API server. The first text-capable model is the default
+# for text search; `default_image_model` is the default for image search.
+active_models: [clip-vit-b32, dinov2-small]
+default_text_model: clip-vit-b32
+default_image_model: dinov2-small
+
+# Index used for serving. One of: flat, hnsw, ivf_flat, ivf_pq, qdrant
+index_type: flat
+index_params: {}
+
+device: auto            # auto | cpu | cuda
+torch_threads: 0        # 0 = torch default
+batch_size: 32
+
+# Upload limits
+max_upload_mb: 10
+max_image_pixels: 40000000
+max_batch_files: 200
+
+# Search defaults
+default_k: 24
+max_k: 200
+rerank_candidates: 100
+# Filters selecting fewer than this many images are answered by an exact scan
+# over the subset instead of a filtered index traversal.
+brute_force_filter_threshold: 5000
+
+# Second-stage reranking defaults (see docs/REPORT.md for how they were tuned).
+enable_cross_encoder: true
+rerank: {}
+
+cors_origins: ["http://localhost:5173", "http://127.0.0.1:5173"]
+results_dir: results
