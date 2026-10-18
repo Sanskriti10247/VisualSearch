@@ -93,7 +93,7 @@ def _cross_encoder_scores(ce, cands: Candidates, depth: int, settings) -> list[n
         rec = cands.records[iid]
         img = load_rgb(settings.images_dir / rec.path)
         texts = [cands.texts[qn] for qn, _ in pairs]
-        s = ce.score_pairs(texts, [img] * len(texts), keys=[rec.sha256] * len(texts))
+        s = ce.score_texts_for_image(texts, img)
         for (qn, j), val in zip(pairs, s):
             out[qn][j] = val
     return out

@@ -5,7 +5,7 @@ from __future__ import annotations
 import gc
 import os
 import time
-from typing import Any
+from typing import Any, Self
 
 import numpy as np
 import psutil
@@ -17,6 +17,34 @@ from visualsearch.eval.metrics import percentiles
 from visualsearch.eval.results import save_result, table
 
 MODELS = ["clip-vit-b32", "clip-vit-b16", "clip-vit-l14", "dinov2-small", "dinov2-base"]
+
+
+class PeakRSS:
+    """Samples process RSS on a background thread; reports the peak while active."""
+
+    def __init__(self, interval: float = 0.005):
+        self.proc = psutil.Process(os.getpid())
+        self.interval = interval
+        self.peak = 0
+
+    def __enter__(self) -> Self:
+        import threading
+
+        self.peak = self.proc.memory_info().rss
+        self._stop = threading.Event()
+
+        def run() -> None:
+            while not self._stop.is_set():
+                self.peak = max(self.peak, self.proc.memory_info().rss)
+                self._stop.wait(self.interval)
+
+        self._t = threading.Thread(target=run, daemon=True)
+        self._t.start()
+        return self
+
+    def __exit__(self, *exc) -> None:
+        self._stop.set()
+        self._t.join()
 
 
 def throughput(ctx: EvalContext, devices: tuple[str, ...] = ("cuda", "cpu")) -> dict[str, Any]:
@@ -34,7 +62,8 @@ def throughput(ctx: EvalContext, devices: tuple[str, ...] = ("cuda", "cpu")) -> 
             continue
         for m in MODELS:
             emb = create_embedder(ctx.specs[m], device=device)
-            rss0 = proc.memory_info().rss
+            gc.collect()
+            rss0 = proc.memory_info().rss  # baseline before weights are loaded
             t = time.perf_counter()
             emb.load()
             load_s = time.perf_counter() - t
@@ -48,13 +77,14 @@ def throughput(ctx: EvalContext, devices: tuple[str, ...] = ("cuda", "cpu")) -> 
                 if device == "cuda":
                     torch.cuda.synchronize()
                     torch.cuda.reset_peak_memory_stats()
-                t = time.perf_counter()
-                emb.embed_images(sample, batch_size=bs)
-                if device == "cuda":
-                    torch.cuda.synchronize()
-                dt = time.perf_counter() - t
+                with PeakRSS() as mem:
+                    t = time.perf_counter()
+                    emb.embed_images(sample, batch_size=bs)
+                    if device == "cuda":
+                        torch.cuda.synchronize()
+                    dt = time.perf_counter() - t
                 peak = (torch.cuda.max_memory_allocated() / 1e6 if device == "cuda"
-                        else (proc.memory_info().rss - rss0) / 1e6)
+                        else (mem.peak - rss0) / 1e6)
                 row = {"device": device, "model": m, "batch_size": bs, "modality": "image",
                        "items_per_s": len(sample) / dt, "ms_per_item": 1000 * dt / len(sample),
                        "peak_mem_mb": peak, "load_s": load_s, "n": len(sample)}
@@ -87,7 +117,9 @@ def throughput(ctx: EvalContext, devices: tuple[str, ...] = ("cuda", "cpu")) -> 
         "description": (
             "Images: 256 Flickr30k test images already decoded in memory (fewer on CPU for large "
             "models); time includes the model's own resize/crop/normalise. GPU memory = peak "
-            "allocated by PyTorch; CPU memory = RSS growth (includes weights). fp32 throughout, "
+            "allocated by PyTorch; CPU memory = peak process RSS during the run above the "
+            "pre-load baseline (weights + activations + preprocessing; sampled every 5 ms). "
+            "GPU throughput for small models is bounded by CPU-side PIL preprocessing. fp32 throughout, "
             f"TF32 disabled. CPU uses {env_threads} PyTorch threads."),
         "tables": [table("Throughput", ["Device", "Model", "Input", "Batch", "items/s",
                                         "ms/item", "Peak MB"], rows)],

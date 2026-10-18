@@ -148,7 +148,7 @@ def _flickr_problem(ctx: EvalContext, split: str, image_model: str, reg: Calibra
     rel = [np.array([gidx[r.id]]) for r in targets]
     p = FusionProblem((qt @ gt.T).astype(np.float32), (qi @ gi.T).astype(np.float32), qt,
                       qi_t, gt, gi, rel, None, reg.get(TEXT_MODEL, TEXT),
-                      reg.get(image_model, IMAGE), early_ok=True)
+                      reg.get(image_model, IMAGE), early_ok=image_model == TEXT_MODEL)
     return p, np.array([r.id for r in targets])
 
 
@@ -165,6 +165,14 @@ def _methods(problem: FusionProblem) -> list[str]:
     return ["zscore", "minmax", "rrf"] + (["early"] if problem.early_ok else [])
 
 
+def _extra_cols(pq, metric: str) -> list[float]:
+    """mAP tasks: R@1 and P@10. Single-target tasks: R@5 and R@10 (P@10 is capped at 10%)."""
+    m = summarize(pq, ci=False)
+    if metric == "mAP":
+        return [m["R@1"], float(pq.extra["P@10"].mean())]
+    return [m["R@5"], m["R@10"]]
+
+
 def _run(ctx, name, builder, tune_split, eval_split, metric, reg):
     rows, raw, charts_ = [], {}, []
     for im in IMAGE_MODELS:
@@ -177,7 +185,7 @@ def _run(ctx, name, builder, tune_split, eval_split, metric, reg):
             if label.startswith("text only") and im != IMAGE_MODELS[0]:
                 continue
             m = summarize(pq, ci=False)
-            rows.append([label, "—", "—", m.get(metric), m["R@1"], float(pq.extra["P@10"].mean()), ""])
+            rows.append([label, "—", "—", m.get(metric), *_extra_cols(pq, metric), ""])
         best_single = image_only if summarize(image_only, ci=False)[metric] >= \
             summarize(text_only, ci=False)[metric] else text_only
         series = {}
@@ -192,8 +200,8 @@ def _run(ctx, name, builder, tune_split, eval_split, metric, reg):
             sig = paired_bootstrap(ref, vals)
             raw[f"{im}/{method}"] = {"w_text": w_best, "tune_curve": curve, "test": m,
                                      "vs_best_single": sig}
-            rows.append([f"text + image ({im})", method, w_best, m.get(metric), m["R@1"],
-                         float(pq.extra["P@10"].mean()),
+            rows.append([f"text + image ({im})", method, w_best, m.get(metric),
+                         *_extra_cols(pq, metric),
                          f"{100 * sig['diff']:+.1f} (p={sig['p_value']:.3f})"])
         charts_.append(chart(f"{name}: tuning curve on {tune_split}, image model {im}", "line",
                              "text weight w (0 = image only, 1 = text only)", metric, series))
@@ -205,8 +213,8 @@ def run(ctx: EvalContext) -> dict[str, Any]:
     for m in IMAGE_MODELS:
         if reg.get(m, IMAGE) is None:
             raise RuntimeError(f"fit calibration first: visualsearch calibrate --models {m}")
-    cols = ["Query", "Fusion", "w_text (tuned)", "Primary metric", "R@1", "P@10",
-            "Δ vs best single signal"]
+    cols_w = ["Query", "Fusion", "w_text (tuned)", "mAP", "R@1", "P@10", "Δ mAP vs best single signal"]
+    cols_f = ["Query", "Fusion", "w_text (tuned)", "R@1", "R@5", "R@10", "Δ R@1 vs best single signal"]
     rows_w, raw_w, charts_w = _run(ctx, "Imagewoof", _woof_problem, "train", "val", "mAP", reg)
     rows_f, raw_f, charts_f = _run(ctx, "Flickr30k", _flickr_problem, "val", "test", "R@1", reg)
     report = {
@@ -217,10 +225,10 @@ def run(ctx: EvalContext) -> dict[str, Any]:
             "tuned on the tuning split and applied once to the evaluation split. Δ is the paired "
             "bootstrap difference against the better single signal on the evaluation split "
             "(mAP for Imagewoof, R@1 for Flickr30k)."),
-        "tables": [table("Imagewoof val: breed name + exemplar image (primary metric mAP)", cols,
+        "tables": [table("Imagewoof val: breed name + exemplar image (primary metric mAP)", cols_w,
                          rows_w, highlight_best=[3, 4, 5]),
                    table("Flickr30k test: caption + 15-25% fragment, 31K gallery (primary metric R@1)",
-                         cols, rows_f, highlight_best=[3, 4, 5])],
+                         cols_f, rows_f, highlight_best=[3, 4, 5])],
         "charts": charts_w + charts_f,
     }
     save_result(ctx.settings, "hybrid", {"imagewoof": raw_w, "flickr30k": raw_f}, report)

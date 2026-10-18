@@ -64,8 +64,11 @@ def _run_setting(name: str, db_ids: np.ndarray, db: np.ndarray, queries: np.ndar
         for v in values:
             if knob:
                 idx.params[knob] = v
+            # Recall and latency use the same k, so they describe the same configuration
+            # (the HNSW wrapper raises efSearch to at least k, so a deeper search would
+            # silently use a larger efSearch).
             t = time.perf_counter()
-            res = idx.search(queries, 100 if targets is not None else k)
+            res = idx.search(queries, k)
             batch_qps = len(queries) / (time.perf_counter() - t)
             ranked = [r.ids for r in res]
             row = {
@@ -73,15 +76,17 @@ def _run_setting(name: str, db_ids: np.ndarray, db: np.ndarray, queries: np.ndar
                 "label": f"{kind}" + (f" M={params['M']}" if kind == "hnsw" else "") +
                          (f" refine={params['refine']}" if kind == "ivf_pq" else "") +
                          (f" {knob}={v}" if knob else ""),
-                "recall@10_vs_exact": recall_vs_exact([r[:k] for r in ranked], truth, k),
+                "recall@10_vs_exact": recall_vs_exact(ranked, truth, k),
                 "latency": _latency(idx, queries, k),
                 "batch_qps": batch_qps,
                 "build_s": build_s, "index_bytes": size, "n": len(db_ids),
                 "resolved": getattr(idx, "resolved", {}),
             }
             if targets is not None:
+                # End-to-end task metric from a separate depth-100 search (efSearch >= 100).
+                deep = [r.ids for r in idx.search(queries, 100)]
                 for kk in (1, 10, 100):
-                    row[f"task_R@{kk}"] = float(np.mean([t in r[:kk] for r, t in zip(ranked, targets)]))
+                    row[f"task_R@{kk}"] = float(np.mean([t in r[:kk] for r, t in zip(deep, targets)]))
             rows.append(row)
         del idx
         gc.collect()
@@ -158,7 +163,9 @@ def run(ctx: EvalContext) -> dict[str, Any]:
             f"Flickr30k test captions. CPU, FAISS {faiss.__version__}, {faiss_threads} OpenMP "
             "threads. Index MB = serialised FAISS index (PQ codes are 32 bytes/vector vs 2,048 "
             "for float32). The embedded Qdrant mode is exact brute force in Python and is shown "
-            "only to validate the backend, not as a Qdrant server benchmark."),
+            "only to validate the backend, not as a Qdrant server benchmark. Recall and latency "
+            "are measured with k=10; 'Task R@K' (is the annotated image retrieved?) comes from a "
+            "separate depth-100 search, for which HNSW uses efSearch >= 100."),
         "tables": tables, "charts": charts,
     }
     save_result(ctx.settings, "ann_benchmark", {"rows": rows, "faiss_threads": faiss_threads},

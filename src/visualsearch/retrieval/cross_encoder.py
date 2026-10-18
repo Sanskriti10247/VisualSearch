@@ -30,7 +30,7 @@ BLIP_ITM_REVISION = "bed8ad38cb2d04a5a4bdf2d071b3c3c0a4aa724c"
 
 class BlipITMReranker:
     def __init__(self, hf_id: str = BLIP_ITM, revision: str = BLIP_ITM_REVISION,
-                 device: str = "auto", cache_size: int = 2048, batch_size: int = 32):
+                 device: str = "auto", cache_size: int = 256, batch_size: int = 32):
         self.hf_id, self.revision = hf_id, revision
         self.device = resolve_device(device)
         self.batch_size = batch_size
@@ -88,6 +88,35 @@ class BlipITMReranker:
         """P(match) for one text against several images."""
         return self.score_pairs([text] * len(images), images, keys)
 
+    def score_texts_for_image(self, texts: list[str], image: Image.Image) -> np.ndarray:
+        """P(match) of many texts against one image: the vision encoder runs once and
+        its features are broadcast (no copies), which is what batch evaluation needs."""
+        import torch
+
+        self.load()
+        with self._lock:
+            feat = self._image_embeds([image], None)[0]
+            out = []
+            for s in range(0, len(texts), self.batch_size):
+                tb = texts[s:s + self.batch_size]
+                out.append(self._itm(tb, feat.unsqueeze(0).expand(len(tb), -1, -1)))
+            if self.device == "cuda":
+                torch.cuda.empty_cache()
+        return np.concatenate(out) if out else np.zeros(0)
+
+    def _itm(self, texts: list[str], feats) -> np.ndarray:
+        import torch
+
+        tok = self.processor.tokenizer(texts, padding=True, truncation=True, max_length=35,
+                                       return_tensors="pt").to(self.device)
+        att = torch.ones(feats.shape[:-1], dtype=torch.long, device=self.device)
+        with torch.inference_mode():
+            q = self.model.text_encoder(input_ids=tok.input_ids, attention_mask=tok.attention_mask,
+                                        encoder_hidden_states=feats,
+                                        encoder_attention_mask=att).last_hidden_state
+            logits = self.model.itm_head(q[:, 0, :]).float()
+        return torch.softmax(logits, -1)[:, 1].cpu().numpy()
+
     def score_pairs(self, texts: list[str], images: list[Image.Image],
                     keys: list[str] | None = None) -> np.ndarray:
         import torch
@@ -95,18 +124,7 @@ class BlipITMReranker:
         self.load()
         with self._lock:
             feats = self._image_embeds(images, keys)
-            scores = []
-            for s in range(0, len(texts), self.batch_size):
-                tb = texts[s:s + self.batch_size]
-                fb = torch.stack(feats[s:s + self.batch_size])
-                tok = self.processor.tokenizer(tb, padding=True, truncation=True, max_length=35,
-                                               return_tensors="pt").to(self.device)
-                att = torch.ones(fb.shape[:-1], dtype=torch.long, device=self.device)
-                with torch.inference_mode():
-                    q = self.model.text_encoder(input_ids=tok.input_ids,
-                                                attention_mask=tok.attention_mask,
-                                                encoder_hidden_states=fb,
-                                                encoder_attention_mask=att).last_hidden_state
-                    logits = self.model.itm_head(q[:, 0, :]).float()
-                scores.append(torch.softmax(logits, -1)[:, 1].cpu().numpy())
+            scores = [self._itm(texts[s:s + self.batch_size],
+                                torch.stack(feats[s:s + self.batch_size]))
+                      for s in range(0, len(texts), self.batch_size)]
         return np.concatenate(scores) if scores else np.zeros(0)
