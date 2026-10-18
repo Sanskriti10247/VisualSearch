@@ -38,14 +38,23 @@ class SearchError(ValueError):
 
 @dataclass
 class RerankConfig:
-    """Defaults chosen on the validation split (see docs/REPORT.md)."""
+    """Defaults selected on validation data (results/rerank.json, docs/REPORT.md §9).
 
-    prf_m: int = 3
-    prf_lam: float = 0.3
+    PRF for text queries did not improve test R@1 in either space; it stays
+    available for experimentation. The cross-encoder's best mix on val was the
+    ITM score alone (gamma = 1).
+    """
+
+    prf_m: int = 5
+    prf_lam: float = 0.1
+    prf_weighting: str = "softmax"
     visual_prf_model: str = "dinov2-small"
-    visual_prf_m: int = 3
+    visual_prf_m: int = 5
     visual_prf_lam: float = 0.3
-    cross_encoder_gamma: float = 0.7
+    visual_prf_weighting: str = "uniform"
+    image_prf_m: int = 10        # image->image query expansion (tuned on Imagewoof train)
+    image_prf_lam: float = 0.6
+    cross_encoder_gamma: float = 1.0
     cross_encoder_candidates: int = 20
 
 
@@ -208,7 +217,7 @@ class SearchEngine:
             return first, {}
         if rerank == "prf":
             vecs = self._vectors(signals[0].model, ids)
-            return prf_scores(first, vecs, cfg.prf_m, cfg.prf_lam), {
+            return prf_scores(first, vecs, cfg.prf_m, cfg.prf_lam, cfg.prf_weighting), {
                 "rerank_params": {"m": cfg.prf_m, "lam": cfg.prf_lam}}
         if rerank == "visual_prf":
             vm = cfg.visual_prf_model
@@ -216,7 +225,8 @@ class SearchEngine:
                 warnings.append(f"visual_prf needs model '{vm}', which is not loaded; skipped")
                 return first, {}
             vecs = self._vectors(vm, ids)
-            return prf_scores(first, vecs, cfg.visual_prf_m, cfg.visual_prf_lam), {
+            return prf_scores(first, vecs, cfg.visual_prf_m, cfg.visual_prf_lam,
+                              cfg.visual_prf_weighting), {
                 "rerank_params": {"space": vm, "m": cfg.visual_prf_m, "lam": cfg.visual_prf_lam}}
         if rerank == "cross_encoder":
             ce = self.cross_encoder
@@ -273,9 +283,10 @@ class SearchEngine:
         if rerank == "prf" and len(res.ids) > 1:
             t = time.perf_counter()
             cfg = self.rerank_config
-            final = prf_scores(final, self._vectors(model, res.ids), cfg.prf_m, cfg.prf_lam)
+            final = prf_scores(final, self._vectors(model, res.ids), cfg.image_prf_m,
+                               cfg.image_prf_lam)
             timings["rerank"] = _ms(t)
-            info = {"rerank_params": {"m": cfg.prf_m, "lam": cfg.prf_lam}}
+            info = {"rerank_params": {"m": cfg.image_prf_m, "lam": cfg.image_prf_lam}}
         hits = self._finalize(res.ids, final, signals, k, exclude, min_prob)
         timings["total"] = _ms(t0)
         return SearchOutcome(hits, timings, {
