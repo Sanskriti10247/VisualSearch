@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import itertools
 import re
 from typing import Any
 
@@ -54,6 +55,16 @@ def calibration(ctx: EvalContext) -> dict[str, Any]:
         cov, prec = float(keep.mean()), float(correct[keep].mean()) if keep.any() else None
         curve.append((cov, prec if prec is not None else 0.0))
         arows.append([thr, cov, prec])
+    # Reliability of P(match) on top-1 results: with a 0.1% base rate, global ECE over
+    # all pairs is dominated by trivially-negative pairs and says little; this asks
+    # "when the top result claims p, is it right with frequency ~p?".
+    rel_rows = []
+    edges = [0.0, 0.05, 0.1, 0.2, 0.3, 0.5, 0.7, 1.0001]
+    for lo, hi in itertools.pairwise(edges):
+        b = (probs >= lo) & (probs < hi)
+        if b.any():
+            rel_rows.append([f"[{lo:.2f}, {min(hi, 1):.2f})", int(b.sum()), float(probs[b].mean()),
+                             float(correct[b].mean())])
     report = {
         "title": "Score calibration",
         "description": (
@@ -68,11 +79,16 @@ def calibration(ctx: EvalContext) -> dict[str, Any]:
                    "ECE (held-out)", "Brier (held-out)", "base rate"], rows),
             table("Abstention: answer only if top-1 P(match) ≥ threshold (CLIP B/32, T→I test)",
                   ["Threshold", "Coverage", "Precision@1 on answered"], arows),
+            table("Top-1 reliability (CLIP B/32, T→I test): predicted vs. observed",
+                  ["P(match) bin", "Queries", "Mean predicted", "Observed precision@1"], rel_rows,
+                  notes="P(match) is calibrated for a random (caption, image) pair, not for the "
+                        "top-ranked one; systematic under-prediction here is expected."),
         ],
         "charts": [chart("Coverage vs. precision@1 of the top result", "line", "coverage",
                          "precision@1", {"CLIP B/32": sorted(curve)})],
     }
-    save_result(ctx.settings, "calibration", {"results": raw, "abstention": arows}, report)
+    save_result(ctx.settings, "calibration", {"results": raw, "abstention": arows,
+                                              "top1_reliability": rel_rows}, report)
     return raw
 
 

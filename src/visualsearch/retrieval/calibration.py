@@ -34,17 +34,18 @@ class ScoreCalibration:
     query_modality: str        # text | image
     mean: float
     std: float
-    quantiles: list[float]     # 101 values: q[0]=min ... q[100]=max of background scores
+    quantiles: list[float]     # background score at each level in `levels`
     platt_a: float = 0.0
     platt_b: float = 0.0
     fitted_on: str = ""
     diagnostics: dict = field(default_factory=dict)
+    levels: list[float] = field(default_factory=lambda: [i / 100 for i in range(101)])
 
     def z(self, s: np.ndarray) -> np.ndarray:
         return (np.asarray(s, dtype=np.float64) - self.mean) / max(self.std, 1e-6)
 
     def percentile(self, s: np.ndarray) -> np.ndarray:
-        return np.interp(np.asarray(s, dtype=np.float64), self.quantiles, np.arange(101)) / 100.0
+        return np.interp(np.asarray(s, dtype=np.float64), self.quantiles, self.levels)
 
     def prob(self, s: np.ndarray) -> np.ndarray:
         return 1.0 / (1.0 + np.exp(-(self.platt_a * np.asarray(s, dtype=np.float64) + self.platt_b)))
@@ -60,9 +61,14 @@ class ScoreCalibration:
         return cls(**json.loads(Path(path).read_text()))
 
 
+# Dense in the upper tail, where search results live (top 1% down to 1e-5).
+QUANTILE_LEVELS = sorted(set(np.round(np.concatenate([
+    np.linspace(0, 0.99, 100), 1 - np.logspace(-2, -5, 31), [1.0]]), 7).tolist()))
+
+
 def fit_background(scores: np.ndarray) -> tuple[float, float, list[float]]:
     s = np.asarray(scores, dtype=np.float64).ravel()
-    return float(s.mean()), float(s.std()), [float(x) for x in np.quantile(s, np.linspace(0, 1, 101))]
+    return float(s.mean()), float(s.std()), [float(x) for x in np.quantile(s, QUANTILE_LEVELS)]
 
 
 def fit_platt(scores: np.ndarray, labels: np.ndarray, weights: np.ndarray | None = None,

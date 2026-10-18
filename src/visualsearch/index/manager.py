@@ -20,6 +20,7 @@ import logging
 import shutil
 import threading
 import time
+from collections import OrderedDict
 from collections.abc import Callable
 from concurrent.futures import ThreadPoolExecutor
 from contextlib import contextmanager
@@ -32,7 +33,7 @@ import numpy as np
 from visualsearch.config import Settings
 from visualsearch.data.catalog import Catalog, now_iso
 from visualsearch.data.preprocess import load_rgb
-from visualsearch.embeddings import IMAGE, TEXT, Embedder, create_embedder, load_model_specs
+from visualsearch.embeddings import IMAGE, Embedder, create_embedder, load_model_specs
 from visualsearch.embeddings.store import EmbeddingStore
 from visualsearch.index.base import VectorIndex
 from visualsearch.index.faiss_index import FaissIndex
@@ -108,8 +109,11 @@ class ModelRuntime:
         self.embedder = embedder
         self.settings = settings
         self.image_store = EmbeddingStore(settings.embeddings_dir, embedder, IMAGE)
-        self.text_store = (EmbeddingStore(settings.embeddings_dir, embedder, TEXT)
-                           if embedder.supports(TEXT) else None)
+        # Query texts are cached in memory only (bounded): persisting arbitrary user
+        # queries would grow without bound and rewrite the store on every query.
+        self.query_cache: OrderedDict[str, np.ndarray] = OrderedDict()
+        self.query_cache_size = 4096
+        self.query_cache_lock = threading.Lock()
         self.index: VectorIndex | None = None
         self.manifest: dict[str, Any] = {}
         self.lock = RWLock()
@@ -199,15 +203,23 @@ class IndexManager:
                                              progress=progress)
 
     def text_vectors(self, key: str, texts: list[str]) -> np.ndarray:
-        from visualsearch.embeddings.store import text_key
-
+        """Query-text embeddings with an in-memory LRU cache."""
         rt = self.runtime(key)
-        if rt.text_store is None:
-            return rt.embedder.embed_texts(texts)  # raises UnsupportedModalityError
-        keys = [text_key(t) for t in texts]
-        lookup = dict(zip(keys, texts))
-        return rt.text_store.get_or_compute(
-            keys, lambda ks: rt.embedder.embed_texts([lookup[k] for k in ks]), chunk=1024)
+        with rt.query_cache_lock:
+            missing = [t for t in dict.fromkeys(texts) if t not in rt.query_cache]
+        if missing:
+            vecs = rt.embedder.embed_texts(missing)  # raises UnsupportedModalityError
+            with rt.query_cache_lock:
+                for t, v in zip(missing, vecs):
+                    rt.query_cache[t] = v
+                while len(rt.query_cache) > rt.query_cache_size:
+                    rt.query_cache.popitem(last=False)
+        with rt.query_cache_lock:
+            out = []
+            for t in texts:
+                rt.query_cache.move_to_end(t)
+                out.append(rt.query_cache[t])
+        return np.stack(out)
 
     # ------------------------------------------------------- build / sync
     def rebuild(self, key: str, progress: Callable[[str, int, int], None] | None = None

@@ -37,3 +37,7 @@ rerank: {}
 
 cors_origins: ["http://localhost:5173", "http://127.0.0.1:5173"]
 results_dir: results
+
+# Applied to text queries before embedding ("{}" = unchanged). "a photo of {}"
+# measured +0.9 R@1 on test but invalidates the fitted calibration; see REPORT.
+text_query_template: "{}"

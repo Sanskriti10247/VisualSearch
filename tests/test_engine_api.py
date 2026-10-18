@@ -210,3 +210,8 @@ def test_metrics_endpoint(client):
 def test_facets(client):
     f = client.get("/api/v1/facets").json()
     assert f["total"] == 24 and any(x["value"] == "synthetic" for x in f["collections"])
+
+
+def test_text_query_with_braces(client):
+    r = client.post("/api/v1/search/text", json={"query": "a {weird} query {}", "k": 3})
+    assert r.status_code == 200

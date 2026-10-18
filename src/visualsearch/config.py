@@ -52,6 +52,11 @@ class Settings(BaseSettings):
     rerank_candidates: int = 100
     brute_force_filter_threshold: int = 5000
 
+    # Template applied to text queries before embedding, e.g. "a photo of {}".
+    # Measured +0.9 R@1 on Flickr30k test (results/preprocessing.json) but off by
+    # default: calibration and fusion weights were fitted on raw text.
+    text_query_template: str = "{}"
+
     # Reranking defaults (fields of retrieval.engine.RerankConfig), chosen on val.
     rerank: dict[str, Any] = Field(default_factory=dict)
     enable_cross_encoder: bool = True   # BLIP-ITM, loaded lazily on first use

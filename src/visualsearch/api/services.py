@@ -18,6 +18,7 @@ from pathlib import Path
 from typing import Any
 
 import numpy as np
+from PIL import Image
 
 from visualsearch import __version__
 from visualsearch.config import Settings
@@ -106,7 +107,12 @@ class Services:
         manager = IndexManager(settings, catalog)
         manager.open(build_missing=build_missing)
         for rt in manager.runtimes.values():
-            rt.embedder.load()  # warm up: first query should not pay model loading
+            # Warm up: load weights and run one forward pass so the first real query
+            # does not pay CUDA/cuBLAS initialisation (measured ~1.7 s otherwise).
+            rt.embedder.load()
+            rt.embedder.embed_images([Image.new("RGB", (64, 64))])
+            if rt.embedder.supports("text"):
+                rt.embedder.embed_texts(["warm-up"])
         cross_encoder = None
         if settings.enable_cross_encoder:
             from visualsearch.retrieval.cross_encoder import BlipITMReranker

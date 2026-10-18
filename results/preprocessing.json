@@ -1,6 +1,6 @@
 {
   "name": "preprocessing",
-  "generated_at": "2026-10-18T21:50:19+00:00",
+  "generated_at": "2026-10-18T22:02:12+00:00",
   "seed": 1234,
   "environment": {
     "python": "3.12.12",
@@ -14,8 +14,8 @@
     "cuda_available": true,
     "gpu": "NVIDIA GeForce RTX 4050 Laptop GPU",
     "gpu_memory_gb": 6.1,
-    "git_commit": "5e34173",
-    "git_dirty": true
+    "git_commit": "78bb563",
+    "git_dirty": false
   },
   "datasets": {
     "flickr30k": {
@@ -46,13 +46,11 @@
     }
   },
   "results": {
-    "t2i/val/clip-vit-b32/center": {
+    "T\u2192I R@1/val/clip-vit-b32/default (centre crop)": {
       "task": "t2i",
       "config": {
         "model": "clip-vit-b32",
-        "overrides": {
-          "crop_mode": "center"
-        },
+        "overrides": {},
         "split": "val",
         "distractors": false,
         "gallery_size": 1014,
@@ -90,9 +88,9 @@
         }
       },
       "timings": {
-        "index_build_s": 0.011834217002615333,
-        "search_total_s": 0.466518941000686,
-        "search_per_query_ms": 0.09201557021709783,
+        "index_build_s": 0.0022380239970516413,
+        "search_total_s": 0.6346962280003936,
+        "search_per_query_ms": 0.125186632741695,
         "index_stats": {
           "kind": "flat",
           "dim": 512,
@@ -104,69 +102,10 @@
           "index_bytes": 2076717,
           "vector_bytes": 2076672
         }
-      }
-    },
-    "t2i/test/clip-vit-b32/center": {
-      "task": "t2i",
-      "config": {
-        "model": "clip-vit-b32",
-        "overrides": {
-          "crop_mode": "center"
-        },
-        "split": "test",
-        "distractors": false,
-        "gallery_size": 1000,
-        "n_queries": 5000,
-        "index": "flat",
-        "index_params": {},
-        "depth": 1000,
-        "text_template": "{}",
-        "fingerprint": "2d2d8dbfe0ccede7"
       },
-      "metrics": {
-        "R@1": 0.5884,
-        "R@5": 0.8344,
-        "R@10": 0.9008,
-        "MRR": 0.6973172701058518,
-        "median_rank": 1.0,
-        "n_queries": 5000,
-        "ci95": {
-          "R@1": [
-            0.56558,
-            0.6078
-          ],
-          "R@5": [
-            0.819195,
-            0.848605
-          ],
-          "R@10": [
-            0.889,
-            0.9120050000000001
-          ],
-          "MRR": [
-            0.6785529825246456,
-            0.7135312422677933
-          ]
-        }
-      },
-      "timings": {
-        "index_build_s": 0.0031898870001896285,
-        "search_total_s": 0.5325848160064197,
-        "search_per_query_ms": 0.10651696320128394,
-        "index_stats": {
-          "kind": "flat",
-          "dim": 512,
-          "params": {},
-          "ntotal": 1000,
-          "resolved": {},
-          "tombstones": 0,
-          "trained_on": 0,
-          "index_bytes": 2048045,
-          "vector_bytes": 2048000
-        }
-      }
+      "vs_default": null
     },
-    "t2i/val/clip-vit-b32/pad": {
+    "T\u2192I R@1/val/clip-vit-b32/crop_mode=pad": {
       "task": "t2i",
       "config": {
         "model": "clip-vit-b32",
@@ -210,9 +149,9 @@
         }
       },
       "timings": {
-        "index_build_s": 0.0020166540052741766,
-        "search_total_s": 0.48602309499983676,
-        "search_per_query_ms": 0.09586254339247273,
+        "index_build_s": 0.0018363159979344346,
+        "search_total_s": 0.6808057240050402,
+        "search_per_query_ms": 0.1342812078905405,
         "index_stats": {
           "kind": "flat",
           "dim": 512,
@@ -224,9 +163,142 @@
           "index_bytes": 2076717,
           "vector_bytes": 2076672
         }
+      },
+      "vs_default": {
+        "diff": -0.02642998027613412,
+        "ci95": [
+          -0.04516765285996055,
+          -0.008870808678501013
+        ],
+        "p_value": 0.006
       }
     },
-    "t2i/test/clip-vit-b32/pad": {
+    "T\u2192I R@1/val/clip-vit-b32/template 'a photo of {}'": {
+      "task": "t2i",
+      "config": {
+        "model": "clip-vit-b32",
+        "overrides": {},
+        "split": "val",
+        "distractors": false,
+        "gallery_size": 1014,
+        "n_queries": 5070,
+        "index": "flat",
+        "index_params": {},
+        "depth": 1000,
+        "text_template": "a photo of {}",
+        "fingerprint": "2d2d8dbfe0ccede7"
+      },
+      "metrics": {
+        "R@1": 0.6147928994082841,
+        "R@5": 0.8562130177514793,
+        "R@10": 0.9086785009861933,
+        "MRR": 0.7212550503348487,
+        "median_rank": 1.0,
+        "n_queries": 5070,
+        "ci95": {
+          "R@1": [
+            0.5938856015779093,
+            0.634723865877712
+          ],
+          "R@5": [
+            0.8422090729783037,
+            0.8704191321499014
+          ],
+          "R@10": [
+            0.8978254437869821,
+            0.9201232741617358
+          ],
+          "MRR": [
+            0.7044163031666631,
+            0.7371393732404117
+          ]
+        }
+      },
+      "timings": {
+        "index_build_s": 0.0017679519951343536,
+        "search_total_s": 0.6917838730005315,
+        "search_per_query_ms": 0.13644652327426657,
+        "index_stats": {
+          "kind": "flat",
+          "dim": 512,
+          "params": {},
+          "ntotal": 1014,
+          "resolved": {},
+          "tombstones": 0,
+          "trained_on": 0,
+          "index_bytes": 2076717,
+          "vector_bytes": 2076672
+        }
+      },
+      "vs_default": {
+        "diff": 0.01775147928994083,
+        "ci95": [
+          0.010059171597633136,
+          0.0252465483234714
+        ],
+        "p_value": 0.0
+      }
+    },
+    "T\u2192I R@1/test/clip-vit-b32/default (centre crop)": {
+      "task": "t2i",
+      "config": {
+        "model": "clip-vit-b32",
+        "overrides": {},
+        "split": "test",
+        "distractors": false,
+        "gallery_size": 1000,
+        "n_queries": 5000,
+        "index": "flat",
+        "index_params": {},
+        "depth": 1000,
+        "text_template": "{}",
+        "fingerprint": "2d2d8dbfe0ccede7"
+      },
+      "metrics": {
+        "R@1": 0.5884,
+        "R@5": 0.8344,
+        "R@10": 0.9008,
+        "MRR": 0.6973172701058518,
+        "median_rank": 1.0,
+        "n_queries": 5000,
+        "ci95": {
+          "R@1": [
+            0.56558,
+            0.6078
+          ],
+          "R@5": [
+            0.819195,
+            0.848605
+          ],
+          "R@10": [
+            0.889,
+            0.9120050000000001
+          ],
+          "MRR": [
+            0.6785529825246456,
+            0.7135312422677933
+          ]
+        }
+      },
+      "timings": {
+        "index_build_s": 0.002425587001198437,
+        "search_total_s": 0.5541431069941609,
+        "search_per_query_ms": 0.11082862139883218,
+        "index_stats": {
+          "kind": "flat",
+          "dim": 512,
+          "params": {},
+          "ntotal": 1000,
+          "resolved": {},
+          "tombstones": 0,
+          "trained_on": 0,
+          "index_bytes": 2048045,
+          "vector_bytes": 2048000
+        }
+      },
+      "vs_default": null
+    },
+    "T\u2192I R@1/test/clip-vit-b32/crop_mode=pad": {
       "task": "t2i",
       "config": {
         "model": "clip-vit-b32",
@@ -270,9 +342,9 @@
         }
       },
       "timings": {
-        "index_build_s": 0.001536419993499294,
-        "search_total_s": 0.39383643699693494,
-        "search_per_query_ms": 0.07876728739938699,
+        "index_build_s": 0.0018250970024382696,
+        "search_total_s": 0.5332760670062271,
+        "search_per_query_ms": 0.10665521340124542,
         "index_stats": {
           "kind": "flat",
           "dim": 512,
@@ -284,67 +356,17 @@
           "index_bytes": 2048045,
           "vector_bytes": 2048000
         }
+      },
+      "vs_default": {
+        "diff": -0.034,
+        "ci95": [
+          -0.0514,
+          -0.0164
+        ],
+        "p_value": 0.001
       }
     },
-    "t2i/val/clip-vit-b32/template": {
-      "task": "t2i",
-      "config": {
-        "model": "clip-vit-b32",
-        "overrides": {},
-        "split": "val",
-        "distractors": false,
-        "gallery_size": 1014,
-        "n_queries": 5070,
-        "index": "flat",
-        "index_params": {},
-        "depth": 1000,
-        "text_template": "a photo of {}",
-        "fingerprint": "2d2d8dbfe0ccede7"
-      },
-      "metrics": {
-        "R@1": 0.6147928994082841,
-        "R@5": 0.8562130177514793,
-        "R@10": 0.9086785009861933,
-        "MRR": 0.7212550503348487,
-        "median_rank": 1.0,
-        "n_queries": 5070,
-        "ci95": {
-          "R@1": [
-            0.5938856015779093,
-            0.634723865877712
-          ],
-          "R@5": [
-            0.8422090729783037,
-            0.8704191321499014
-          ],
-          "R@10": [
-            0.8978254437869821,
-            0.9201232741617358
-          ],
-          "MRR": [
-            0.7044163031666631,
-            0.7371393732404117
-          ]
-        }
-      },
-      "timings": {
-        "index_build_s": 0.0023201579970191233,
-        "search_total_s": 0.5273865349954576,
-        "search_per_query_ms": 0.10402101281961688,
-        "index_stats": {
-          "kind": "flat",
-          "dim": 512,
-          "params": {},
-          "ntotal": 1014,
-          "resolved": {},
-          "tombstones": 0,
-          "trained_on": 0,
-          "index_bytes": 2076717,
-          "vector_bytes": 2076672
-        }
-      }
-    },
-    "t2i/test/clip-vit-b32/template": {
+    "T\u2192I R@1/test/clip-vit-b32/template 'a photo of {}'": {
       "task": "t2i",
       "config": {
         "model": "clip-vit-b32",
@@ -386,9 +408,9 @@
         }
       },
       "timings": {
-        "index_build_s": 0.003194639000867028,
-        "search_total_s": 0.8756050759984646,
-        "search_per_query_ms": 0.17512101519969292,
+        "index_build_s": 0.002345664004678838,
+        "search_total_s": 0.4856284359993879,
+        "search_per_query_ms": 0.09712568719987758,
         "index_stats": {
           "kind": "flat",
           "dim": 512,
@@ -400,15 +422,21 @@
           "index_bytes": 2048045,
           "vector_bytes": 2048000
         }
+      },
+      "vs_default": {
+        "diff": 0.0086,
+        "ci95": [
+          0.0014,
+          0.016
+        ],
+        "p_value": 0.02
       }
     },
-    "i2i/clip-vit-b32/center": {
+    "I\u2192I mAP/imagewoof val/clip-vit-b32/default (centre crop)": {
       "task": "i2i_category",
       "config": {
         "model": "clip-vit-b32",
-        "overrides": {
-          "crop_mode": "center"
-        },
+        "overrides": {},
         "dataset": "imagewoof",
         "split": "val",
         "gallery_size": 3927,
@@ -460,9 +488,9 @@
         }
       },
       "timings": {
-        "index_build_s": 0.01177797099808231,
-        "search_total_s": 3.102470057005121,
-        "search_per_query_ms": 0.789834535897434,
+        "index_build_s": 0.005393756000557914,
+        "search_total_s": 1.4131040759966709,
+        "search_per_query_ms": 0.35975154684232963,
         "index_stats": {
           "kind": "flat",
           "dim": 512,
@@ -474,9 +502,10 @@
           "index_bytes": 8044589,
           "vector_bytes": 8044544
         }
-      }
+      },
+      "vs_default": null
     },
-    "i2i/clip-vit-b32/pad": {
+    "I\u2192I mAP/imagewoof val/clip-vit-b32/crop_mode=pad": {
       "task": "i2i_category",
       "config": {
         "model": "clip-vit-b32",
@@ -534,9 +563,9 @@
         }
       },
       "timings": {
-        "index_build_s": 0.01176100500015309,
-        "search_total_s": 1.825364181000623,
-        "search_per_query_ms": 0.4647057487272462,
+        "index_build_s": 0.006233184001757763,
+        "search_total_s": 1.3764653430043836,
+        "search_per_query_ms": 0.3504239671599755,
         "index_stats": {
           "kind": "flat",
           "dim": 512,
@@ -548,15 +577,21 @@
           "index_bytes": 8044589,
           "vector_bytes": 8044544
         }
+      },
+      "vs_default": {
+        "diff": -0.05299986871165176,
+        "ci95": [
+          -0.055717589312751434,
+          -0.050335235633220884
+        ],
+        "p_value": 0.0
       }
     },
-    "i2i/dinov2-small/center": {
+    "I\u2192I mAP/imagewoof val/dinov2-small/default (centre crop)": {
       "task": "i2i_category",
       "config": {
         "model": "dinov2-small",
-        "overrides": {
-          "crop_mode": "center"
-        },
+        "overrides": {},
         "dataset": "imagewoof",
         "split": "val",
         "gallery_size": 3927,
@@ -608,9 +643,9 @@
         }
       },
       "timings": {
-        "index_build_s": 0.007645542995305732,
-        "search_total_s": 1.2337965900005656,
-        "search_per_query_ms": 0.3141030015276389,
+        "index_build_s": 0.006606221002584789,
+        "search_total_s": 1.0775007119955262,
+        "search_per_query_ms": 0.2743128085528325,
         "index_stats": {
           "kind": "flat",
           "dim": 384,
@@ -622,9 +657,10 @@
           "index_bytes": 6033453,
           "vector_bytes": 6033408
         }
-      }
+      },
+      "vs_default": null
     },
-    "i2i/dinov2-small/pad": {
+    "I\u2192I mAP/imagewoof val/dinov2-small/crop_mode=pad": {
       "task": "i2i_category",
       "config": {
         "model": "dinov2-small",
@@ -682,9 +718,9 @@
         }
       },
       "timings": {
-        "index_build_s": 0.0100891039983253,
-        "search_total_s": 1.1150569279998308,
-        "search_per_query_ms": 0.28387396334007914,
+        "index_build_s": 0.007770686999720056,
+        "search_total_s": 1.1118256589979865,
+        "search_per_query_ms": 0.28305133884877454,
         "index_stats": {
           "kind": "flat",
           "dim": 384,
@@ -696,114 +732,122 @@
           "index_bytes": 6033453,
           "vector_bytes": 6033408
         }
+      },
+      "vs_default": {
+        "diff": -0.006832570391890704,
+        "ci95": [
+          -0.008622973482585177,
+          -0.005054166182290327
+        ],
+        "p_value": 0.0
       }
     }
   },
   "report": {
     "title": "Preprocessing ablations",
-    "description": "CLIP/DINOv2 resize the short side then centre-crop a square, discarding the edges of wide images. 'pad' letterboxes the full image onto a square canvas (mean colour) instead. Also tests prefixing captions with a prompt template.",
+    "description": "CLIP/DINOv2 resize the short side then centre-crop a square, discarding the edges of wide images. 'pad' letterboxes the full image onto a square canvas (mean colour) instead. Also tests prefixing captions with a prompt template. \u0394 = paired bootstrap vs. the default (clustered by image for T\u2192I), 95% CI and p-value.",
     "tables": [
       {
         "title": "Ablations",
         "columns": [
           "Model",
-          "Task",
+          "Metric",
           "Split",
           "Variant",
-          "R@1 / mAP",
-          "R@10",
-          "MRR"
+          "Value",
+          "MRR",
+          "\u0394 vs default"
         ],
         "rows": [
           [
             "clip-vit-b32",
-            "T\u2192I",
+            "T\u2192I R@1",
             "val",
-            "crop_mode=center",
+            "default (centre crop)",
             0.5970414201183432,
-            0.9063116370808678,
-            0.7091324360821547
+            0.7091324360821547,
+            ""
           ],
           [
             "clip-vit-b32",
-            "T\u2192I",
-            "test",
-            "crop_mode=center",
-            0.5884,
-            0.9008,
-            0.6973172701058518
-          ],
-          [
-            "clip-vit-b32",
-            "T\u2192I",
+            "T\u2192I R@1",
             "val",
             "crop_mode=pad",
             0.5706114398422091,
-            0.8816568047337278,
-            0.6818559548627184
+            0.6818559548627184,
+            "-2.64 [-4.52, -0.89] p=0.006"
           ],
           [
             "clip-vit-b32",
-            "T\u2192I",
+            "T\u2192I R@1",
+            "val",
+            "template 'a photo of {}'",
+            0.6147928994082841,
+            0.7212550503348487,
+            "+1.78 [+1.01, +2.52] p=0.000"
+          ],
+          [
+            "clip-vit-b32",
+            "T\u2192I R@1",
+            "test",
+            "default (centre crop)",
+            0.5884,
+            0.6973172701058518,
+            ""
+          ],
+          [
+            "clip-vit-b32",
+            "T\u2192I R@1",
             "test",
             "crop_mode=pad",
             0.5544,
-            0.877,
-            0.6678656642783853
+            0.6678656642783853,
+            "-3.40 [-5.14, -1.64] p=0.001"
           ],
           [
             "clip-vit-b32",
-            "T\u2192I",
-            "val",
-            "template='a photo of {}'",
-            0.6147928994082841,
-            0.9086785009861933,
-            0.7212550503348487
-          ],
-          [
-            "clip-vit-b32",
-            "T\u2192I",
+            "T\u2192I R@1",
             "test",
-            "template='a photo of {}'",
+            "template 'a photo of {}'",
             0.597,
-            0.9012,
-            0.7046574593537421
+            0.7046574593537421,
+            "+0.86 [+0.14, +1.60] p=0.020"
           ],
           [
             "clip-vit-b32",
-            "I\u2192I category (mAP in R@1 col.)",
+            "I\u2192I mAP",
             "imagewoof val",
-            "crop_mode=center",
+            "default (centre crop)",
             0.368346398505151,
-            0.97479633401222,
-            0.8653881413276421
+            0.8653881413276421,
+            ""
           ],
           [
             "clip-vit-b32",
-            "I\u2192I category (mAP in R@1 col.)",
+            "I\u2192I mAP",
             "imagewoof val",
             "crop_mode=pad",
             0.3153465297934993,
-            0.9755600814663951,
-            0.8582138175685178
+            0.8582138175685178,
+            "-5.30 [-5.57, -5.03] p=0.000"
           ],
           [
             "dinov2-small",
-            "I\u2192I category (mAP in R@1 col.)",
+            "I\u2192I mAP",
             "imagewoof val",
-            "crop_mode=center",
+            "default (centre crop)",
             0.7501700336017056,
-            0.9893075356415478,
-            0.9571892565508484
+            0.9571892565508484,
+            ""
           ],
           [
             "dinov2-small",
-            "I\u2192I category (mAP in R@1 col.)",
+            "I\u2192I mAP",
             "imagewoof val",
             "crop_mode=pad",
             0.7433374632098149,
-            0.9887983706720977,
-            0.9570380013721411
+            0.9570380013721411,
+            "-0.68 [-0.86, -0.51] p=0.000"
           ]
         ],
         "notes": "",

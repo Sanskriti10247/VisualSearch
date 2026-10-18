@@ -20,6 +20,7 @@ import numpy as np
 from visualsearch.embeddings import IMAGE, TEXT
 from visualsearch.eval.context import EvalContext
 from visualsearch.retrieval.calibration import (
+    QUANTILE_LEVELS,
     ScoreCalibration,
     brier,
     expected_calibration_error,
@@ -69,7 +70,7 @@ def fit_text(ctx: EvalContext, model: str) -> ScoreCalibration:
     a, b = fit_platt(s, y, w)
     emb = ctx.embedder(model)
     c = ScoreCalibration(model, emb.fingerprint, TEXT, mean, std, q, a, b,
-                         fitted_on="flickr30k/val caption->image")
+                         fitted_on="flickr30k/val caption->image", levels=QUANTILE_LEVELS)
     c.diagnostics = {"val": _diag(c, sims, pos, seed),
                      "test": _diag(c, *_text_matrix(ctx, model, "test"), seed),
                      "positive_mean": float(sims[pos].mean())}
@@ -88,7 +89,8 @@ def fit_image(ctx: EvalContext, model: str) -> ScoreCalibration:
     a, b = fit_platt(s, y, w)
     c = ScoreCalibration(model, emb.fingerprint, IMAGE, mean, std, q, a, b,
                          fitted_on="background: flickr30k/val image pairs; "
-                                   "platt: imagewoof/train same-class pairs")
+                                   "platt: imagewoof/train same-class pairs",
+                         levels=QUANTILE_LEVELS)
     c.diagnostics = {"train": _diag(c, tr_s, tr_p, seed),
                      "test_imagewoof_val": _diag(c, *_woof_matrix(ctx, model, "val"), seed)}
     return c

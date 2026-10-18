@@ -542,6 +542,8 @@ progress { flex: 1; min-width: 160px; height: 10px; accent-color: var(--accent);
   .header-inner { gap: 12px; height: 52px; }
   .brand span { display: none; }
   .tabs a { padding: 6px 9px; font-size: 0.86rem; }
+  /* Tabs scroll horizontally on narrow screens; fade the edge to hint at it. */
+  .tabs { mask-image: linear-gradient(to right, #000 82%, transparent); -webkit-mask-image: linear-gradient(to right, #000 82%, transparent); padding-right: 24px; }
   .query-body.two-col { grid-template-columns: 1fr; }
   .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
   .grid-compact { grid-template-columns: repeat(2, minmax(0, 1fr)); }

@@ -2,6 +2,7 @@ import numpy as np
 import pytest
 
 from visualsearch.retrieval.calibration import (
+    QUANTILE_LEVELS,
     ScoreCalibration,
     expected_calibration_error,
     fit_background,
@@ -31,11 +32,14 @@ def test_weighted_negatives_preserve_base_rate():
 
 
 def test_background_and_percentile():
-    s = np.linspace(0, 1, 1001)
+    s = np.random.default_rng(0).standard_normal(1_000_000)
     mean, std, q = fit_background(s)
-    c = ScoreCalibration("m", "fp", "text", mean, std, q)
-    assert c.percentile(0.5) == pytest.approx(0.5, abs=0.01)
+    c = ScoreCalibration("m", "fp", "text", mean, std, q, levels=QUANTILE_LEVELS)
+    assert c.percentile(0.0) == pytest.approx(0.5, abs=0.01)
     assert c.z(mean) == pytest.approx(0)
+    # tail resolution: z=3 vs z=3.5 must be distinguishable (0.99865 vs 0.99977)
+    assert c.percentile(3.0) == pytest.approx(0.99865, abs=2e-4)
+    assert c.percentile(3.5) == pytest.approx(0.99977, abs=1e-4)
 
 
 def test_minmax_and_ranks():

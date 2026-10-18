@@ -121,7 +121,7 @@ class SearchEngine:
         if not rt.embedder.supports(TEXT):
             raise SearchError(f"model '{model}' cannot embed text (image-only model); "
                               f"use a CLIP model for text queries")
-        return self.manager.text_vectors(model, [text])[0]
+        return self.manager.text_vectors(model, [self.settings.text_query_template.replace("{}", text, 1)])[0]
 
     def embed_image(self, model: str, image: Image.Image | None, image_id: int | None
                     ) -> np.ndarray:

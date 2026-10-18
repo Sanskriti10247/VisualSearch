@@ -1,0 +1,994 @@
+{
+  "name": "hard_negatives",
+  "generated_at": "2026-10-18T22:01:44+00:00",
+  "seed": 1234,
+  "environment": {
+    "python": "3.12.12",
+    "platform": "Linux-7.2.5-3-omarchy-x86_64-with-glibc2.44",
+    "cpu": "13th Gen Intel(R) Core(TM) i5-13420H",
+    "cpu_count": 12,
+    "torch": "2.14.1+cu130",
+    "transformers": "5.20.1",
+    "faiss": "1.15.1",
+    "numpy": "2.5.4",
+    "cuda_available": true,
+    "gpu": "NVIDIA GeForce RTX 4050 Laptop GPU",
+    "gpu_memory_gb": 6.1,
+    "git_commit": "78bb563",
+    "git_dirty": false
+  },
+  "datasets": {
+    "flickr30k": {
+      "source": {
+        "repo": "nlphuji/flickr30k",
+        "revision": "2b239befc81b6e3f035ce6bd52f5f4d60f5625f7",
+        "annotations_sha256": "395990db603ab8bafd5c7ab2746b22058bb1e75b78b3eb56ad755931364ac137",
+        "split_scheme": "karpathy"
+      },
+      "seed": 1234,
+      "catalog_counts": {
+        "train": 28994,
+        "val": 1014,
+        "test": 1000
+      },
+      "distractor_filenames_sha256": "4263c74a397679e135e18ec42b4cfe0d31d48846f02a452f70914a06f32a88f4"
+    },
+    "imagewoof": {
+      "source": {
+        "url": "https://s3.amazonaws.com/fast-ai-imageclas/imagewoof2-320.tgz",
+        "archive_sha256": "7db6120fdb9ae079e26346f89e7b00d7f184f8137791609b97fd0405d3f92305"
+      },
+      "seed": 1234,
+      "catalog_counts": {
+        "train": 1050,
+        "val": 3928
+      }
+    }
+  },
+  "n_fail": 2058,
+  "plausible_false_negatives": 499,
+  "near_miss_rate": 0.597667638483965,
+  "examples": [
+    {
+      "query": "The man with pierced ears is wearing glasses and an orange hat.",
+      "target_id": 1,
+      "top1_id": 165,
+      "target_rank": 3.0,
+      "top1_captions": [
+        "An Asian man in a green uniform shirt with a white speckled headband is using a torch to cook food in a restaurant.",
+        "A man, wearing a green shirt, is cooking food in a restaurant.",
+        "Two men dressed in green are preparing food in a restaurant.",
+        "A check with a green shirt uses a blowtorch on some food.",
+        "Two men cooking fast food."
+      ],
+      "query_vs_top1_captions": 0.602,
+      "query_vs_target_other_captions": 0.888
+    },
+    {
+      "query": "A man with gauges and glasses is wearing a Blitz hat.",
+      "target_id": 1,
+      "top1_id": 696,
+      "target_rank": 2.0,
+      "top1_captions": [
+        "A man smoking a cigarette and wearing a NY baseball cap is looking down at a camera.",
+        "A man smoking a cigarette and wearing a yankees hat trying to operate a camera.",
+        "An older man with a cigarette in his mouth and a ball cap inspects his camera.",
+        "A man wearing a tank-top and a baseball cap holding a camera.",
+        "Man smoking, while inspecting his camera."
+      ],
+      "query_vs_top1_captions": 0.635,
+      "query_vs_target_other_captions": 0.734
+    },
+    {
+      "query": "A black and white dog is running through the grass.",
+      "target_id": 2,
+      "top1_id": 280,
+      "target_rank": 4.0,
+      "top1_captions": [
+        "Two dogs are fighting over a toy and another dog is chasing them.",
+        "Three dogs are playing with a yellow ball in a grassy field.",
+        "A small dog watches two big dogs playing rough in a field.",
+        "Two dogs play together and another runs after in a field.",
+        "Three dogs play together in the field."
+      ],
+      "query_vs_top1_captions": 0.701,
+      "query_vs_target_other_captions": 0.913
+    },
+    {
+      "query": "A dog runs on the green grass near a wooden fence.",
+      "target_id": 2,
+      "top1_id": 455,
+      "target_rank": 4.0,
+      "top1_captions": [
+        "A brown dog with white paws is trotting through a field of green grass.",
+        "A brown dog is running through the grass panting.",
+        "A panting brown dog walking on the grass.",
+        "A brown dog is walking on the grass.",
+        "A brown dog in running on grass."
+      ],
+      "query_vs_top1_captions": 0.809,
+      "query_vs_target_other_captions": 0.786
+    },
+    {
+      "query": "Girl about to kick a piece of wood in half while karate instructor holds it",
+      "target_id": 3,
+      "top1_id": 927,
+      "target_rank": 6.0,
+      "top1_captions": [
+        "Several children are practicing martial arts moves in a room with a red floor.",
+        "Young children are performing karate moves while their teachers look on.",
+        "There are several kids practicing in a taekwondo class.",
+        "Four children practice karate while two adults watch.",
+        "A karate instructor observes his students."
+      ],
+      "query_vs_top1_captions": 0.8,
+      "query_vs_target_other_captions": 0.851
+    },
+    {
+      "query": "A girl kicking a stick that a man is holding in tae kwon do class.",
+      "target_id": 3,
+      "top1_id": 391,
+      "target_rank": 5.0,
+      "top1_captions": [
+        "The girl with the red belt is kicking a pad that the person in black is holding.",
+        "A girl in martial arts class is kicking a dummy.",
+        "Little girl kicks black object at karate class.",
+        "A young girl in martial arts class kicks a bag.",
+        "Kid practicing karate move"
+      ],
+      "query_vs_top1_captions": 0.848,
+      "query_vs_target_other_captions": 0.851
+    },
+    {
+      "query": "A girl in karate uniform breaking a stick with a front kick.",
+      "target_id": 3,
+      "top1_id": 96,
+      "target_rank": 2.0,
+      "top1_captions": [
+        "A young boy wearing a white tunic, white pants, and a yellow belt is standing on his left leg with his right leg extended in a karate pose.",
+        "One little boy working hard in his martial arts class.",
+        "A child in a white karate outfit practicing a move",
+        "A young boy practices martial arts.",
+        "A young child practicing karate."
+      ],
+      "query_vs_top1_captions": 0.846,
+      "query_vs_target_other_captions": 0.866
+    },
+    {
+      "query": "A girl breaking boards by using karate.",
+      "target_id": 3,
+      "top1_id": 96,
+      "target_rank": 3.0,
+      "top1_captions": [
+        "A young boy wearing a white tunic, white pants, and a yellow belt is standing on his left leg with his right leg extended in a karate pose.",
+        "One little boy working hard in his martial arts class.",
+        "A child in a white karate outfit practicing a move",
+        "A young boy practices martial arts.",
+        "A young child practicing karate."
+      ],
+      "query_vs_top1_captions": 0.825,
+      "query_vs_target_other_captions": 0.863
+    },
+    {
+      "query": "Two men on a rooftop while another man stands atop a ladder watching them",
+      "target_id": 5,
+      "top1_id": 9,
+      "target_rank": 2.0,
+      "top1_captions": [
+        "A man wearing a hat and a white shirt is cleaning windows.",
+        "A man in a white shirt stands high up on scaffolding",
+        "A man stands on boards on top of a huge ladder.",
+        "Man works on top of scaffolding.",
+        "A guy works on a building."
+      ],
+      "query_vs_top1_captions": 0.825,
+      "query_vs_target_other_captions": 0.931
+    },
+    {
+      "query": "Man taking a photograph of a well dressed group of teens.",
+      "target_id": 6,
+      "top1_id": 741,
+      "target_rank": 2.0,
+      "top1_captions": [
+        "A man in a black hat and blue shirt taking a picture on the side of an urban street.",
+        "A man on a city street takes a picture while a taxi and bus drive by.",
+        "A man wearing a black hat taking a photo in a busy street.",
+        "A man with a hat is taking a photo in a busy city.",
+        "A tourist photographing tall buildings."
+      ],
+      "query_vs_top1_captions": 0.821,
+      "query_vs_target_other_captions": 0.71
+    },
+    {
+      "query": "A baseball player in red leaps into the air to avoid a player in blue, who is shortly behind him as he catches the ball, while other blue team members look on in the background.",
+      "target_id": 8,
+      "top1_id": 644,
+      "target_rank": 3.0,
+      "top1_captions": [
+        "A man in a black shirt and white pants swinging a baseball bat, with a baseball team and spectators in the background.",
+        "This player with the blue helmet was at bat and just finished swinging at the ball during a team baseball game.",
+        "A baseball player swinging at a ball while fans and the other team watch.",
+        "Observers and Players watch a batting from a batter at a game.",
+        "Baseball player in black and gray uniform swinging at ball."
+      ],
+      "query_vs_top1_captions": 0.806,
+      "query_vs_target_other_captions": 0.749
+    },
+    {
+      "query": "A baseball player coming into home plate with knee held high and the catcher right in front of him waiting for the ball.",
+      "target_id": 8,
+      "top1_id": 984,
+      "target_rank": 4.0,
+      "top1_captions": [
+        "A man dressed in orange t-shirt is trying to hit a baseball, with a few people looking at them and a keeper behind trying to catch the ball.",
+        "Two people are playing baseball while another team watches off from the sideline.",
+        "Professional baseball players during the All Star game watch an opponent at bat.",
+        "A baseball player taking a swing at the plate.",
+        "A player swings at a ball."
+      ],
+      "query_vs_top1_captions": 0.889,
+      "query_vs_target_other_captions": 0.917
+    },
+    {
+      "query": "A baseball player attempting to score a run before the catcher tags the player out.",
+      "target_id": 8,
+      "top1_id": 984,
+      "target_rank": 3.0,
+      "top1_captions": [
+        "A man dressed in orange t-shirt is trying to hit a baseball, with a few people looking at them and a keeper behind trying to catch the ball.",
+        "Two people are playing baseball while another team watches off from the sideline.",
+        "Professional baseball players during the All Star game watch an opponent at bat.",
+        "A baseball player taking a swing at the plate.",
+        "A player swings at a ball."
+      ],
+      "query_vs_top1_captions": 0.891,
+      "query_vs_target_other_captions": 0.917
+    },
+    {
+      "query": "A baseball catcher trying to tag a base runner in a baseball game.",
+      "target_id": 8,
+      "top1_id": 456,
+      "target_rank": 4.0,
+      "top1_captions": [
+        "The number ten player on the white softball team gets tagged at base by a girl on the other team.",
+        "A baseball player in a black shirt just tagged a player in a white shirt.",
+        "A woman in a baseball uniform tags another with her mitt.",
+        "Two girls participate in a softball game.",
+        "Two girls playing in a game of softball."
+      ],
+      "query_vs_top1_captions": 0.869,
+      "query_vs_target_other_captions": 0.897
+    },
+    {
+      "query": "A man wearing a hat and a white shirt is cleaning windows.",
+      "target_id": 9,
+      "top1_id": 741,
+      "target_rank": 9.0,
+      "top1_captions": [
+        "A man in a black hat and blue shirt taking a picture on the side of an urban street.",
+        "A man on a city street takes a picture while a taxi and bus drive by.",
+        "A man wearing a black hat taking a photo in a busy street.",
+        "A man with a hat is taking a photo in a busy city.",
+        "A tourist photographing tall buildings."
+      ],
+      "query_vs_top1_captions": 0.653,
+      "query_vs_target_other_captions": 0.675
+    },
+    {
+      "query": "A man stands on boards on top of a huge ladder.",
+      "target_id": 9,
+      "top1_id": 27,
+      "target_rank": 3.0,
+      "top1_captions": [
+        "A man on a utility lift is standing in the tree branches.",
+        "This man bravely cuts down trees on the job.",
+        "A man in black pants cutting bushes.",
+        "Man on crane cutting tree branches.",
+        "A man cutting branches of trees."
+      ],
+      "query_vs_top1_captions": 0.763,
+      "query_vs_target_other_captions": 0.802
+    },
+    {
+      "query": "A man wearing a reflective vest sits on the sidewalk and holds up pamphlets with bicycles on the cover.",
+      "target_id": 10,
+      "top1_id": 435,
+      "target_rank": 7.0,
+      "top1_captions": [
+        "Turbaned man and two police officers stand in front of a white canopy and a pile of garbage bags",
+        "A man in a turban looks at two police officers who are near a tent and a pile of refuse.",
+        "Two officers with orange jackets stand outside a white tent with onlookers.",
+        "Two police officers observe while a crowd gathers outside a white tarp.",
+        "Men with hats on stand outside of a white tent."
+      ],
+      "query_vs_top1_captions": 0.413,
+      "query_vs_target_other_captions": 0.678
+    },
+    {
+      "query": "Man in bright yellow vest displays bicycle safety information on street.",
+      "target_id": 10,
+      "top1_id": 435,
+      "target_rank": 3.0,
+      "top1_captions": [
+        "Turbaned man and two police officers stand in front of a white canopy and a pile of garbage bags",
+        "A man in a turban looks at two police officers who are near a tent and a pile of refuse.",
+        "Two officers with orange jackets stand outside a white tent with onlookers.",
+        "Two police officers observe while a crowd gathers outside a white tarp.",
+        "Men with hats on stand outside of a white tent."
+      ],
+      "query_vs_top1_captions": 0.494,
+      "query_vs_target_other_captions": 0.706
+    },
+    {
+      "query": "A man and woman talking are interrupted and a man covers his face.",
+      "target_id": 10,
+      "top1_id": 894,
+      "target_rank": 12.0,
+      "top1_captions": [
+        "Important political man in gray suit talks to man in darker green suit about the woman in the lighter green jacket.",
+        "A woman and two men, that are dressed professionally, are having a discussion.",
+        "Two men and a woman standing in a circle having a conversation.",
+        "Two men and a woman are having a conversation.",
+        "Politicians are talking to each other."
+      ],
+      "query_vs_top1_captions": 0.819,
+      "query_vs_target_other_captions": 0.53
+    },
+    {
+      "query": "A man in a vest is sitting in a chair and holding magazines.",
+      "target_id": 10,
+      "top1_id": 464,
+      "target_rank": 6.0,
+      "top1_captions": [
+        "An old man on a subway wearing heavy layered clothing is reading a newspaper.",
+        "It seems like no matter when I read this, the news is always the same.",
+        "Older man riding public transportation while reading a newspaper.",
+        "An old man with a red scarf reading a newspaper on the subway.",
+        "A grumpy old man reads a newspaper on public transit."
+      ],
+      "query_vs_top1_captions": 0.575,
+      "query_vs_target_other_captions": 0.622
+    },
+    {
+      "query": "A construction worker holds a sign about bicycling.",
+      "target_id": 10,
+      "top1_id": 874,
+      "target_rank": 82.0,
+      "top1_captions": [
+        "A young, male adult wearing blue jeans, a green reflective vest, work gloves and a hard hat stood between the rails of a railroad track to the rear of a white truck that is specially built to roll on the tracks.",
+        "A man wearing a gray shirt, blue jeans and a neon green safety vest is standing on a railroad track with a white truck and a white building in the background.",
+        "A person in a bright yellow vest and hard hat is standing by the railroad tracks.",
+        "A worker in a yellow vest stands on train tracks.",
+        "A man in a vest works outside."
+      ],
+      "query_vs_top1_captions": 0.573,
+      "query_vs_target_other_captions": 0.706
+    },
+    {
+      "query": "A mother decides to take her child on a piggyback ride outside their apartment complex.",
+      "target_id": 11,
+      "top1_id": 704,
+      "target_rank": 3.0,
+      "top1_captions": [
+        "A baby girl wearing a harness is lying on the ground crying.",
+        "Harnessed Asian child lying on ground in front of stroller.",
+        "A child is laying on the ground next to a stroller.",
+        "The child is having a meltdown on the ground.",
+        "A child in a harness laying on the sidewalk."
+      ],
+      "query_vs_top1_captions": 0.636,
+      "query_vs_target_other_captions": 0.845
+    },
+    {
+      "query": "A mother and her young song enjoying a beautiful day outside.",
+      "target_id": 11,
+      "top1_id": 957,
+      "target_rank": 3.0,
+      "top1_captions": [
+        "Person in black shirt lying on top of person in red shirt in the grass.",
+        "A girl and a boy in a park kissing in the grass on a sunny day",
+        "Two people are laying down and kissing on a grassy lawn.",
+        "A young boy and girl cuddle in a grassy field.",
+        "A boy lays on top of a girl in a field."
+      ],
+      "query_vs_top1_captions": 0.715,
+      "query_vs_target_other_captions": 0.665
+    },
+    {
+      "query": "A young woman is giving a baby a ride on her shoulders.",
+      "target_id": 11,
+      "top1_id": 881,
+      "target_rank": 3.0,
+      "top1_captions": [
+        "Little girl wearing a mask sitting on man's shoulders as they walk through a crowded street together.",
+        "A bald man in a black shirt with a girl sitting on his shoulders walking in the street.",
+        "A girl wearing a mask rides on a man's shoulders through a crowded sidewalk.",
+        "A man puts a little girl atop his shoulders while walking down a busy street.",
+        "A bald man holds his daughter up on his shoulders."
+      ],
+      "query_vs_top1_captions": 0.848,
+      "query_vs_target_other_captions": 0.915
+    },
+    {
+      "query": "A woman gives a small child a piggyback ride.",
+      "target_id": 11,
+      "top1_id": 723,
+      "target_rank": 3.0,
+      "top1_captions": [
+        "An african child carries an infant in swaddling cloth on her back.",
+        "A child carries his younger sibling in a cloth sling on his back.",
+        "A small African child carries a younger child on his back.",
+        "African girl with a small boy tied to her back by fabric.",
+        "A young boy giving his brother a piggyback ride"
+      ],
+      "query_vs_top1_captions": 0.897,
+      "query_vs_target_other_captions": 0.915
+    },
+    {
+      "query": "A male volleyball player in red trunks tries to block the shot of the opposing player during a professional volleyball game.",
+      "target_id": 12,
+      "top1_id": 970,
+      "target_rank": 7.0,
+      "top1_captions": [
+        "A woman dressed in a red bikini is jumping up in the sand to reach the volleyball hitting it with the palm of her hand while people in the arena watch.",
+        "A woman in a red bikini jumping to hit a ball while playing volleyball at a beach.",
+        "A woman in a serving motion playing beach volleyball.",
+        "A female beach volleyball player serving the ball.",
+        "A volleyball player hitting a ball on the beach."
+      ],
+      "query_vs_top1_captions": 0.788,
+      "query_vs_target_other_captions": 0.764
+    },
+    {
+      "query": "Men playing volleyball, with one player missing the ball but hands still in the air.",
+      "target_id": 12,
+      "top1_id": 935,
+      "target_rank": 4.0,
+      "top1_captions": [
+        "A team plays ball in the sand as a few spectators look on from the stands.",
+        "Two teams of boys playing football in the sand.",
+        "The team of men are playing a game in the sand.",
+        "A group of men playing a game of rugby.",
+        "Young men playing football."
+      ],
+      "query_vs_top1_captions": 0.815,
+      "query_vs_target_other_captions": 0.885
+    },
+    {
+      "query": "A group of spectators watch a men's sand volleyball game.",
+      "target_id": 12,
+      "top1_id": 497,
+      "target_rank": 7.0,
+      "top1_captions": [
+        "Four people are playing football by a body of water in partly cloudy weather.",
+        "Some people are kicking a white ball on a beach.",
+        "Four people are playing soccer on a beach.",
+        "A group of people playing on a beach.",
+        "Some boys playing soccer in the sand"
+      ],
+      "query_vs_top1_captions": 0.721,
+      "query_vs_target_other_captions": 0.794
+    },
+    {
+      "query": "Volleyball players compete on a sunny day at the beach.",
+      "target_id": 12,
+      "top1_id": 497,
+      "target_rank": 3.0,
+      "top1_captions": [
+        "Four people are playing football by a body of water in partly cloudy weather.",
+        "Some people are kicking a white ball on a beach.",
+        "Four people are playing soccer on a beach.",
+        "A group of people playing on a beach.",
+        "Some boys playing soccer in the sand"
+      ],
+      "query_vs_top1_captions": 0.786,
+      "query_vs_target_other_captions": 0.841
+    },
+    {
+      "query": "Men playing volleyball in the sand.",
+      "target_id": 12,
+      "top1_id": 497,
+      "target_rank": 2.0,
+      "top1_captions": [
+        "Four people are playing football by a body of water in partly cloudy weather.",
+        "Some people are kicking a white ball on a beach.",
+        "Four people are playing soccer on a beach.",
+        "A group of people playing on a beach.",
+        "Some boys playing soccer in the sand"
+      ],
+      "query_vs_top1_captions": 0.884,
+      "query_vs_target_other_captions": 0.885
+    },
+    {
+      "query": "Woman wearing a yellow hat, pink shirt, and red apron is holding food in a kitchen.",
+      "target_id": 13,
+      "top1_id": 995,
+      "target_rank": 2.0,
+      "top1_captions": [
+        "There is lady with the white apron has an utensil standing over a wok, a man in blue shorts and blue shirt sitting down, a person in a pink shirt and others are in the background all in one place.",
+        "A lady attired in an apron stands over a kettle, preparing food, while patrons sit, chat, and dine in the background.",
+        "Woman with white apron cooks food, large group of people sitting at tables behind her.",
+        "A hispanic woman is using a outdoors wok to cook.",
+        "An Asian woman is cooking in an outdoor kitchen."
+      ],
+      "query_vs_top1_captions": 0.648,
+      "query_vs_target_other_captions": 0.719
+    },
+    {
+      "query": "Employee in pink shirt smiles for camera inside a restaurant kitchen.",
+      "target_id": 13,
+      "top1_id": 101,
+      "target_rank": 8.0,
+      "top1_captions": [
+        "A woman with a black shirt and tan apron is standing behind a counter in a restaurant.",
+        "A female barista dressed in black is making coffee behind a counter.",
+        "A girl in a black shirt is smiling as she works behind a bar.",
+        "A happy woman is preparing a refreshment at a coffee shop.",
+        "A young woman is working in a kitchen."
+      ],
+      "query_vs_top1_captions": 0.697,
+      "query_vs_target_other_captions": 0.637
+    },
+    {
+      "query": "A woman holding a bowl of food in a kitchen.",
+      "target_id": 13,
+      "top1_id": 995,
+      "target_rank": 7.0,
+      "top1_captions": [
+        "There is lady with the white apron has an utensil standing over a wok, a man in blue shorts and blue shirt sitting down, a person in a pink shirt and others are in the background all in one place.",
+        "A lady attired in an apron stands over a kettle, preparing food, while patrons sit, chat, and dine in the background.",
+        "Woman with white apron cooks food, large group of people sitting at tables behind her.",
+        "A hispanic woman is using a outdoors wok to cook.",
+        "An Asian woman is cooking in an outdoor kitchen."
+      ],
+      "query_vs_top1_captions": 0.727,
+      "query_vs_target_other_captions": 0.785
+    },
+    {
+      "query": "Women in store happily holding some food.",
+      "target_id": 13,
+      "top1_id": 525,
+      "target_rank": 27.0,
+      "top1_captions": [
+        "Elderly woman with green sweater picking out produce in outdoor market.",
+        "An older lady in a green sweater picks out vegetables.",
+        "An old woman is selling produce at a farmer's market.",
+        "An old woman is choosing fresh herbs at the market.",
+        "An old woman selling fresh spices."
+      ],
+      "query_vs_top1_captions": 0.727,
+      "query_vs_target_other_captions": 0.785
+    },
+    {
+      "query": "An Asian man in spectacles and a t-shirt preparing some food.",
+      "target_id": 14,
+      "top1_id": 165,
+      "target_rank": 20.0,
+      "top1_captions": [
+        "An Asian man in a green uniform shirt with a white speckled headband is using a torch to cook food in a restaurant.",
+        "A man, wearing a green shirt, is cooking food in a restaurant.",
+        "Two men dressed in green are preparing food in a restaurant.",
+        "A check with a green shirt uses a blowtorch on some food.",
+        "Two men cooking fast food."
+      ],
+      "query_vs_top1_captions": 0.748,
+      "query_vs_target_other_captions": 0.682
+    },
+    {
+      "query": "A man working diligently while sitting at a table.",
+      "target_id": 14,
+      "top1_id": 147,
+      "target_rank": 9.0,
+      "top1_captions": [
+        "A chinese man wearing glasses sitting on a chair holding a green beverage.",
+        "A man in a white shirt doing some kind of work on a street.",
+        "A man prepares his local stand for the days business.",
+        "A man sits on a small chair on a sidewalk.",
+        "This man is at work on the street."
+      ],
+      "query_vs_top1_captions": 0.809,
+      "query_vs_target_other_captions": 0.888
+    },
+    {
+      "query": "A man is sharpening a knife.",
+      "target_id": 14,
+      "top1_id": 147,
+      "target_rank": 2.0,
+      "top1_captions": [
+        "A chinese man wearing glasses sitting on a chair holding a green beverage.",
+        "A man in a white shirt doing some kind of work on a street.",
+        "A man prepares his local stand for the days business.",
+        "A man sits on a small chair on a sidewalk.",
+        "This man is at work on the street."
+      ],
+      "query_vs_top1_captions": 0.801,
+      "query_vs_target_other_captions": 0.805
+    },
+    {
+      "query": "Three rock climbers are posing on big rocks.",
+      "target_id": 15,
+      "top1_id": 703,
+      "target_rank": 13.0,
+      "top1_captions": [
+        "Two men are climbing up a steep rock face with moss growing out of it.",
+        "Two people climb a sheer cliff face on a clear day.",
+        "Two individual climbing up a steep mountain.",
+        "Nice view of a guy climbing a cliff.",
+        "2 men going up a mountainside."
+      ],
+      "query_vs_top1_captions": 0.722,
+      "query_vs_target_other_captions": 0.654
+    },
+    {
+      "query": "A couple with sunglasses are laying on the beach.",
+      "target_id": 17,
+      "top1_id": 814,
+      "target_rank": 2.0,
+      "top1_captions": [
+        "A woman with a dog sitting on a bench near the ocean.",
+        "A woman and a dog sit on a bench in front of a beach.",
+        "A woman and a dog sit on a white bench near a beach.",
+        "A woman in a swimsuit sitting on a bench with a dog.",
+        "White bench looking out onto the ocean with dog."
+      ],
+      "query_vs_top1_captions": 0.731,
+      "query_vs_target_other_captions": 0.825
+    },
+    {
+      "query": "A woman standing with 3 other people in a store with two tables, some shelves with coffee and tea for sale, and a refrigerated drink case.",
+      "target_id": 18,
+      "top1_id": 101,
+      "target_rank": 5.0,
+      "top1_captions": [
+        "A woman with a black shirt and tan apron is standing behind a counter in a restaurant.",
+        "A female barista dressed in black is making coffee behind a counter.",
+        "A girl in a black shirt is smiling as she works behind a bar.",
+        "A happy woman is preparing a refreshment at a coffee shop.",
+        "A young woman is working in a kitchen."
+      ],
+      "query_vs_top1_captions": 0.715,
+      "query_vs_target_other_captions": 0.675
+    }
+  ],
+  "categories": [
+    [
+      "all queries",
+      5000,
+      0.5884,
+      [
+        0.56558,
+        0.6078
+      ],
+      0.9008
+    ],
+    [
+      "counting",
+      1479,
+      0.5753887762001352,
+      [
+        0.5389738876051496,
+        0.6098580987901961
+      ],
+      0.8951994590939825
+    ],
+    [
+      "colour",
+      1625,
+      0.6387692307692308,
+      [
+        0.6075399036787048,
+        0.6687486280423702
+      ],
+      0.92
+    ],
+    [
+      "spatial",
+      788,
+      0.5977157360406091,
+      [
+        0.5608831607618774,
+        0.6367136967230671
+      ],
+      0.8972081218274112
+    ],
+    [
+      "negation",
+      35,
+      0.8,
+      [
+        0.6571428571428571,
+        0.9166666666666666
+      ],
+      0.9428571428571428
+    ],
+    [
+      "action",
+      3662,
+      0.5895685417804478,
+      [
+        0.5675582125059737,
+        0.6135340991450431
+      ],
+      0.8959584926269798
+    ],
+    [
+      "length 0-8 words",
+      1161,
+      0.5107665805340224,
+      [
+        0.47479053861499,
+        0.5449187470560527
+      ],
+      0.8423772609819121
+    ],
+    [
+      "length 9-12 words",
+      1828,
+      0.5902625820568927,
+      [
+        0.5612517520030341,
+        0.618529458479635
+      ],
+      0.9086433260393874
+    ],
+    [
+      "length 13-17 words",
+      1339,
+      0.6064227035100822,
+      [
+        0.5735800624837992,
+        0.6378666604899841
+      ],
+      0.9208364451082898
+    ],
+    [
+      "length 18-99 words",
+      672,
+      0.6815476190476191,
+      [
+        0.638505110451698,
+        0.726356377576927
+      ],
+      0.9404761904761905
+    ]
+  ],
+  "report": {
+    "title": "Hard negatives and failure analysis (CLIP ViT-B/32, Flickr30k test T\u2192I)",
+    "description": "2058 of 5000 queries miss at rank 1; 59.8% of those have the target in the top 5 (near misses). For 499 failures (24.2%) the wrongly top-ranked image has a human caption at least as similar to the query as the target's own other captions \u2014 i.e. the 'hard negative' is plausibly also a correct answer that Flickr30k's one-image-per-caption labels count as wrong. Category R@1 uses keyword heuristics; categories overlap.",
+    "tables": [
+      {
+        "title": "R@1 by query type",
+        "columns": [
+          "Query category",
+          "Queries",
+          "R@1",
+          "R@1 95% CI",
+          "R@10"
+        ],
+        "rows": [
+          [
+            "all queries",
+            5000,
+            0.5884,
+            [
+              0.56558,
+              0.6078
+            ],
+            0.9008
+          ],
+          [
+            "counting",
+            1479,
+            0.5753887762001352,
+            [
+              0.5389738876051496,
+              0.6098580987901961
+            ],
+            0.8951994590939825
+          ],
+          [
+            "colour",
+            1625,
+            0.6387692307692308,
+            [
+              0.6075399036787048,
+              0.6687486280423702
+            ],
+            0.92
+          ],
+          [
+            "spatial",
+            788,
+            0.5977157360406091,
+            [
+              0.5608831607618774,
+              0.6367136967230671
+            ],
+            0.8972081218274112
+          ],
+          [
+            "negation",
+            35,
+            0.8,
+            [
+              0.6571428571428571,
+              0.9166666666666666
+            ],
+            0.9428571428571428
+          ],
+          [
+            "action",
+            3662,
+            0.5895685417804478,
+            [
+              0.5675582125059737,
+              0.6135340991450431
+            ],
+            0.8959584926269798
+          ],
+          [
+            "length 0-8 words",
+            1161,
+            0.5107665805340224,
+            [
+              0.47479053861499,
+              0.5449187470560527
+            ],
+            0.8423772609819121
+          ],
+          [
+            "length 9-12 words",
+            1828,
+            0.5902625820568927,
+            [
+              0.5612517520030341,
+              0.618529458479635
+            ],
+            0.9086433260393874
+          ],
+          [
+            "length 13-17 words",
+            1339,
+            0.6064227035100822,
+            [
+              0.5735800624837992,
+              0.6378666604899841
+            ],
+            0.9208364451082898
+          ],
+          [
+            "length 18-99 words",
+            672,
+            0.6815476190476191,
+            [
+              0.638505110451698,
+              0.726356377576927
+            ],
+            0.9404761904761905
+          ]
+        ],
+        "notes": "",
+        "highlight_best": []
+      },
+      {
+        "title": "Example failures",
+        "columns": [
+          "Query",
+          "Target rank",
+          "Top-1 image's first caption",
+          "sim(query, top-1 captions)",
+          "sim(query, target's other captions)"
+        ],
+        "rows": [
+          [
+            "The man with pierced ears is wearing glasses and an orange hat.",
+            3.0,
+            "An Asian man in a green uniform shirt with a white speckled headband is using a torch to cook food in a restaurant.",
+            0.602,
+            0.888
+          ],
+          [
+            "A man with gauges and glasses is wearing a Blitz hat.",
+            2.0,
+            "A man smoking a cigarette and wearing a NY baseball cap is looking down at a camera.",
+            0.635,
+            0.734
+          ],
+          [
+            "A black and white dog is running through the grass.",
+            4.0,
+            "Two dogs are fighting over a toy and another dog is chasing them.",
+            0.701,
+            0.913
+          ],
+          [
+            "A dog runs on the green grass near a wooden fence.",
+            4.0,
+            "A brown dog with white paws is trotting through a field of green grass.",
+            0.809,
+            0.786
+          ],
+          [
+            "Girl about to kick a piece of wood in half while karate instructor holds it",
+            6.0,
+            "Several children are practicing martial arts moves in a room with a red floor.",
+            0.8,
+            0.851
+          ],
+          [
+            "A girl kicking a stick that a man is holding in tae kwon do class.",
+            5.0,
+            "The girl with the red belt is kicking a pad that the person in black is holding.",
+            0.848,
+            0.851
+          ],
+          [
+            "A girl in karate uniform breaking a stick with a front kick.",
+            2.0,
+            "A young boy wearing a white tunic, white pants, and a yellow belt is standing on his left leg with his right leg extended in a karate pose.",
+            0.846,
+            0.866
+          ],
+          [
+            "A girl breaking boards by using karate.",
+            3.0,
+            "A young boy wearing a white tunic, white pants, and a yellow belt is standing on his left leg with his right leg extended in a karate pose.",
+            0.825,
+            0.863
+          ],
+          [
+            "Two men on a rooftop while another man stands atop a ladder watching them",
+            2.0,
+            "A man wearing a hat and a white shirt is cleaning windows.",
+            0.825,
+            0.931
+          ],
+          [
+            "Man taking a photograph of a well dressed group of teens.",
+            2.0,
+            "A man in a black hat and blue shirt taking a picture on the side of an urban street.",
+            0.821,
+            0.71
+          ],
+          [
+            "A baseball player in red leaps into the air to avoid a player in blue, who is shortly behind him as he catches the ball, while other blue team members look on in the background.",
+            3.0,
+            "A man in a black shirt and white pants swinging a baseball bat, with a baseball team and spectators in the background.",
+            0.806,
+            0.749
+          ],
+          [
+            "A baseball player coming into home plate with knee held high and the catcher right in front of him waiting for the ball.",
+            4.0,
+            "A man dressed in orange t-shirt is trying to hit a baseball, with a few people looking at them and a keeper behind trying to catch the ball.",
+            0.889,
+            0.917
+          ],
+          [
+            "A baseball player attempting to score a run before the catcher tags the player out.",
+            3.0,
+            "A man dressed in orange t-shirt is trying to hit a baseball, with a few people looking at them and a keeper behind trying to catch the ball.",
+            0.891,
+            0.917
+          ],
+          [
+            "A baseball catcher trying to tag a base runner in a baseball game.",
+            4.0,
+            "The number ten player on the white softball team gets tagged at base by a girl on the other team.",
+            0.869,
+            0.897
+          ],
+          [
+            "A man wearing a hat and a white shirt is cleaning windows.",
+            9.0,
+            "A man in a black hat and blue shirt taking a picture on the side of an urban street.",
+            0.653,
+            0.675
+          ]
+        ],
+        "notes": "",
+        "highlight_best": []
+      }
+    ]
+  }
+}
