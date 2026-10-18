@@ -30,6 +30,8 @@ from visualsearch.eval.metrics import (
 )
 from visualsearch.index.faiss_index import FaissIndex
 
+MAX_DEPTH = 1000
+
 
 @dataclass
 class TaskResult:
@@ -79,7 +81,8 @@ def t2i(ctx: EvalContext, model: str, split: str = "test", distractors: bool = F
     gvecs = ctx.image_vectors(emb, recs)
     texts, targets = ctx.flickr_queries(split)
     qvecs = ctx.text_vectors(emb, [text_template.format(t) for t in texts])
-    depth = depth or len(gids)
+    # Truncating at 1000 changes MRR by < 1/1000 per query and nothing else reported.
+    depth = depth or min(len(gids), MAX_DEPTH)
     ranked, _scores, timing = search_ranked(qvecs, gids, gvecs, depth, index_kind, index_params)
     pq = per_query_from_ranks(ranks_from_lists(ranked, [[t] for t in targets]), clusters=targets)
     return TaskResult(
@@ -201,7 +204,7 @@ def i2i_instance(ctx: EvalContext, model: str, split: str = "test", distractors:
         return emb.embed_images(imgs)
 
     qvecs = store.get_or_compute(keys, compute, chunk=128)
-    ranked, _, timing = search_ranked(qvecs, gids, gvecs, len(gids))
+    ranked, _, timing = search_ranked(qvecs, gids, gvecs, min(len(gids), MAX_DEPTH))
     tids = np.array([r.id for r in targets], dtype=np.int64)
     pq = per_query_from_ranks(ranks_from_lists(ranked, [[t] for t in tids]))
     pq.extra["kind"] = np.array(kinds)

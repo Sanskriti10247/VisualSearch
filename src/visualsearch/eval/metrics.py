@@ -44,14 +44,17 @@ class PerQuery:
 
 
 def ranks_from_scores(scores: np.ndarray, relevant: Sequence[Sequence[int]]) -> list[np.ndarray]:
-    """Exact 1-based ranks of each query's relevant columns in a full score matrix."""
+    """Exact 1-based ranks of each query's relevant columns in a full score matrix.
+
+    rank = 1 + number of items scoring strictly higher (ties resolved
+    optimistically, immaterial for continuous scores). O(G log G) per query.
+    """
     out = []
     for row, rel in zip(scores, relevant):
         rel = np.asarray(rel, dtype=np.int64)
-        rel_scores = row[rel]
-        # rank = 1 + number of items scoring strictly higher (ties resolved optimistically,
-        # which is immaterial for continuous scores).
-        out.append(1 + (row[None, :] > rel_scores[:, None]).sum(1))
+        asc = np.sort(row)
+        higher = len(row) - np.searchsorted(asc, row[rel], side="right")
+        out.append(1 + higher)
     return out
 
 
