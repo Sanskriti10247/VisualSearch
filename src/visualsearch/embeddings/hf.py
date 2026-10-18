@@ -15,6 +15,15 @@ _PREPROC_KEYS = ("do_resize", "size", "resample", "do_center_crop", "crop_size",
 
 
 class _HFEmbedder(Embedder):
+    def _load_kwargs(self) -> dict[str, Any]:
+        # Repos whose pinned revision only has pytorch_model.bin must set
+        # use_safetensors: false, otherwise transformers silently loads an
+        # auto-converted model.safetensors from a PR branch instead of the pin.
+        kw: dict[str, Any] = {"revision": self.spec.revision}
+        if "use_safetensors" in self.spec.params:
+            kw["use_safetensors"] = bool(self.spec.params["use_safetensors"])
+        return kw
+
     @cached_property
     def _config(self):
         from transformers import AutoConfig
@@ -55,8 +64,8 @@ class CLIPEmbedder(_HFEmbedder):
         import torch
         from transformers import AutoTokenizer, CLIPModel
 
-        self.model = CLIPModel.from_pretrained(self.spec.hf_id, revision=self.spec.revision,
-                                               dtype=torch.float32).to(self.device).eval()
+        self.model = CLIPModel.from_pretrained(self.spec.hf_id, dtype=torch.float32,
+                                               **self._load_kwargs()).to(self.device).eval()
         self.tokenizer = AutoTokenizer.from_pretrained(self.spec.hf_id, revision=self.spec.revision)
 
     def _encode_images(self, images: list[Image.Image]) -> np.ndarray:
@@ -103,8 +112,8 @@ class DINOv2Embedder(_HFEmbedder):
 
         if self.spec.pooling not in ("cls", "mean", "cls+mean"):
             raise ValueError(f"unknown pooling '{self.spec.pooling}'")
-        self.model = AutoModel.from_pretrained(self.spec.hf_id, revision=self.spec.revision,
-                                               dtype=torch.float32).to(self.device).eval()
+        self.model = AutoModel.from_pretrained(self.spec.hf_id, dtype=torch.float32,
+                                               **self._load_kwargs()).to(self.device).eval()
 
     def _encode_images(self, images: list[Image.Image]) -> np.ndarray:
         import torch

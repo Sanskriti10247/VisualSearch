@@ -110,35 +110,41 @@ def image_image(ctx: EvalContext) -> dict[str, Any]:
 
 
 def preprocessing(ctx: EvalContext) -> dict[str, Any]:
-    """Centre crop (model default) vs. letterbox padding; and a prompt template."""
+    """Centre crop (model default) vs. letterbox padding; and a prompt template.
+    Δ = paired clustered bootstrap against the default configuration."""
     raw, rows = {}, []
-    for m in ("clip-vit-b32",):
-        for crop in ("center", "pad"):
-            for split in ("val", "test"):
-                r = tasks.t2i(ctx, m, split, crop_mode=crop)
-                raw[f"t2i/{split}/{m}/{crop}"] = r.to_json()
-                rows.append([m, "T→I", split, f"crop_mode={crop}", r.metrics["R@1"],
-                             r.metrics["R@10"], r.metrics["MRR"]])
-        for tmpl in ("a photo of {}",):
-            for split in ("val", "test"):
-                r = tasks.t2i(ctx, m, split, text_template=tmpl)
-                raw[f"t2i/{split}/{m}/template"] = r.to_json()
-                rows.append([m, "T→I", split, f"template='{tmpl}'", r.metrics["R@1"],
-                             r.metrics["R@10"], r.metrics["MRR"]])
+
+    def row(model, task, split, variant, r, base, metric):
+        sig = None if base is None else paired_bootstrap(
+            metric_values(base.per_query, metric), metric_values(r.per_query, metric),
+            base.per_query.clusters)
+        rows.append([model, task, split, variant, r.metrics[metric], r.metrics["MRR"],
+                     "" if sig is None else
+                     f"{100 * sig['diff']:+.2f} [{100 * sig['ci95'][0]:+.2f}, {100 * sig['ci95'][1]:+.2f}] "
+                     f"p={sig['p_value']:.3f}"])
+        raw[f"{task}/{split}/{model}/{variant}"] = {**r.to_json(), "vs_default": sig}
+
+    m = "clip-vit-b32"
+    for split in ("val", "test"):
+        base = tasks.t2i(ctx, m, split)
+        row(m, "T→I R@1", split, "default (centre crop)", base, None, "R@1")
+        row(m, "T→I R@1", split, "crop_mode=pad", tasks.t2i(ctx, m, split, crop_mode="pad"), base, "R@1")
+        row(m, "T→I R@1", split, "template 'a photo of {}'",
+            tasks.t2i(ctx, m, split, text_template="a photo of {}"), base, "R@1")
     for m in ("clip-vit-b32", "dinov2-small"):
-        for crop in ("center", "pad"):
-            r = tasks.i2i_category(ctx, m, "val", crop_mode=crop)
-            raw[f"i2i/{m}/{crop}"] = r.to_json()
-            rows.append([m, "I→I category (mAP in R@1 col.)", "imagewoof val",
-                         f"crop_mode={crop}", r.metrics["mAP"], r.metrics["R@10"], r.metrics["MRR"]])
+        base = tasks.i2i_category(ctx, m, "val")
+        row(m, "I→I mAP", "imagewoof val", "default (centre crop)", base, None, "mAP")
+        row(m, "I→I mAP", "imagewoof val", "crop_mode=pad",
+            tasks.i2i_category(ctx, m, "val", crop_mode="pad"), base, "mAP")
     report = {
         "title": "Preprocessing ablations",
         "description": (
             "CLIP/DINOv2 resize the short side then centre-crop a square, discarding the edges of "
             "wide images. 'pad' letterboxes the full image onto a square canvas (mean colour) "
-            "instead. Also tests prefixing captions with a prompt template."),
-        "tables": [table("Ablations", ["Model", "Task", "Split", "Variant", "R@1 / mAP", "R@10",
-                                       "MRR"], rows)],
+            "instead. Also tests prefixing captions with a prompt template. Δ = paired bootstrap "
+            "vs. the default (clustered by image for T→I), 95% CI and p-value."),
+        "tables": [table("Ablations", ["Model", "Metric", "Split", "Variant", "Value", "MRR",
+                                       "Δ vs default"], rows)],
     }
     save_result(ctx.settings, "preprocessing", {"results": raw}, report)
     return raw

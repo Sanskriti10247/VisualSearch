@@ -11,11 +11,13 @@ models:
     family: clip
     hf_id: openai/clip-vit-base-patch32
     revision: 3d74acf9a28c67741b2f4f2ea7635f0aaf6f0268
+    use_safetensors: false   # pinned revision only ships pytorch_model.bin
     description: "CLIP ViT-B/32 (OpenAI). Shared text-image space; baseline."
   clip-vit-b16:
     family: clip
     hf_id: openai/clip-vit-base-patch16
     revision: 57c216476eefef5ab752ec549e440a49ae4ae5f3
+    use_safetensors: false   # pinned revision only ships pytorch_model.bin
     description: "CLIP ViT-B/16 (OpenAI). Finer patches, ~4.4x image FLOPs of B/32."
   clip-vit-l14:
     family: clip

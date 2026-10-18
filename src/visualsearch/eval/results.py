@@ -70,7 +70,7 @@ def _clean(o: Any) -> Any:
     if isinstance(o, (list, tuple)):
         return [_clean(v) for v in o]
     if isinstance(o, np.generic):
-        return o.item()
+        return _clean(o.item())
     if isinstance(o, np.ndarray):
         return _clean(o.tolist())
     if isinstance(o, float) and not math.isfinite(o):

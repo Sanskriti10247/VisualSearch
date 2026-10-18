@@ -47,7 +47,7 @@ class BlipITMReranker:
 
                 dtype = torch.float16 if self.device == "cuda" else torch.float32
                 self.model = BlipForImageTextRetrieval.from_pretrained(
-                    self.hf_id, revision=self.revision, dtype=dtype).to(self.device).eval()
+                    self.hf_id, revision=self.revision, dtype=dtype, use_safetensors=False).to(self.device).eval()
                 self.processor = BlipProcessor.from_pretrained(self.hf_id, revision=self.revision)
                 self.dtype = dtype
                 self._loaded = True

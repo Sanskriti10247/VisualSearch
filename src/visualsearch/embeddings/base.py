@@ -52,6 +52,10 @@ class ModelSpec:
         return ModelSpec(**d)
 
 
+# Params that only affect *how* weights are loaded, not the resulting vectors.
+LOAD_ONLY_PARAMS = frozenset({"use_safetensors"})
+
+
 def fingerprint(spec: ModelSpec, preprocessing: dict[str, Any], dim: int) -> str:
     """Stable id of a vector space. Changes whenever anything that alters the
     vectors changes: weights revision, pooling, cropping, normalisation or
@@ -59,7 +63,8 @@ def fingerprint(spec: ModelSpec, preprocessing: dict[str, Any], dim: int) -> str
     payload = {
         "family": spec.family, "hf_id": spec.hf_id, "revision": spec.revision,
         "pooling": spec.pooling, "crop_mode": spec.crop_mode, "normalize": spec.normalize,
-        "params": spec.params, "preprocessing": preprocessing, "dim": dim,
+        "params": {k: v for k, v in spec.params.items() if k not in LOAD_ONLY_PARAMS},
+        "preprocessing": preprocessing, "dim": dim,
     }
     blob = json.dumps(payload, sort_keys=True, default=str).encode()
     return hashlib.sha256(blob).hexdigest()[:16]

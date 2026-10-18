@@ -23,13 +23,16 @@ export function checkImageFile(file: File, maxMb: number): string | null {
 /** Query-image picker: drag & drop, click to browse, or paste from clipboard. */
 export function ImageInput({ value, onChange, maxMb, pasteActive, compact }: Props) {
   const inputId = useId();
-  const fileRef = useRef<HTMLInputElement>(null);
   const [error, setError] = useState<string | null>(null);
   const [over, setOver] = useState(false);
 
-  // Revoke object URLs of replaced uploads.
-  useEffect(() => () => {
-    if (value?.kind === "file") URL.revokeObjectURL(value.previewUrl);
+  // Revoke the object URL of an upload once it has been replaced. (Not on
+  // unmount: the parent keeps the image while the user switches modes.)
+  const prev = useRef<QueryImage | null>(value);
+  useEffect(() => {
+    const p = prev.current;
+    if (p && p !== value && p.kind === "file") URL.revokeObjectURL(p.previewUrl);
+    prev.current = value;
   }, [value]);
 
   const accept = (file: File | null | undefined) => {
@@ -98,7 +101,6 @@ export function ImageInput({ value, onChange, maxMb, pasteActive, compact }: Pro
         <span className="hint">Any image type up to {maxMb} MB</span>
       </label>
       <input
-        ref={fileRef}
         id={inputId}
         type="file"
         accept="image/*"
