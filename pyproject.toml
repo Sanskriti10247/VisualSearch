@@ -1,0 +1,61 @@
+[project]
+name = "visualsearch"
+version = "0.1.0"
+description = "Multimodal semantic image retrieval engine (CLIP + DINOv2 + FAISS/Qdrant)"
+readme = "README.md"
+requires-python = ">=3.11,<3.13"
+dependencies = [
+    "torch>=2.4",
+    "transformers>=4.45",
+    "huggingface-hub>=0.25",
+    "safetensors>=0.4",
+    "faiss-cpu>=1.8",
+    "numpy>=1.26",
+    "pillow>=10.4",
+    "fastapi>=0.115",
+    "uvicorn[standard]>=0.30",
+    "python-multipart>=0.0.9",
+    "pydantic>=2.8",
+    "pydantic-settings>=2.4",
+    "requests>=2.32",
+    "psutil>=6.0",
+    "pyyaml>=6.0",
+    "tqdm>=4.66",
+]
+
+[project.optional-dependencies]
+qdrant = ["qdrant-client>=1.11"]
+report = ["matplotlib>=3.9"]
+dev = ["pytest>=8.3", "httpx>=0.27", "ruff>=0.6"]
+
+[project.scripts]
+visualsearch = "visualsearch.cli:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/visualsearch"]
+
+[tool.uv]
+# CPU wheels by default: ~0.8 GB instead of ~5 GB for CUDA builds.
+# For GPU, remove this source mapping (or set UV_INDEX) and reinstall.
+[tool.uv.sources]
+torch = { index = "pytorch-cpu" }
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+    "slow: requires downloading/loading real pretrained models",
+]
+addopts = "-m 'not slow'"
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
