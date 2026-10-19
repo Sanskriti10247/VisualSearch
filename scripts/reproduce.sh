@@ -4,7 +4,7 @@
 #   TORCH=cuda scripts/reproduce.sh     # GPU (default: cpu)
 #   SKIP_DATA=1 scripts/reproduce.sh    # reuse an existing data/ directory
 #
-# Disk: ~5 GB data + ~3.5 GB model weights (HF cache). Time: ~1.5 h on an RTX 4050
+# Disk: ~7 GB data + ~5.4 GB model weights (HF cache). Time: ~1.5 h on an RTX 4050
 # laptop GPU; many hours on CPU (the cross-encoder and ViT-L/14 dominate).
 set -euo pipefail
 cd "$(dirname "$0")/.."

@@ -8,6 +8,31 @@ calibration, fusion and reranking, with a reproducible evaluation suite.
 ![Text search](docs/screenshots/01_text_search.png)
 
 <!-- RESULTS:START -->
+## Results at a glance
+
+All numbers are on held-out test data, with every setting chosen on validation data. Full
+analysis: [docs/REPORT.md](docs/REPORT.md). Generated tables with confidence intervals:
+[docs/REPORT_TABLES.md](docs/REPORT_TABLES.md).
+
+| | Result |
+|---|---|
+| Text→image, Flickr30k-1K, CLIP ViT-B/32 baseline | R@1 **58.8** · R@10 90.1 (matches published zero-shot numbers) |
+| + larger model (CLIP ViT-L/14) | R@1 **64.7** (+5.9, p < 0.001) |
+| + BLIP cross-encoder reranking of the top 20 | R@1 **83.2** (+24.4 over baseline), ~0.5 s/query |
+| Image→image, Imagewoof breeds (mAP) | CLIP B/32 36.8 · CLIP L/14 49.6 · **DINOv2-B 82.5** |
+| Hybrid: breed name + example image (mAP) | best single signal 83.0 → **89.6** (CLIP text + DINOv2-B, z-score fusion) |
+| Hybrid: caption + 20% crop, 31K gallery (R@1) | 24.7 (text) / 74.1 (crop) → **85.3** fused |
+| Exact vs HNSW, 181K vectors | 21 ms → 0.18 ms at 98.4% recall@10 |
+| Filters selecting 1% of images | post-filtering 4.5% recall · HNSW+selector 60% · **planner (exact subset) 100%, 0.25 ms** |
+| Serving latency (GPU, 36K images, exact) | text ~17–26 ms p50 · image upload ~24–35 ms · hybrid ~43 ms |
+
+Things that did **not** help, also reported: letterbox padding (−3.4 R@1), pseudo-relevance
+feedback for text queries (no significant change), mean-pooled DINOv2 features, rank-based (RRF)
+fusion, and post-filtering.
+
+| Search | Hybrid | Compare strategies |
+|---|---|---|
+| ![](docs/screenshots/02_text_search_dogs.png) | ![](docs/screenshots/05_hybrid_search.png) | ![](docs/screenshots/07_compare.png) |
 <!-- RESULTS:END -->
 
 ## Contents
@@ -24,7 +49,8 @@ calibration, fusion and reranking, with a reproducible evaluation suite.
 ## Quick start
 
 Requirements: Python 3.11–3.12 with [uv](https://docs.astral.sh/uv/), Node ≥ 20 for the UI,
-~5 GB disk for data plus ~3.5 GB for model weights. A GPU is optional (see
+~7 GB disk for data (4.3 GB images, the rest thumbnails, embeddings and indexes) plus
+~5.4 GB for all model weights. A GPU is optional (see
 [hardware](#hardware)).
 
 ```bash
@@ -64,7 +90,7 @@ indexes for whatever the catalogue holds on first start. Model weights are cache
 ### Tests
 
 ```bash
-uv run pytest            # 95 fast tests (fake embedder, no downloads), ~20 s
+uv run pytest            # 96 fast tests (fake embedder, no downloads), ~20 s
 uv run pytest -m slow    # real CLIP/DINOv2 checks (dims, normalisation, alignment)
 cd frontend && npm test && npm run typecheck && npm run build
 ```
@@ -140,8 +166,8 @@ provenance. `docs/REPORT_TABLES.md` is generated from those files, never hand-ed
 |---|---|---|
 | CPU | 12-thread laptop CPU (see `results/*.json` → `environment`) | any x86-64 / arm64 |
 | GPU | NVIDIA RTX 4050 Laptop, 6 GB | none: everything runs on CPU (`VS_DEVICE=cpu`), embedding is ~10–20× slower |
-| RAM | 16 GB | 4 GB for serving B/32 + DINOv2-S; 8 GB for the full experiment suite |
-| Disk | ~5 GB data + ~3.5 GB weights | ~0.5 GB with `--distractors 0` and two models |
+| RAM | 16 GB | serving B/32 + DINOv2-S over 36k images measured at 1.8 GB RSS (+0.9 GB VRAM on GPU); allow ~4 GB on CPU-only. 8 GB for the experiment suite |
+| Disk | ~7 GB data + ~5.4 GB weights (all six models) | ~1 GB with `--distractors 0`, no Imagewoof, two models |
 
 ## Limitations
 
@@ -155,7 +181,7 @@ provenance. `docs/REPORT_TABLES.md` is generated from those files, never hand-ed
 - **The hybrid evaluations are constructed tasks** (breed name + exemplar; caption + crop) built
   from real labels, not a composed-retrieval benchmark such as CIRR.
 - **Throughput and latency** are single-machine laptop numbers. The ANN benchmark tops out at
-  ~186k vectors, where exact search is still viable. The embedded Qdrant mode is exact brute force
+  ~181k vectors, where exact search is still viable. The embedded Qdrant mode is exact brute force
   in Python and not representative of a Qdrant server.
 - **Calibrated probabilities** are relative to annotation-based relevance and dataset base rates.
   Read them as a ranking aid, not literal probabilities, especially on your own images.
