@@ -159,6 +159,11 @@ def query_latency(ctx: EvalContext, n: int = 300) -> dict[str, Any]:
         reps = 60 if "cross-encoder" in name else n
         for i in range(5):
             fn(i)
+        # Every query type reuses the same query texts; clear the query-embedding LRU
+        # so each one pays the real embedding cost instead of hitting the cache.
+        for rt in svc.manager.runtimes.values():
+            with rt.query_cache_lock:
+                rt.query_cache.clear()
         samples, stages = [], {}
         for i in range(reps):
             t = time.perf_counter()
@@ -178,7 +183,8 @@ def query_latency(ctx: EvalContext, n: int = 300) -> dict[str, Any]:
             f"In-process SearchEngine, {ctx.settings.index_type} index over the full catalogue "
             f"({status[next(iter(status))]['index']['ntotal']:,} images), models on "
             f"{status[next(iter(status))]['model']['device']}. Excludes HTTP and image decoding of "
-            "uploads; includes query embedding, search, fusion/reranking. Stage medians in ms."),
+            "uploads; includes query embedding (query cache cleared per query type), search, "
+            "fusion/reranking. Stage medians in ms."),
         "tables": [table("Latency", ["Query type", "n", "p50 ms", "p95 ms", "Stage medians (ms)"],
                          rows)],
     }

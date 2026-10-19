@@ -131,7 +131,7 @@ export function Chart({ chart }: { chart: ExperimentChart }) {
                 </g>
               ))}
             <line y1={PH} y2={PH} x2={PW} className="axis" />
-            {chart.x_label && <text x={PW / 2} y={PH + 38} textAnchor="middle" className="axis-label">{chart.x_label}{logX ? " (log)" : ""}</text>}
+            {chart.x_label && <text x={PW / 2} y={PH + 38} textAnchor="middle" className="axis-label">{chart.x_label}{logX && !/\blog\b/i.test(chart.x_label) ? " (log)" : ""}</text>}
             {chart.y_label && (
               <text transform={`translate(${-44},${PH / 2}) rotate(-90)`} textAnchor="middle" className="axis-label">{chart.y_label}</text>
             )}

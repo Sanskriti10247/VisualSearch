@@ -31,6 +31,9 @@ def environment() -> dict[str, Any]:
         "faiss": faiss.__version__,
         "numpy": np.__version__,
         "cuda_available": torch.cuda.is_available(),
+        # Timing context: background load and CPU frequency policy affect latency numbers.
+        "load_average_1_5_15": [round(x, 2) for x in os.getloadavg()],
+        "cpu_governor": _read("/sys/devices/system/cpu/cpu0/cpufreq/scaling_governor"),
     }
     if torch.cuda.is_available():
         env["gpu"] = torch.cuda.get_device_name(0)
@@ -43,6 +46,13 @@ def environment() -> dict[str, Any]:
     except (OSError, subprocess.CalledProcessError):
         pass
     return env
+
+
+def _read(path: str) -> str | None:
+    try:
+        return Path(path).read_text().strip()
+    except OSError:
+        return None
 
 
 def _cpu_name() -> str:

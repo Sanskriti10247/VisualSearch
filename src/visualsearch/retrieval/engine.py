@@ -192,7 +192,10 @@ class SearchEngine:
         t = time.perf_counter()
         q = self.embed_text(model, query)
         timings["embed_query"] = _ms(t)
+        t_f = time.perf_counter()
         allowed = self._resolve_filter(filters, warnings)
+        if allowed is not None:
+            timings["filter"] = _ms(t_f)
         t = time.perf_counter()
         res = self._search(model, q, n_cand, allowed)
         timings["search"] = _ms(t)
@@ -272,7 +275,10 @@ class SearchEngine:
                 if exclude_query:
                     exclude.add(dup.id)
 
+        t_f = time.perf_counter()
         allowed = self._resolve_filter(filters, warnings)
+        if allowed is not None:
+            timings["filter"] = _ms(t_f)
         n_cand = (max(k, candidates or self.settings.rerank_candidates) if rerank != "none" else k)
         t = time.perf_counter()
         res = self._search(model, q, n_cand + len(exclude), allowed)
@@ -331,7 +337,10 @@ class SearchEngine:
         qt = self.embed_text(text_model, text)
         qi = self.embed_image(image_model, image, image_id)
         timings["embed_query"] = _ms(t)
+        t_f = time.perf_counter()
         allowed = self._resolve_filter(filters, warnings)
+        if allowed is not None:
+            timings["filter"] = _ms(t_f)
         exclude = {int(image_id)} if (image_id is not None and exclude_query) else set()
         if query_sha256 and exclude_query:
             dup = self.catalog.by_sha(query_sha256)
