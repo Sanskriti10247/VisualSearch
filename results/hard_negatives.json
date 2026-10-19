@@ -1,6 +1,6 @@
 {
   "name": "hard_negatives",
-  "generated_at": "2026-10-18T22:01:44+00:00",
+  "generated_at": "2026-10-19T00:41:03+00:00",
   "seed": 1234,
   "environment": {
     "python": "3.12.12",
@@ -12,9 +12,15 @@
     "faiss": "1.15.1",
     "numpy": "2.5.4",
     "cuda_available": true,
+    "load_average_1_5_15": [
+      9.25,
+      8.0,
+      8.5
+    ],
+    "cpu_governor": "powersave",
     "gpu": "NVIDIA GeForce RTX 4050 Laptop GPU",
     "gpu_memory_gb": 6.1,
-    "git_commit": "78bb563",
+    "git_commit": "5284876",
     "git_dirty": false
   },
   "datasets": {

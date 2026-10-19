@@ -1,6 +1,6 @@
 {
   "name": "preprocessing",
-  "generated_at": "2026-10-18T22:02:12+00:00",
+  "generated_at": "2026-10-19T00:40:54+00:00",
   "seed": 1234,
   "environment": {
     "python": "3.12.12",
@@ -12,9 +12,15 @@
     "faiss": "1.15.1",
     "numpy": "2.5.4",
     "cuda_available": true,
+    "load_average_1_5_15": [
+      8.87,
+      7.89,
+      8.47
+    ],
+    "cpu_governor": "powersave",
     "gpu": "NVIDIA GeForce RTX 4050 Laptop GPU",
     "gpu_memory_gb": 6.1,
-    "git_commit": "78bb563",
+    "git_commit": "5284876",
     "git_dirty": false
   },
   "datasets": {
@@ -88,9 +94,9 @@
         }
       },
       "timings": {
-        "index_build_s": 0.0022380239970516413,
-        "search_total_s": 0.6346962280003936,
-        "search_per_query_ms": 0.125186632741695,
+        "index_build_s": 0.013634980001370423,
+        "search_total_s": 0.3849576740030898,
+        "search_per_query_ms": 0.07592853530632934,
         "index_stats": {
           "kind": "flat",
           "dim": 512,
@@ -149,9 +155,9 @@
         }
       },
       "timings": {
-        "index_build_s": 0.0018363159979344346,
-        "search_total_s": 0.6808057240050402,
-        "search_per_query_ms": 0.1342812078905405,
+        "index_build_s": 0.001415683000232093,
+        "search_total_s": 0.3638333010021597,
+        "search_per_query_ms": 0.07176199230811829,
         "index_stats": {
           "kind": "flat",
           "dim": 512,
@@ -215,9 +221,9 @@
         }
       },
       "timings": {
-        "index_build_s": 0.0017679519951343536,
-        "search_total_s": 0.6917838730005315,
-        "search_per_query_ms": 0.13644652327426657,
+        "index_build_s": 0.002324382003280334,
+        "search_total_s": 0.43613122800161364,
+        "search_per_query_ms": 0.08602193846185674,
         "index_stats": {
           "kind": "flat",
           "dim": 512,
@@ -281,9 +287,9 @@
         }
       },
       "timings": {
-        "index_build_s": 0.002425587001198437,
-        "search_total_s": 0.5541431069941609,
-        "search_per_query_ms": 0.11082862139883218,
+        "index_build_s": 0.001842012003180571,
+        "search_total_s": 0.5747371230027056,
+        "search_per_query_ms": 0.11494742460054112,
         "index_stats": {
           "kind": "flat",
           "dim": 512,
@@ -342,9 +348,9 @@
         }
       },
       "timings": {
-        "index_build_s": 0.0018250970024382696,
-        "search_total_s": 0.5332760670062271,
-        "search_per_query_ms": 0.10665521340124542,
+        "index_build_s": 0.0020781720013474114,
+        "search_total_s": 0.32228168100118637,
+        "search_per_query_ms": 0.06445633620023727,
         "index_stats": {
           "kind": "flat",
           "dim": 512,
@@ -408,9 +414,9 @@
         }
       },
       "timings": {
-        "index_build_s": 0.002345664004678838,
-        "search_total_s": 0.4856284359993879,
-        "search_per_query_ms": 0.09712568719987758,
+        "index_build_s": 0.0017806120013119653,
+        "search_total_s": 0.2865190770025947,
+        "search_per_query_ms": 0.057303815400518945,
         "index_stats": {
           "kind": "flat",
           "dim": 512,
@@ -488,9 +494,9 @@
         }
       },
       "timings": {
-        "index_build_s": 0.005393756000557914,
-        "search_total_s": 1.4131040759966709,
-        "search_per_query_ms": 0.35975154684232963,
+        "index_build_s": 0.009049522996065207,
+        "search_total_s": 1.4759033099981025,
+        "search_per_query_ms": 0.37573913187324404,
         "index_stats": {
           "kind": "flat",
           "dim": 512,
@@ -563,9 +569,9 @@
         }
       },
       "timings": {
-        "index_build_s": 0.006233184001757763,
-        "search_total_s": 1.3764653430043836,
-        "search_per_query_ms": 0.3504239671599755,
+        "index_build_s": 0.006036152000888251,
+        "search_total_s": 0.9716527530035819,
+        "search_per_query_ms": 0.24736577214958805,
         "index_stats": {
           "kind": "flat",
           "dim": 512,
@@ -643,9 +649,9 @@
         }
       },
       "timings": {
-        "index_build_s": 0.006606221002584789,
-        "search_total_s": 1.0775007119955262,
-        "search_per_query_ms": 0.2743128085528325,
+        "index_build_s": 0.006730158995196689,
+        "search_total_s": 0.82424389100197,
+        "search_per_query_ms": 0.20983805779072556,
         "index_stats": {
           "kind": "flat",
           "dim": 384,
@@ -718,9 +724,9 @@
         }
       },
       "timings": {
-        "index_build_s": 0.007770686999720056,
-        "search_total_s": 1.1118256589979865,
-        "search_per_query_ms": 0.28305133884877454,
+        "index_build_s": 0.00626334099797532,
+        "search_total_s": 0.6606378049982595,
+        "search_per_query_ms": 0.16818681389976056,
         "index_stats": {
           "kind": "flat",
           "dim": 384,

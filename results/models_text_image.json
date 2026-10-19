@@ -1,6 +1,6 @@
 {
   "name": "models_text_image",
-  "generated_at": "2026-10-18T22:55:51+00:00",
+  "generated_at": "2026-10-19T00:39:36+00:00",
   "seed": 1234,
   "environment": {
     "python": "3.12.12",
@@ -12,10 +12,16 @@
     "faiss": "1.15.1",
     "numpy": "2.5.4",
     "cuda_available": true,
+    "load_average_1_5_15": [
+      7.59,
+      7.3,
+      8.34
+    ],
+    "cpu_governor": "powersave",
     "gpu": "NVIDIA GeForce RTX 4050 Laptop GPU",
     "gpu_memory_gb": 6.1,
-    "git_commit": "6ae6368",
-    "git_dirty": true
+    "git_commit": "5284876",
+    "git_dirty": false
   },
   "datasets": {
     "flickr30k": {
@@ -88,9 +94,9 @@
         }
       },
       "timings": {
-        "index_build_s": 0.013034556002821773,
-        "search_total_s": 0.37504765500489157,
-        "search_per_query_ms": 0.07500953100097832,
+        "index_build_s": 0.01481111699831672,
+        "search_total_s": 0.39802187099849107,
+        "search_per_query_ms": 0.07960437419969821,
         "index_stats": {
           "kind": "flat",
           "dim": 512,
@@ -146,9 +152,9 @@
         }
       },
       "timings": {
-        "index_build_s": 0.0030738900022697635,
-        "search_total_s": 0.5318809449963737,
-        "search_per_query_ms": 0.10637618899927474,
+        "index_build_s": 0.0017280320025747642,
+        "search_total_s": 0.3794373929995345,
+        "search_per_query_ms": 0.0758874785999069,
         "index_stats": {
           "kind": "flat",
           "dim": 512,
@@ -212,9 +218,9 @@
         }
       },
       "timings": {
-        "index_build_s": 0.0017857869970612228,
-        "search_total_s": 0.41187532599724364,
-        "search_per_query_ms": 0.08237506519944873,
+        "index_build_s": 0.003736125996510964,
+        "search_total_s": 0.43251075399894034,
+        "search_per_query_ms": 0.08650215079978807,
         "index_stats": {
           "kind": "flat",
           "dim": 768,
@@ -278,9 +284,9 @@
         }
       },
       "timings": {
-        "index_build_s": 0.1603520189964911,
-        "search_total_s": 5.812578658005805,
-        "search_per_query_ms": 1.162515731601161,
+        "index_build_s": 0.6126433099998394,
+        "search_total_s": 4.476256895002734,
+        "search_per_query_ms": 0.8952513790005469,
         "index_stats": {
           "kind": "flat",
           "dim": 512,
@@ -336,9 +342,9 @@
         }
       },
       "timings": {
-        "index_build_s": 0.23195426399615826,
-        "search_total_s": 5.94499538999662,
-        "search_per_query_ms": 1.188999077999324,
+        "index_build_s": 0.3287395869992906,
+        "search_total_s": 4.203541262999352,
+        "search_per_query_ms": 0.8407082525998704,
         "index_stats": {
           "kind": "flat",
           "dim": 512,
@@ -402,9 +408,9 @@
         }
       },
       "timings": {
-        "index_build_s": 0.3696212110007764,
-        "search_total_s": 6.612257359003706,
-        "search_per_query_ms": 1.3224514718007412,
+        "index_build_s": 0.5673155559998122,
+        "search_total_s": 4.412337050998758,
+        "search_per_query_ms": 0.8824674101997516,
         "index_stats": {
           "kind": "flat",
           "dim": 768,
@@ -469,9 +475,9 @@
         }
       },
       "timings": {
-        "index_build_s": 0.006459582000388764,
-        "search_total_s": 0.2997120250001899,
-        "search_per_query_ms": 0.2997120250001899,
+        "index_build_s": 0.00870313799532596,
+        "search_total_s": 0.22450303699588403,
+        "search_per_query_ms": 0.22450303699588403,
         "index_stats": {
           "kind": "flat",
           "dim": 512,
@@ -528,9 +534,9 @@
         }
       },
       "timings": {
-        "index_build_s": 0.0074592070013750345,
-        "search_total_s": 0.3086293669985025,
-        "search_per_query_ms": 0.3086293669985025,
+        "index_build_s": 0.007067129001370631,
+        "search_total_s": 0.26462051599810366,
+        "search_per_query_ms": 0.26462051599810366,
         "index_stats": {
           "kind": "flat",
           "dim": 512,
@@ -587,9 +593,9 @@
         }
       },
       "timings": {
-        "index_build_s": 0.04034972000226844,
-        "search_total_s": 0.3894003130044439,
-        "search_per_query_ms": 0.3894003130044439,
+        "index_build_s": 0.04600634799862746,
+        "search_total_s": 0.3811518069996964,
+        "search_per_query_ms": 0.3811518069996964,
         "index_stats": {
           "kind": "flat",
           "dim": 768,

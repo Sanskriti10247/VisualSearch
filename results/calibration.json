@@ -1,6 +1,6 @@
 {
   "name": "calibration",
-  "generated_at": "2026-10-18T22:55:10+00:00",
+  "generated_at": "2026-10-19T00:38:56+00:00",
   "seed": 1234,
   "environment": {
     "python": "3.12.12",
@@ -12,10 +12,16 @@
     "faiss": "1.15.1",
     "numpy": "2.5.4",
     "cuda_available": true,
+    "load_average_1_5_15": [
+      6.11,
+      7.04,
+      8.31
+    ],
+    "cpu_governor": "powersave",
     "gpu": "NVIDIA GeForce RTX 4050 Laptop GPU",
     "gpu_memory_gb": 6.1,
-    "git_commit": "6ae6368",
-    "git_dirty": true
+    "git_commit": "5284876",
+    "git_dirty": false
   },
   "datasets": {
     "flickr30k": {

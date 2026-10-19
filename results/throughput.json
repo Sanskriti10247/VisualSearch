@@ -1,0 +1,1239 @@
+{
+  "name": "throughput",
+  "generated_at": "2026-10-19T00:22:50+00:00",
+  "seed": 1234,
+  "environment": {
+    "python": "3.12.12",
+    "platform": "Linux-7.2.5-3-omarchy-x86_64-with-glibc2.44",
+    "cpu": "13th Gen Intel(R) Core(TM) i5-13420H",
+    "cpu_count": 12,
+    "torch": "2.14.1+cu130",
+    "transformers": "5.20.1",
+    "faiss": "1.15.1",
+    "numpy": "2.5.4",
+    "cuda_available": true,
+    "gpu": "NVIDIA GeForce RTX 4050 Laptop GPU",
+    "gpu_memory_gb": 6.1,
+    "git_commit": "311aa5e",
+    "git_dirty": false
+  },
+  "datasets": {
+    "flickr30k": {
+      "source": {
+        "repo": "nlphuji/flickr30k",
+        "revision": "2b239befc81b6e3f035ce6bd52f5f4d60f5625f7",
+        "annotations_sha256": "395990db603ab8bafd5c7ab2746b22058bb1e75b78b3eb56ad755931364ac137",
+        "split_scheme": "karpathy"
+      },
+      "seed": 1234,
+      "catalog_counts": {
+        "train": 28994,
+        "val": 1014,
+        "test": 1000
+      },
+      "distractor_filenames_sha256": "4263c74a397679e135e18ec42b4cfe0d31d48846f02a452f70914a06f32a88f4"
+    },
+    "imagewoof": {
+      "source": {
+        "url": "https://s3.amazonaws.com/fast-ai-imageclas/imagewoof2-320.tgz",
+        "archive_sha256": "7db6120fdb9ae079e26346f89e7b00d7f184f8137791609b97fd0405d3f92305"
+      },
+      "seed": 1234,
+      "catalog_counts": {
+        "train": 1050,
+        "val": 3928
+      }
+    }
+  },
+  "rows": [
+    {
+      "device": "cuda",
+      "model": "clip-vit-b32",
+      "batch_size": 1,
+      "modality": "image",
+      "items_per_s": 148.756510710916,
+      "ms_per_item": 6.722394839869139,
+      "peak_mem_mb": 616.690688,
+      "load_s": 4.175932567995915,
+      "n": 256
+    },
+    {
+      "device": "cuda",
+      "model": "clip-vit-b32",
+      "batch_size": 8,
+      "modality": "image",
+      "items_per_s": 222.26329115369234,
+      "ms_per_item": 4.499168507805962,
+      "peak_mem_mb": 641.319936,
+      "load_s": 4.175932567995915,
+      "n": 256
+    },
+    {
+      "device": "cuda",
+      "model": "clip-vit-b32",
+      "batch_size": 32,
+      "modality": "image",
+      "items_per_s": 213.03786596810852,
+      "ms_per_item": 4.69400120704222,
+      "peak_mem_mb": 711.54176,
+      "load_s": 4.175932567995915,
+      "n": 256
+    },
+    {
+      "device": "cuda",
+      "model": "clip-vit-b32",
+      "batch_size": 64,
+      "modality": "image",
+      "items_per_s": 207.98242206676986,
+      "ms_per_item": 4.8080986367153855,
+      "peak_mem_mb": 811.025408,
+      "load_s": 4.175932567995915,
+      "n": 256
+    },
+    {
+      "device": "cuda",
+      "model": "clip-vit-b32",
+      "batch_size": 1,
+      "modality": "text",
+      "items_per_s": 386.21241006064344,
+      "ms_per_item": 2.5892487500414063
+    },
+    {
+      "device": "cuda",
+      "model": "clip-vit-b32",
+      "batch_size": 64,
+      "modality": "text",
+      "items_per_s": 1305.0910325438524,
+      "ms_per_item": 0.7662300751931639
+    },
+    {
+      "device": "cuda",
+      "model": "clip-vit-b32",
+      "batch_size": 256,
+      "modality": "text",
+      "items_per_s": 1062.9617081028443,
+      "ms_per_item": 0.9407676611274951
+    },
+    {
+      "device": "cuda",
+      "model": "clip-vit-b32",
+      "params_m": 151.277313,
+      "load_s": 4.175932567995915
+    },
+    {
+      "device": "cuda",
+      "model": "clip-vit-b16",
+      "batch_size": 1,
+      "modality": "image",
+      "items_per_s": 78.23979880614395,
+      "ms_per_item": 12.781218960924434,
+      "peak_mem_mb": 619.781632,
+      "load_s": 1.3511280970051303,
+      "n": 256
+    },
+    {
+      "device": "cuda",
+      "model": "clip-vit-b16",
+      "batch_size": 8,
+      "modality": "image",
+      "items_per_s": 93.37183376968338,
+      "ms_per_item": 10.709867843729626,
+      "peak_mem_mb": 691.777024,
+      "load_s": 1.3511280970051303,
+      "n": 256
+    },
+    {
+      "device": "cuda",
+      "model": "clip-vit-b16",
+      "batch_size": 32,
+      "modality": "image",
+      "items_per_s": 89.41282503836399,
+      "ms_per_item": 11.184077894540678,
+      "peak_mem_mb": 939.011584,
+      "load_s": 1.3511280970051303,
+      "n": 256
+    },
+    {
+      "device": "cuda",
+      "model": "clip-vit-b16",
+      "batch_size": 64,
+      "modality": "image",
+      "items_per_s": 88.91651852364554,
+      "ms_per_item": 11.246504210959074,
+      "peak_mem_mb": 1268.788736,
+      "load_s": 1.3511280970051303,
+      "n": 256
+    },
+    {
+      "device": "cuda",
+      "model": "clip-vit-b16",
+      "batch_size": 1,
+      "modality": "text",
+      "items_per_s": 409.7712174951027,
+      "ms_per_item": 2.440386140619921
+    },
+    {
+      "device": "cuda",
+      "model": "clip-vit-b16",
+      "batch_size": 64,
+      "modality": "text",
+      "items_per_s": 1272.2286548716315,
+      "ms_per_item": 0.786022226563432
+    },
+    {
+      "device": "cuda",
+      "model": "clip-vit-b16",
+      "batch_size": 256,
+      "modality": "text",
+      "items_per_s": 1052.7086372638767,
+      "ms_per_item": 0.9499304599600578
+    },
+    {
+      "device": "cuda",
+      "model": "clip-vit-b16",
+      "params_m": 149.620737,
+      "load_s": 1.3511280970051303
+    },
+    {
+      "device": "cuda",
+      "model": "clip-vit-l14",
+      "batch_size": 1,
+      "modality": "image",
+      "items_per_s": 20.532898541855964,
+      "ms_per_item": 48.70232996873369,
+      "peak_mem_mb": 1741.476864,
+      "load_s": 1.7879312140066759,
+      "n": 256
+    },
+    {
+      "device": "cuda",
+      "model": "clip-vit-l14",
+      "batch_size": 8,
+      "modality": "image",
+      "items_per_s": 25.011549859877434,
+      "ms_per_item": 39.98152875780647,
+      "peak_mem_mb": 1859.462144,
+      "load_s": 1.7879312140066759,
+      "n": 256
+    },
+    {
+      "device": "cuda",
+      "model": "clip-vit-l14",
+      "batch_size": 32,
+      "modality": "image",
+      "items_per_s": 24.483653158737173,
+      "ms_per_item": 40.84357810154415,
+      "peak_mem_mb": 2278.13888,
+      "load_s": 1.7879312140066759,
+      "n": 256
+    },
+    {
+      "device": "cuda",
+      "model": "clip-vit-l14",
+      "batch_size": 64,
+      "modality": "image",
+      "items_per_s": 24.59591420588966,
+      "ms_per_item": 40.65715921876745,
+      "peak_mem_mb": 2839.520256,
+      "load_s": 1.7879312140066759,
+      "n": 256
+    },
+    {
+      "device": "cuda",
+      "model": "clip-vit-l14",
+      "batch_size": 1,
+      "modality": "text",
+      "items_per_s": 278.1943581250697,
+      "ms_per_item": 3.594609203219079
+    },
+    {
+      "device": "cuda",
+      "model": "clip-vit-l14",
+      "batch_size": 64,
+      "modality": "text",
+      "items_per_s": 637.6334267248387,
+      "ms_per_item": 1.568299210937596
+    },
+    {
+      "device": "cuda",
+      "model": "clip-vit-l14",
+      "batch_size": 256,
+      "modality": "text",
+      "items_per_s": 533.2590589570848,
+      "ms_per_item": 1.8752611572239175
+    },
+    {
+      "device": "cuda",
+      "model": "clip-vit-l14",
+      "params_m": 427.616513,
+      "load_s": 1.7879312140066759
+    },
+    {
+      "device": "cuda",
+      "model": "dinov2-small",
+      "batch_size": 1,
+      "modality": "image",
+      "items_per_s": 124.82076007019023,
+      "ms_per_item": 8.011487828127883,
+      "peak_mem_mb": 104.031744,
+      "load_s": 0.1679831200017361,
+      "n": 256
+    },
+    {
+      "device": "cuda",
+      "model": "dinov2-small",
+      "batch_size": 8,
+      "modality": "image",
+      "items_per_s": 168.7175186152385,
+      "ms_per_item": 5.927066781254098,
+      "peak_mem_mb": 140.770816,
+      "load_s": 0.1679831200017361,
+      "n": 256
+    },
+    {
+      "device": "cuda",
+      "model": "dinov2-small",
+      "batch_size": 32,
+      "modality": "image",
+      "items_per_s": 160.51306516572907,
+      "ms_per_item": 6.230022453109996,
+      "peak_mem_mb": 268.508672,
+      "load_s": 0.1679831200017361,
+      "n": 256
+    },
+    {
+      "device": "cuda",
+      "model": "dinov2-small",
+      "batch_size": 64,
+      "modality": "image",
+      "items_per_s": 145.10102626076787,
+      "ms_per_item": 6.89175001562603,
+      "peak_mem_mb": 439.361024,
+      "load_s": 0.1679831200017361,
+      "n": 256
+    },
+    {
+      "device": "cuda",
+      "model": "dinov2-small",
+      "params_m": 22.056576,
+      "load_s": 0.1679831200017361
+    },
+    {
+      "device": "cuda",
+      "model": "dinov2-base",
+      "batch_size": 1,
+      "modality": "image",
+      "items_per_s": 64.33923720126667,
+      "ms_per_item": 15.542615105488267,
+      "peak_mem_mb": 365.927424,
+      "load_s": 0.30464167799800634,
+      "n": 256
+    },
+    {
+      "device": "cuda",
+      "model": "dinov2-base",
+      "batch_size": 8,
+      "modality": "image",
+      "items_per_s": 75.34420793898286,
+      "ms_per_item": 13.27242036720122,
+      "peak_mem_mb": 435.960832,
+      "load_s": 0.30464167799800634,
+      "n": 256
+    },
+    {
+      "device": "cuda",
+      "model": "dinov2-base",
+      "batch_size": 32,
+      "modality": "image",
+      "items_per_s": 73.08645309038502,
+      "ms_per_item": 13.68242619139437,
+      "peak_mem_mb": 677.788672,
+      "load_s": 0.30464167799800634,
+      "n": 256
+    },
+    {
+      "device": "cuda",
+      "model": "dinov2-base",
+      "batch_size": 64,
+      "modality": "image",
+      "items_per_s": 71.73178162949814,
+      "ms_per_item": 13.940822007810993,
+      "peak_mem_mb": 1000.225792,
+      "load_s": 0.30464167799800634,
+      "n": 256
+    },
+    {
+      "device": "cuda",
+      "model": "dinov2-base",
+      "params_m": 86.58048,
+      "load_s": 0.30464167799800634
+    },
+    {
+      "device": "cpu",
+      "model": "clip-vit-b32",
+      "batch_size": 1,
+      "modality": "image",
+      "items_per_s": 11.863038499430486,
+      "ms_per_item": 84.29543578131415,
+      "peak_mem_mb": 369.27488,
+      "load_s": 1.2943223239999497,
+      "n": 32
+    },
+    {
+      "device": "cpu",
+      "model": "clip-vit-b32",
+      "batch_size": 8,
+      "modality": "image",
+      "items_per_s": 18.03613311507601,
+      "ms_per_item": 55.4442570156084,
+      "peak_mem_mb": 404.72576,
+      "load_s": 1.2943223239999497,
+      "n": 128
+    },
+    {
+      "device": "cpu",
+      "model": "clip-vit-b32",
+      "batch_size": 32,
+      "modality": "image",
+      "items_per_s": 18.633444595967017,
+      "ms_per_item": 53.66694251563331,
+      "peak_mem_mb": 518.844416,
+      "load_s": 1.2943223239999497,
+      "n": 128
+    },
+    {
+      "device": "cpu",
+      "model": "clip-vit-b32",
+      "batch_size": 64,
+      "modality": "image",
+      "items_per_s": 18.780390187133428,
+      "ms_per_item": 53.24703001565467,
+      "peak_mem_mb": 663.261184,
+      "load_s": 1.2943223239999497,
+      "n": 128
+    },
+    {
+      "device": "cpu",
+      "model": "clip-vit-b32",
+      "batch_size": 1,
+      "modality": "text",
+      "items_per_s": 50.97647992126612,
+      "ms_per_item": 19.61689001564082
+    },
+    {
+      "device": "cpu",
+      "model": "clip-vit-b32",
+      "batch_size": 64,
+      "modality": "text",
+      "items_per_s": 60.220639088604614,
+      "ms_per_item": 16.60560258300592
+    },
+    {
+      "device": "cpu",
+      "model": "clip-vit-b32",
+      "batch_size": 256,
+      "modality": "text",
+      "items_per_s": 47.88484079392017,
+      "ms_per_item": 20.883435831052566
+    },
+    {
+      "device": "cpu",
+      "model": "clip-vit-b32",
+      "params_m": 151.277313,
+      "load_s": 1.2943223239999497
+    },
+    {
+      "device": "cpu",
+      "model": "clip-vit-b16",
+      "batch_size": 1,
+      "modality": "image",
+      "items_per_s": 4.578907165096129,
+      "ms_per_item": 218.3927220937676,
+      "peak_mem_mb": 354.770944,
+      "load_s": 5.136495113001729,
+      "n": 32
+    },
+    {
+      "device": "cpu",
+      "model": "clip-vit-b16",
+      "batch_size": 8,
+      "modality": "image",
+      "items_per_s": 5.158653271030489,
+      "ms_per_item": 193.84904304689599,
+      "peak_mem_mb": 426.27072,
+      "load_s": 5.136495113001729,
+      "n": 128
+    },
+    {
+      "device": "cpu",
+      "model": "clip-vit-b16",
+      "batch_size": 32,
+      "modality": "image",
+      "items_per_s": 5.040132653986754,
+      "ms_per_item": 198.40747628120425,
+      "peak_mem_mb": 542.67904,
+      "load_s": 5.136495113001729,
+      "n": 128
+    },
+    {
+      "device": "cpu",
+      "model": "clip-vit-b16",
+      "batch_size": 64,
+      "modality": "image",
+      "items_per_s": 6.287497991774955,
+      "ms_per_item": 159.04577644528217,
+      "peak_mem_mb": 786.558976,
+      "load_s": 5.136495113001729,
+      "n": 128
+    },
+    {
+      "device": "cpu",
+      "model": "clip-vit-b16",
+      "batch_size": 1,
+      "modality": "text",
+      "items_per_s": 50.91894611502351,
+      "ms_per_item": 19.639055328070754
+    },
+    {
+      "device": "cpu",
+      "model": "clip-vit-b16",
+      "batch_size": 64,
+      "modality": "text",
+      "items_per_s": 60.91860487484233,
+      "ms_per_item": 16.41534637988684
+    },
+    {
+      "device": "cpu",
+      "model": "clip-vit-b16",
+      "batch_size": 256,
+      "modality": "text",
+      "items_per_s": 68.41068491808166,
+      "ms_per_item": 14.617599592774866
+    },
+    {
+      "device": "cpu",
+      "model": "clip-vit-b16",
+      "params_m": 149.620737,
+      "load_s": 5.136495113001729
+    },
+    {
+      "device": "cpu",
+      "model": "clip-vit-l14",
+      "batch_size": 1,
+      "modality": "image",
+      "items_per_s": 1.0308048844375248,
+      "ms_per_item": 970.1156980311225,
+      "peak_mem_mb": 875.569152,
+      "load_s": 3.021447849998367,
+      "n": 32
+    },
+    {
+      "device": "cpu",
+      "model": "clip-vit-l14",
+      "batch_size": 8,
+      "modality": "image",
+      "items_per_s": 1.3276698315853614,
+      "ms_per_item": 753.1993092031826,
+      "peak_mem_mb": 984.936448,
+      "load_s": 3.021447849998367,
+      "n": 64
+    },
+    {
+      "device": "cpu",
+      "model": "clip-vit-l14",
+      "batch_size": 32,
+      "modality": "image",
+      "items_per_s": 1.21463397370898,
+      "ms_per_item": 823.2932897030878,
+      "peak_mem_mb": 1167.826944,
+      "load_s": 3.021447849998367,
+      "n": 64
+    },
+    {
+      "device": "cpu",
+      "model": "clip-vit-l14",
+      "batch_size": 64,
+      "modality": "image",
+      "items_per_s": 1.247071657947922,
+      "ms_per_item": 801.878539718814,
+      "peak_mem_mb": 1661.300736,
+      "load_s": 3.021447849998367,
+      "n": 64
+    },
+    {
+      "device": "cpu",
+      "model": "clip-vit-l14",
+      "batch_size": 1,
+      "modality": "text",
+      "items_per_s": 36.622602966847005,
+      "ms_per_item": 27.305541359396557
+    },
+    {
+      "device": "cpu",
+      "model": "clip-vit-l14",
+      "batch_size": 64,
+      "modality": "text",
+      "items_per_s": 31.3682063537974,
+      "ms_per_item": 31.87941282715201
+    },
+    {
+      "device": "cpu",
+      "model": "clip-vit-l14",
+      "batch_size": 256,
+      "modality": "text",
+      "items_per_s": 26.84677483027987,
+      "ms_per_item": 37.248422066404885
+    },
+    {
+      "device": "cpu",
+      "model": "clip-vit-l14",
+      "params_m": 427.616513,
+      "load_s": 3.021447849998367
+    },
+    {
+      "device": "cpu",
+      "model": "dinov2-small",
+      "batch_size": 1,
+      "modality": "image",
+      "items_per_s": 16.515719621389305,
+      "ms_per_item": 60.54837590636453,
+      "peak_mem_mb": 94.80192,
+      "load_s": 0.1099154740004451,
+      "n": 32
+    },
+    {
+      "device": "cpu",
+      "model": "dinov2-small",
+      "batch_size": 8,
+      "modality": "image",
+      "items_per_s": 19.656781815143535,
+      "ms_per_item": 50.8730274062259,
+      "peak_mem_mb": 165.400576,
+      "load_s": 0.1099154740004451,
+      "n": 128
+    },
+    {
+      "device": "cpu",
+      "model": "dinov2-small",
+      "batch_size": 32,
+      "modality": "image",
+      "items_per_s": 13.559560453775502,
+      "ms_per_item": 73.74870324218818,
+      "peak_mem_mb": 381.579264,
+      "load_s": 0.1099154740004451,
+      "n": 128
+    },
+    {
+      "device": "cpu",
+      "model": "dinov2-small",
+      "batch_size": 64,
+      "modality": "image",
+      "items_per_s": 12.917648454703153,
+      "ms_per_item": 77.41347068753157,
+      "peak_mem_mb": 524.959744,
+      "load_s": 0.1099154740004451,
+      "n": 128
+    },
+    {
+      "device": "cpu",
+      "model": "dinov2-small",
+      "params_m": 22.056576,
+      "load_s": 0.1099154740004451
+    },
+    {
+      "device": "cpu",
+      "model": "dinov2-base",
+      "batch_size": 1,
+      "modality": "image",
+      "items_per_s": 5.259203650022526,
+      "ms_per_item": 190.14285556249888,
+      "peak_mem_mb": 346.443776,
+      "load_s": 0.21264972900098655,
+      "n": 32
+    },
+    {
+      "device": "cpu",
+      "model": "dinov2-base",
+      "batch_size": 8,
+      "modality": "image",
+      "items_per_s": 5.827201677972847,
+      "ms_per_item": 171.60895662493658,
+      "peak_mem_mb": 403.165184,
+      "load_s": 0.21264972900098655,
+      "n": 64
+    },
+    {
+      "device": "cpu",
+      "model": "dinov2-base",
+      "batch_size": 32,
+      "modality": "image",
+      "items_per_s": 4.049032576881985,
+      "ms_per_item": 246.97257456250554,
+      "peak_mem_mb": 674.725888,
+      "load_s": 0.21264972900098655,
+      "n": 64
+    },
+    {
+      "device": "cpu",
+      "model": "dinov2-base",
+      "batch_size": 64,
+      "modality": "image",
+      "items_per_s": 5.793043915786458,
+      "ms_per_item": 172.62082154684322,
+      "peak_mem_mb": 952.36096,
+      "load_s": 0.21264972900098655,
+      "n": 64
+    },
+    {
+      "device": "cpu",
+      "model": "dinov2-base",
+      "params_m": 86.58048,
+      "load_s": 0.21264972900098655
+    }
+  ],
+  "torch_threads": 8,
+  "report": {
+    "title": "Embedding throughput and memory",
+    "description": "Images: 256 Flickr30k test images already decoded in memory (fewer on CPU for large models); time includes the model's own resize/crop/normalise. GPU memory = peak allocated by PyTorch; CPU memory = peak process RSS during the run above the pre-load baseline (weights + activations + preprocessing; sampled every 5 ms). GPU throughput for small models is bounded by CPU-side PIL preprocessing. fp32 throughout, TF32 disabled. CPU uses 8 PyTorch threads.",
+    "tables": [
+      {
+        "title": "Throughput",
+        "columns": [
+          "Device",
+          "Model",
+          "Input",
+          "Batch",
+          "items/s",
+          "ms/item",
+          "Peak MB"
+        ],
+        "rows": [
+          [
+            "cuda",
+            "clip-vit-b32",
+            "image (incl. preprocessing)",
+            1,
+            148.8,
+            6.72,
+            617.0
+          ],
+          [
+            "cuda",
+            "clip-vit-b32",
+            "image (incl. preprocessing)",
+            8,
+            222.3,
+            4.5,
+            641.0
+          ],
+          [
+            "cuda",
+            "clip-vit-b32",
+            "image (incl. preprocessing)",
+            32,
+            213.0,
+            4.69,
+            712.0
+          ],
+          [
+            "cuda",
+            "clip-vit-b32",
+            "image (incl. preprocessing)",
+            64,
+            208.0,
+            4.81,
+            811.0
+          ],
+          [
+            "cuda",
+            "clip-vit-b32",
+            "text",
+            1,
+            386.2,
+            2.59,
+            null
+          ],
+          [
+            "cuda",
+            "clip-vit-b32",
+            "text",
+            64,
+            1305.1,
+            0.77,
+            null
+          ],
+          [
+            "cuda",
+            "clip-vit-b32",
+            "text",
+            256,
+            1063.0,
+            0.94,
+            null
+          ],
+          [
+            "cuda",
+            "clip-vit-b16",
+            "image (incl. preprocessing)",
+            1,
+            78.2,
+            12.78,
+            620.0
+          ],
+          [
+            "cuda",
+            "clip-vit-b16",
+            "image (incl. preprocessing)",
+            8,
+            93.4,
+            10.71,
+            692.0
+          ],
+          [
+            "cuda",
+            "clip-vit-b16",
+            "image (incl. preprocessing)",
+            32,
+            89.4,
+            11.18,
+            939.0
+          ],
+          [
+            "cuda",
+            "clip-vit-b16",
+            "image (incl. preprocessing)",
+            64,
+            88.9,
+            11.25,
+            1269.0
+          ],
+          [
+            "cuda",
+            "clip-vit-b16",
+            "text",
+            1,
+            409.8,
+            2.44,
+            null
+          ],
+          [
+            "cuda",
+            "clip-vit-b16",
+            "text",
+            64,
+            1272.2,
+            0.79,
+            null
+          ],
+          [
+            "cuda",
+            "clip-vit-b16",
+            "text",
+            256,
+            1052.7,
+            0.95,
+            null
+          ],
+          [
+            "cuda",
+            "clip-vit-l14",
+            "image (incl. preprocessing)",
+            1,
+            20.5,
+            48.7,
+            1741.0
+          ],
+          [
+            "cuda",
+            "clip-vit-l14",
+            "image (incl. preprocessing)",
+            8,
+            25.0,
+            39.98,
+            1859.0
+          ],
+          [
+            "cuda",
+            "clip-vit-l14",
+            "image (incl. preprocessing)",
+            32,
+            24.5,
+            40.84,
+            2278.0
+          ],
+          [
+            "cuda",
+            "clip-vit-l14",
+            "image (incl. preprocessing)",
+            64,
+            24.6,
+            40.66,
+            2840.0
+          ],
+          [
+            "cuda",
+            "clip-vit-l14",
+            "text",
+            1,
+            278.2,
+            3.59,
+            null
+          ],
+          [
+            "cuda",
+            "clip-vit-l14",
+            "text",
+            64,
+            637.6,
+            1.57,
+            null
+          ],
+          [
+            "cuda",
+            "clip-vit-l14",
+            "text",
+            256,
+            533.3,
+            1.88,
+            null
+          ],
+          [
+            "cuda",
+            "dinov2-small",
+            "image (incl. preprocessing)",
+            1,
+            124.8,
+            8.01,
+            104.0
+          ],
+          [
+            "cuda",
+            "dinov2-small",
+            "image (incl. preprocessing)",
+            8,
+            168.7,
+            5.93,
+            141.0
+          ],
+          [
+            "cuda",
+            "dinov2-small",
+            "image (incl. preprocessing)",
+            32,
+            160.5,
+            6.23,
+            269.0
+          ],
+          [
+            "cuda",
+            "dinov2-small",
+            "image (incl. preprocessing)",
+            64,
+            145.1,
+            6.89,
+            439.0
+          ],
+          [
+            "cuda",
+            "dinov2-base",
+            "image (incl. preprocessing)",
+            1,
+            64.3,
+            15.54,
+            366.0
+          ],
+          [
+            "cuda",
+            "dinov2-base",
+            "image (incl. preprocessing)",
+            8,
+            75.3,
+            13.27,
+            436.0
+          ],
+          [
+            "cuda",
+            "dinov2-base",
+            "image (incl. preprocessing)",
+            32,
+            73.1,
+            13.68,
+            678.0
+          ],
+          [
+            "cuda",
+            "dinov2-base",
+            "image (incl. preprocessing)",
+            64,
+            71.7,
+            13.94,
+            1000.0
+          ],
+          [
+            "cpu",
+            "clip-vit-b32",
+            "image (incl. preprocessing)",
+            1,
+            11.9,
+            84.3,
+            369.0
+          ],
+          [
+            "cpu",
+            "clip-vit-b32",
+            "image (incl. preprocessing)",
+            8,
+            18.0,
+            55.44,
+            405.0
+          ],
+          [
+            "cpu",
+            "clip-vit-b32",
+            "image (incl. preprocessing)",
+            32,
+            18.6,
+            53.67,
+            519.0
+          ],
+          [
+            "cpu",
+            "clip-vit-b32",
+            "image (incl. preprocessing)",
+            64,
+            18.8,
+            53.25,
+            663.0
+          ],
+          [
+            "cpu",
+            "clip-vit-b32",
+            "text",
+            1,
+            51.0,
+            19.62,
+            null
+          ],
+          [
+            "cpu",
+            "clip-vit-b32",
+            "text",
+            64,
+            60.2,
+            16.61,
+            null
+          ],
+          [
+            "cpu",
+            "clip-vit-b32",
+            "text",
+            256,
+            47.9,
+            20.88,
+            null
+          ],
+          [
+            "cpu",
+            "clip-vit-b16",
+            "image (incl. preprocessing)",
+            1,
+            4.6,
+            218.39,
+            355.0
+          ],
+          [
+            "cpu",
+            "clip-vit-b16",
+            "image (incl. preprocessing)",
+            8,
+            5.2,
+            193.85,
+            426.0
+          ],
+          [
+            "cpu",
+            "clip-vit-b16",
+            "image (incl. preprocessing)",
+            32,
+            5.0,
+            198.41,
+            543.0
+          ],
+          [
+            "cpu",
+            "clip-vit-b16",
+            "image (incl. preprocessing)",
+            64,
+            6.3,
+            159.05,
+            787.0
+          ],
+          [
+            "cpu",
+            "clip-vit-b16",
+            "text",
+            1,
+            50.9,
+            19.64,
+            null
+          ],
+          [
+            "cpu",
+            "clip-vit-b16",
+            "text",
+            64,
+            60.9,
+            16.42,
+            null
+          ],
+          [
+            "cpu",
+            "clip-vit-b16",
+            "text",
+            256,
+            68.4,
+            14.62,
+            null
+          ],
+          [
+            "cpu",
+            "clip-vit-l14",
+            "image (incl. preprocessing)",
+            1,
+            1.0,
+            970.12,
+            876.0
+          ],
+          [
+            "cpu",
+            "clip-vit-l14",
+            "image (incl. preprocessing)",
+            8,
+            1.3,
+            753.2,
+            985.0
+          ],
+          [
+            "cpu",
+            "clip-vit-l14",
+            "image (incl. preprocessing)",
+            32,
+            1.2,
+            823.29,
+            1168.0
+          ],
+          [
+            "cpu",
+            "clip-vit-l14",
+            "image (incl. preprocessing)",
+            64,
+            1.2,
+            801.88,
+            1661.0
+          ],
+          [
+            "cpu",
+            "clip-vit-l14",
+            "text",
+            1,
+            36.6,
+            27.31,
+            null
+          ],
+          [
+            "cpu",
+            "clip-vit-l14",
+            "text",
+            64,
+            31.4,
+            31.88,
+            null
+          ],
+          [
+            "cpu",
+            "clip-vit-l14",
+            "text",
+            256,
+            26.8,
+            37.25,
+            null
+          ],
+          [
+            "cpu",
+            "dinov2-small",
+            "image (incl. preprocessing)",
+            1,
+            16.5,
+            60.55,
+            95.0
+          ],
+          [
+            "cpu",
+            "dinov2-small",
+            "image (incl. preprocessing)",
+            8,
+            19.7,
+            50.87,
+            165.0
+          ],
+          [
+            "cpu",
+            "dinov2-small",
+            "image (incl. preprocessing)",
+            32,
+            13.6,
+            73.75,
+            382.0
+          ],
+          [
+            "cpu",
+            "dinov2-small",
+            "image (incl. preprocessing)",
+            64,
+            12.9,
+            77.41,
+            525.0
+          ],
+          [
+            "cpu",
+            "dinov2-base",
+            "image (incl. preprocessing)",
+            1,
+            5.3,
+            190.14,
+            346.0
+          ],
+          [
+            "cpu",
+            "dinov2-base",
+            "image (incl. preprocessing)",
+            8,
+            5.8,
+            171.61,
+            403.0
+          ],
+          [
+            "cpu",
+            "dinov2-base",
+            "image (incl. preprocessing)",
+            32,
+            4.0,
+            246.97,
+            675.0
+          ],
+          [
+            "cpu",
+            "dinov2-base",
+            "image (incl. preprocessing)",
+            64,
+            5.8,
+            172.62,
+            952.0
+          ]
+        ],
+        "notes": "",
+        "highlight_best": []
+      }
+    ]
+  }
+}

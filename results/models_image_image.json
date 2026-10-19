@@ -1,6 +1,6 @@
 {
   "name": "models_image_image",
-  "generated_at": "2026-10-18T23:00:23+00:00",
+  "generated_at": "2026-10-19T00:40:24+00:00",
   "seed": 1234,
   "environment": {
     "python": "3.12.12",
@@ -12,10 +12,16 @@
     "faiss": "1.15.1",
     "numpy": "2.5.4",
     "cuda_available": true,
+    "load_average_1_5_15": [
+      11.38,
+      8.19,
+      8.58
+    ],
+    "cpu_governor": "powersave",
     "gpu": "NVIDIA GeForce RTX 4050 Laptop GPU",
     "gpu_memory_gb": 6.1,
-    "git_commit": "6ae6368",
-    "git_dirty": true
+    "git_commit": "5284876",
+    "git_dirty": false
   },
   "datasets": {
     "flickr30k": {
@@ -102,9 +108,9 @@
         }
       },
       "timings": {
-        "index_build_s": 0.03603114299767185,
-        "search_total_s": 1.046769774002314,
-        "search_per_query_ms": 0.26648925000058915,
+        "index_build_s": 0.029976452002301812,
+        "search_total_s": 0.9792217799986247,
+        "search_per_query_ms": 0.24929271384893703,
         "index_stats": {
           "kind": "flat",
           "dim": 512,
@@ -206,9 +212,9 @@
         }
       },
       "timings": {
-        "index_build_s": 0.16712393399939174,
-        "search_total_s": 0.7911659630044596,
-        "search_per_query_ms": 0.7911659630044596,
+        "index_build_s": 0.505605115002254,
+        "search_total_s": 0.9493211079970933,
+        "search_per_query_ms": 0.9493211079970933,
         "index_stats": {
           "kind": "flat",
           "dim": 512,
@@ -278,9 +284,9 @@
         }
       },
       "timings": {
-        "index_build_s": 0.005251655995380133,
-        "search_total_s": 0.9829963200027123,
-        "search_per_query_ms": 0.25025364562187175,
+        "index_build_s": 0.006716877003782429,
+        "search_total_s": 1.0941491010016762,
+        "search_per_query_ms": 0.2785511967926874,
         "index_stats": {
           "kind": "flat",
           "dim": 512,
@@ -382,9 +388,9 @@
         }
       },
       "timings": {
-        "index_build_s": 0.15805442499549827,
-        "search_total_s": 0.4441661929959082,
-        "search_per_query_ms": 0.4441661929959082,
+        "index_build_s": 0.10125536499981536,
+        "search_total_s": 0.6879521549999481,
+        "search_per_query_ms": 0.6879521549999481,
         "index_stats": {
           "kind": "flat",
           "dim": 512,
@@ -454,9 +460,9 @@
         }
       },
       "timings": {
-        "index_build_s": 0.008572735998313874,
-        "search_total_s": 1.105918200002634,
-        "search_per_query_ms": 0.28154740325932637,
+        "index_build_s": 0.008030983997741714,
+        "search_total_s": 1.3160215339958086,
+        "search_per_query_ms": 0.335036032076326,
         "index_stats": {
           "kind": "flat",
           "dim": 768,
@@ -558,9 +564,9 @@
         }
       },
       "timings": {
-        "index_build_s": 0.21488910199695965,
-        "search_total_s": 0.6247922629991081,
-        "search_per_query_ms": 0.6247922629991081,
+        "index_build_s": 0.6805353249947075,
+        "search_total_s": 0.7772599720046856,
+        "search_per_query_ms": 0.7772599720046856,
         "index_stats": {
           "kind": "flat",
           "dim": 768,
@@ -630,9 +636,9 @@
         }
       },
       "timings": {
-        "index_build_s": 0.0036182019975967705,
-        "search_total_s": 0.5496947929932503,
-        "search_per_query_ms": 0.13994266624064416,
+        "index_build_s": 0.006527097000798676,
+        "search_total_s": 0.7595416019976255,
+        "search_per_query_ms": 0.19336598828860121,
         "index_stats": {
           "kind": "flat",
           "dim": 384,
@@ -734,9 +740,9 @@
         }
       },
       "timings": {
-        "index_build_s": 0.11123195400432451,
-        "search_total_s": 0.35905921799712814,
-        "search_per_query_ms": 0.35905921799712814,
+        "index_build_s": 0.10193594900192693,
+        "search_total_s": 0.4667774379995535,
+        "search_per_query_ms": 0.4667774379995535,
         "index_stats": {
           "kind": "flat",
           "dim": 384,
@@ -806,9 +812,9 @@
         }
       },
       "timings": {
-        "index_build_s": 0.005494505996466614,
-        "search_total_s": 0.779514185996959,
-        "search_per_query_ms": 0.19845065834953132,
+        "index_build_s": 0.008996798998850863,
+        "search_total_s": 0.9053732199972728,
+        "search_per_query_ms": 0.23049216395042588,
         "index_stats": {
           "kind": "flat",
           "dim": 768,
@@ -910,9 +916,9 @@
         }
       },
       "timings": {
-        "index_build_s": 0.209906130003219,
-        "search_total_s": 0.5886089649939095,
-        "search_per_query_ms": 0.5886089649939095,
+        "index_build_s": 0.2564142679984798,
+        "search_total_s": 0.9230383670001174,
+        "search_per_query_ms": 0.9230383670001174,
         "index_stats": {
           "kind": "flat",
           "dim": 768,
@@ -984,9 +990,9 @@
         }
       },
       "timings": {
-        "index_build_s": 0.003878110997902695,
-        "search_total_s": 0.593456567999965,
-        "search_per_query_ms": 0.15108364765783225,
+        "index_build_s": 0.0059208930033491924,
+        "search_total_s": 0.7011546610010555,
+        "search_per_query_ms": 0.17850169577419947,
         "index_stats": {
           "kind": "flat",
           "dim": 384,
@@ -1058,9 +1064,9 @@
         }
       },
       "timings": {
-        "index_build_s": 0.008595688996138051,
-        "search_total_s": 0.7489222709991736,
-        "search_per_query_ms": 0.19066249261689758,
+        "index_build_s": 0.011553775999345817,
+        "search_total_s": 1.2759693160041934,
+        "search_per_query_ms": 0.3248394389012712,
         "index_stats": {
           "kind": "flat",
           "dim": 768,
@@ -1132,9 +1138,9 @@
         }
       },
       "timings": {
-        "index_build_s": 0.011462578004284296,
-        "search_total_s": 1.4182000649961992,
-        "search_per_query_ms": 0.3610488963839611,
+        "index_build_s": 0.015736825997009873,
+        "search_total_s": 1.6123553079960402,
+        "search_per_query_ms": 0.4104774205692567,
         "index_stats": {
           "kind": "flat",
           "dim": 1536,
