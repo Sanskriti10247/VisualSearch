@@ -57,6 +57,9 @@ All three search endpoints return the same `SearchResponse`:
 }
 ```
 
+- `timings_ms` breaks the request into stages: `embed_query`, `filter` (resolving metadata filters
+  in SQLite, present only when filters are set), `search`, `rerank` or `fuse` when used, `hydrate`
+  (loading metadata for the results) and `total`.
 - `score` is the final ranking score. Its scale depends on the strategy (cosine for
   single-signal search, a fused z-score for hybrid), so only compare scores within one response.
 - `signals` has one entry per signal: `raw` cosine similarity in that model's space; `z` and

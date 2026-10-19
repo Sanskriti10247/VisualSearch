@@ -5,11 +5,11 @@
 | Finding | Consequence |
 |---|---|
 | Empty repository | Greenfield; Python package under `src/visualsearch`, Vite/React UI under `frontend/` |
-| RTX 4050 (6 GB) but ~7.5 GB free disk at start | CPU PyTorch wheels (≈0.8 GB vs ≈5 GB for CUDA). Device is auto-detected, so a CUDA install works unchanged. All benchmarks are CPU numbers. |
+| RTX 4050 (6 GB) but only ~7.5 GB free disk at the start | Started on CPU PyTorch wheels (≈0.8 GB vs ≈5 GB for CUDA). Once more disk was freed, switched to CUDA wheels; the torch build is now a `cpu` / `cuda` extra. Embedding runs on the GPU; FAISS benchmarks are CPU; throughput is reported for both. |
 | ~4 GB free RAM | Batched, streaming embedding; no full-dataset tensors in memory |
 | Flickr30k is a single 4.4 GB zip on the HF Hub | HTTP range reads of the zip central directory → fetch only the selected members, pinned to a dataset commit |
 | Flickr30k has no image–image relevance labels | Image–image evaluation uses (a) Imagewoof class labels (category level) and (b) seeded photometric/geometric copies of Flickr test images (instance level) |
-| A ~7k image gallery is too small for ANN to matter | ANN scaling benchmark adds ~145k real Flickr30k caption embeddings as a large database with image queries |
+| A small gallery is too small for ANN to matter | Ingested all 29k Flickr30k train images as distractors (31k gallery), and added a 181k-vector scale benchmark using the non-test caption embeddings |
 
 ## Milestones
 

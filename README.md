@@ -21,7 +21,7 @@ analysis: [docs/REPORT.md](docs/REPORT.md). Generated tables with confidence int
 | + BLIP cross-encoder reranking of the top 20 | R@1 **83.2** (+24.4 over baseline), ~0.5 s/query |
 | Image→image, Imagewoof breeds (mAP) | CLIP B/32 36.8 · CLIP L/14 49.6 · **DINOv2-B 82.5** |
 | Hybrid: breed name + example image (mAP) | best single signal 83.0 → **89.6** (CLIP text + DINOv2-B, z-score fusion) |
-| Hybrid: caption + 20% crop, 31K gallery (R@1) | 24.7 (text) / 74.1 (crop) → **85.3** fused |
+| Hybrid: caption + 15–25% crop, 31K gallery (R@1) | 24.7 (text) / 74.1 (crop) → **85.3** fused |
 | Exact vs HNSW, 181K vectors | 21 ms → 0.18 ms at 98.4% recall@10 |
 | Filters selecting 1% of images | post-filtering 4.5% recall · HNSW+selector 60% · **planner (exact subset) 100%, 0.25 ms** |
 | Serving latency (GPU, 36K images, exact) | text ~17–26 ms p50 · image upload ~24–35 ms · hybrid ~43 ms |
@@ -167,15 +167,17 @@ provenance. `docs/REPORT_TABLES.md` is generated from those files, never hand-ed
 | CPU | 12-thread laptop CPU (see `results/*.json` → `environment`) | any x86-64 / arm64 |
 | GPU | NVIDIA RTX 4050 Laptop, 6 GB | none: everything runs on CPU (`VS_DEVICE=cpu`), embedding is ~10–20× slower |
 | RAM | 16 GB | serving B/32 + DINOv2-S over 36k images measured at 1.8 GB RSS (+0.9 GB VRAM on GPU); allow ~4 GB on CPU-only. 8 GB for the experiment suite |
-| Disk | ~7 GB data + ~5.4 GB weights (all six models) | ~1 GB with `--distractors 0`, no Imagewoof, two models |
+| Disk | ~7 GB data + ~5.4 GB weights (all six models) | ~1.3 GB with `--distractors 0` and two models (Imagewoof is still needed: image-score calibration is fitted on its train split) |
 
 ## Limitations
 
 - **Evaluation labels are sparse.** Each Flickr30k caption has exactly one annotated image. The
   failure analysis finds that about a quarter of top-1 "errors" are plausibly correct, so absolute
   R@1 understates real quality.
-- **CLIP's known weaknesses** apply: counting, negation, spatial relations, small text. Short
-  queries (≤ 8 words) are markedly harder than long ones.
+- **Short queries are the weak spot**: ≤ 8-word queries reach 51% R@1 vs 68% for ≥ 18 words.
+  CLIP is also known to struggle with counting, negation and spatial relations; the Flickr30k test
+  set can't measure that well, because its targets are usually distinguishable without them (§7 of
+  the report).
 - **Image↔image category evaluation is one domain** (dog breeds). DINOv2's large advantage there is
   a fine-grained-visual result and doesn't transfer to every notion of "similar".
 - **The hybrid evaluations are constructed tasks** (breed name + exemplar; caption + crop) built
