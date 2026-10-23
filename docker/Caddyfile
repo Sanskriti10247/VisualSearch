@@ -1,0 +1,32 @@
+# TLS and access control for docker-compose.prod.yml; see docs/deployment.md.
+# The API has no auth of its own, so uploads, jobs and deletes are behind
+# basic auth here. Search stays public.
+
+{$VS_DOMAIN} {
+	encode zstd gzip
+
+	# Matches nginx's client_max_body_size; the API enforces per-file limits.
+	request_body {
+		max_size 200MB
+	}
+
+	@admin expression path('/api/v1/index/*', '/api/v1/jobs/*') || method('DELETE')
+	basic_auth @admin {
+		{$VS_ADMIN_USER} {$VS_ADMIN_PASSWORD_HASH}
+	}
+
+	header {
+		Strict-Transport-Security "max-age=31536000"
+		-Server
+	}
+
+	reverse_proxy web:8080 {
+		health_uri /healthz
+		health_interval 30s
+	}
+
+	log {
+		output stdout
+		format console
+	}
+}

@@ -44,7 +44,7 @@ fusion, and post-filtering.
 - [Design decisions](#design-decisions)
 - [Limitations](#limitations)
 - [Future work](#future-work)
-- Docs: [architecture](docs/ARCHITECTURE.md) · [API](docs/API.md) · [experimental report](docs/REPORT.md) · [generated result tables](docs/REPORT_TABLES.md) · [plan](docs/PLAN.md)
+- Docs: [architecture](docs/ARCHITECTURE.md) · [API](docs/API.md) · [deployment](docs/deployment.md) · [experimental report](docs/REPORT.md) · [generated result tables](docs/REPORT_TABLES.md) · [plan](docs/PLAN.md)
 
 ## Quick start
 
@@ -86,6 +86,9 @@ docker compose --profile qdrant up     # also start a Qdrant server
 The image is CPU-only (the portable choice; this machine has no NVIDIA container runtime).
 `./data` is mounted into the container: build it with the CLI first, or the API will build
 indexes for whatever the catalogue holds on first start. Model weights are cached in a volume.
+
+[docs/deployment.md](docs/deployment.md) covers running it on a single server: HTTPS with
+Caddy, provisioning models and indexes, upgrades and sizing.
 
 ### Tests
 

@@ -1,0 +1,75 @@
+# Production override for a single host; see docs/deployment.md.
+#   docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+# Only Caddy publishes ports. Needs Compose >= 2.24 for !reset / !override.
+
+x-logging: &logging
+  driver: json-file
+  options: {max-size: "10m", max-file: "5"}
+
+services:
+  api:
+    image: visualsearch-api:${VS_IMAGE_TAG:-latest}
+    environment:
+      VS_DATA_DIR: /data
+      VS_DEVICE: cpu
+      VS_CORS_ORIGINS: '["https://${VS_DOMAIN:?set VS_DOMAIN in .env}"]'
+      # torch does not see the cgroup CPU limit.
+      VS_TORCH_THREADS: ${VS_TORCH_THREADS:-4}
+      VS_ENABLE_CROSS_ENCODER: ${VS_ENABLE_CROSS_ENCODER:-true}
+      HF_HUB_OFFLINE: ${HF_HUB_OFFLINE:-0}
+    # Other VS_* settings.
+    env_file:
+      - path: ./api.env
+        required: false
+    volumes: !override
+      - ${VS_DATA_PATH:-./data}:/data
+      - ./results:/app/results:ro
+      - models:/models
+    ports: !reset []
+    restart: unless-stopped
+    stop_grace_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: "${VS_API_CPUS:-4}"
+          memory: ${VS_API_MEMORY:-6g}
+    logging: *logging
+
+  web:
+    image: visualsearch-web:${VS_IMAGE_TAG:-latest}
+    ports: !reset []
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits: {cpus: "0.5", memory: 128m}
+    logging: *logging
+
+  caddy:
+    image: caddy:2.10.2-alpine@sha256:4c6e91c6ed0e2fa03efd5b44747b625fec79bc9cd06ac5235a779726618e530d
+    depends_on: [web]
+    environment:
+      VS_DOMAIN: ${VS_DOMAIN:?set VS_DOMAIN in .env}
+      VS_ADMIN_USER: ${VS_ADMIN_USER:-admin}
+      VS_ADMIN_PASSWORD_HASH: ${VS_ADMIN_PASSWORD_HASH:?set VS_ADMIN_PASSWORD_HASH in .env (caddy hash-password)}
+    ports:
+      - "${VS_HTTP_PORT:-80}:80"
+      - "${VS_HTTPS_PORT:-443}:443"
+      - "${VS_HTTPS_PORT:-443}:443/udp"   # HTTP/3
+    volumes:
+      - ./docker/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data        # certificates; keep this volume
+      - caddy_config:/config
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits: {cpus: "0.5", memory: 256m}
+    logging: *logging
+
+  qdrant:
+    ports: !reset []
+    restart: unless-stopped
+    logging: *logging
+
+volumes:
+  caddy_data:
+  caddy_config:
