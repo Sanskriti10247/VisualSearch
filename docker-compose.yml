@@ -25,7 +25,7 @@ services:
   web:
     build: {context: ., dockerfile: docker/web.Dockerfile}
     depends_on: [api]
-    ports: ["8080:80"]
+    ports: ["8080:8080"]
     restart: unless-stopped
 
   qdrant:
