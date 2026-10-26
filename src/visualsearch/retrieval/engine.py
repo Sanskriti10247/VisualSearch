@@ -184,6 +184,9 @@ class SearchEngine:
             raise SearchError("query text must not be empty")
         if rerank not in RERANKERS:
             raise SearchError(f"unknown reranker '{rerank}'; choose from {RERANKERS}")
+        if rerank == "cross_encoder" and self.cross_encoder is None:
+            raise SearchError("the cross_encoder reranker is not available on this server; "
+                              "use 'none', 'prf' or 'visual_prf'")
         n_cand = max(k, candidates or self.settings.rerank_candidates) if rerank != "none" else k
         if rerank == "cross_encoder":
             n_cand = max(k, candidates or self.rerank_config.cross_encoder_candidates)
@@ -233,9 +236,6 @@ class SearchEngine:
                 "rerank_params": {"space": vm, "m": cfg.visual_prf_m, "lam": cfg.visual_prf_lam}}
         if rerank == "cross_encoder":
             ce = self.cross_encoder
-            if ce is None:
-                warnings.append("cross-encoder reranker is not available; skipped")
-                return first, {}
             recs = self.catalog.get_many(ids)
             imgs = [ce.load_image(self.settings.images_dir / recs[int(i)].path) for i in ids]
             itm = ce.score(query, imgs)

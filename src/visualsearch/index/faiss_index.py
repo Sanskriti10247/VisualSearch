@@ -58,7 +58,7 @@ class FaissIndex(VectorIndex):
         self.index: faiss.Index | None = None
         self._ids = np.zeros(0, dtype=np.int64)       # position -> external id
         self._deleted = np.zeros(0, dtype=bool)
-        self._vectors = np.zeros((0, dim), dtype=np.float32)
+        self._stored = np.zeros((0, dim), dtype=np.float32)  # unused for flat, see _vectors
         self._pos: dict[int, int] = {}                # live external id -> position
         self.trained_on = 0
         if kind in ("flat", "hnsw"):
@@ -121,7 +121,8 @@ class FaissIndex(VectorIndex):
         self.index.add(v)
         self._ids = np.concatenate([self._ids, ids])
         self._deleted = np.concatenate([self._deleted, np.zeros(len(ids), dtype=bool)])
-        self._vectors = np.concatenate([self._vectors, v])
+        if self.kind != "flat":
+            self._stored = np.concatenate([self._stored, v])
         for j, i in enumerate(ids):
             self._pos[int(i)] = start + j
 
@@ -148,6 +149,18 @@ class FaissIndex(VectorIndex):
             return True
         # IVF centroids were fit on the first batch; refit once data has grown a lot.
         return self.kind.startswith("ivf") and len(self) > 4 * max(self.trained_on, 1)
+
+    @property
+    def _vectors(self) -> np.ndarray:
+        """Float vectors by position. A flat index stores exactly these, so it is
+        viewed in place instead of keeping a second copy in memory; the view is
+        rebuilt on every access because adding to the index can reallocate it."""
+        if self.kind != "flat":
+            return self._stored
+        n = self.index.ntotal
+        if n == 0:
+            return np.zeros((0, self.dim), dtype=np.float32)
+        return faiss.rev_swig_ptr(self.index.get_xb(), n * self.dim).reshape(n, self.dim)
 
     # ------------------------------------------------------------------ search
     def ids(self) -> np.ndarray:
@@ -217,7 +230,13 @@ class FaissIndex(VectorIndex):
 
     # ------------------------------------------------------------- persistence
     def index_bytes(self) -> int:
-        return 0 if self.index is None else int(faiss.serialize_index(self.index).nbytes)
+        if self.index is None:
+            return 0
+        if self.kind == "flat":
+            # Same number without serialising (a transient copy of every vector).
+            header = faiss.serialize_index(faiss.IndexFlatIP(self.dim)).nbytes
+            return int(header + self.index.ntotal * self.index.code_size)
+        return int(faiss.serialize_index(self.index).nbytes)
 
     def stats(self) -> dict[str, Any]:
         return {**super().stats(), "resolved": getattr(self, "resolved", {}),
@@ -246,7 +265,8 @@ class FaissIndex(VectorIndex):
             obj.index = faiss.read_index(str(directory / "index.faiss"))
         obj._ids = np.load(directory / "ids.npy")
         obj._deleted = np.load(directory / "deleted.npy")
-        obj._vectors = np.load(directory / "vectors.npy")
+        if obj.kind != "flat":  # flat: the vectors are read from index.faiss
+            obj._stored = np.load(directory / "vectors.npy")
         obj.trained_on = state["trained_on"]
         obj.resolved = state.get("resolved", {})
         obj._pos = {int(i): p for p, i in enumerate(obj._ids) if not obj._deleted[p]}
