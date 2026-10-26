@@ -35,6 +35,16 @@ snapshot_download(repo_id=repo, repo_type="dataset", token=os.environ.get("HF_TO
 if not os.path.exists(os.path.join(data, "bundle.json")):
     sys.exit(f"slim-entrypoint: no bundle.json after downloading {repo} (wrong repo id, "
              "missing HF_TOKEN for a private repo, or not a serving bundle)")
+
+# Thumbnails ship as one tar (see scripts/make_serving_bundle.py).
+import tarfile
+
+archive = os.path.join(data, "thumbs.tar")
+if os.path.exists(archive):
+    print("slim-entrypoint: unpacking thumbs.tar", flush=True)
+    with tarfile.open(archive) as tar:
+        tar.extractall(os.path.join(data, "thumbs"), filter="data")
+    os.remove(archive)
 PY
   rm -f "$MARKER"
 fi
