@@ -1,0 +1,636 @@
+{
+  "name": "slim_runtime",
+  "generated_at": "2026-10-26T04:01:09+00:00",
+  "seed": 1234,
+  "environment": {
+    "python": "3.12.12",
+    "platform": "Linux-7.2.5-3-omarchy-x86_64-with-glibc2.44",
+    "cpu": "13th Gen Intel(R) Core(TM) i5-13420H",
+    "cpu_count": 12,
+    "torch": "2.14.1+cu130",
+    "transformers": "5.20.1",
+    "faiss": "1.15.1",
+    "numpy": "2.5.4",
+    "cuda_available": true,
+    "load_average_1_5_15": [
+      6.46,
+      5.99,
+      4.6
+    ],
+    "cpu_governor": "powersave",
+    "gpu": "NVIDIA GeForce RTX 4050 Laptop GPU",
+    "gpu_memory_gb": 6.1,
+    "git_commit": "1774671",
+    "git_dirty": true
+  },
+  "datasets": {
+    "flickr30k": {
+      "source": {
+        "repo": "nlphuji/flickr30k",
+        "revision": "2b239befc81b6e3f035ce6bd52f5f4d60f5625f7",
+        "annotations_sha256": "395990db603ab8bafd5c7ab2746b22058bb1e75b78b3eb56ad755931364ac137",
+        "split_scheme": "karpathy"
+      },
+      "seed": 1234,
+      "catalog_counts": {
+        "train": 28994,
+        "val": 1014,
+        "test": 1000
+      },
+      "distractor_filenames_sha256": "4263c74a397679e135e18ec42b4cfe0d31d48846f02a452f70914a06f32a88f4"
+    },
+    "imagewoof": {
+      "source": {
+        "url": "https://s3.amazonaws.com/fast-ai-imageclas/imagewoof2-320.tgz",
+        "archive_sha256": "7db6120fdb9ae079e26346f89e7b00d7f184f8137791609b97fd0405d3f92305"
+      },
+      "seed": 1234,
+      "catalog_counts": {
+        "train": 1050,
+        "val": 3928
+      }
+    }
+  },
+  "exports": {
+    "clip-vit-b32": {
+      "onnx": {
+        "file": "model.onnx",
+        "opset": 17,
+        "precision": "int8",
+        "quantization": "dynamic, QInt8 weights, per-tensor",
+        "fp32_nodes": [
+          "/text_model/encoder/layers.0/mlp/fc2/MatMul",
+          "/text_model/encoder/layers.0/mlp/fc2/Add"
+        ]
+      },
+      "check": {
+        "min_cosine": 0.990658164024353,
+        "max_abs_diff": 0.02416827902197838
+      },
+      "exported_with": {
+        "torch": "2.14.1+cu130",
+        "transformers": "5.20.1",
+        "onnxruntime": "1.31.0"
+      }
+    },
+    "dinov2-small": {
+      "onnx": {
+        "file": "model.onnx",
+        "opset": 17,
+        "precision": "int8",
+        "quantization": "dynamic, QInt8 weights, per-tensor",
+        "fp32_nodes": []
+      },
+      "check": {
+        "min_cosine": 0.972508430480957,
+        "max_abs_diff": 0.03443765640258789
+      },
+      "exported_with": {
+        "torch": "2.14.1+cu130",
+        "transformers": "5.20.1",
+        "onnxruntime": "1.31.0"
+      }
+    }
+  },
+  "raw": {
+    "t2i/1K": {
+      "torch": {
+        "task": "t2i",
+        "config": {
+          "model": "clip-vit-b32",
+          "overrides": {},
+          "split": "test",
+          "distractors": false,
+          "gallery_size": 1000,
+          "n_queries": 5000,
+          "index": "flat",
+          "index_params": {},
+          "depth": 1000,
+          "text_template": "{}",
+          "fingerprint": "2d2d8dbfe0ccede7"
+        },
+        "metrics": {
+          "R@1": 0.5884,
+          "R@5": 0.8344,
+          "R@10": 0.9008,
+          "MRR": 0.6973172701058518,
+          "median_rank": 1.0,
+          "n_queries": 5000,
+          "ci95": {
+            "R@1": [
+              0.56558,
+              0.6078
+            ],
+            "R@5": [
+              0.819195,
+              0.848605
+            ],
+            "R@10": [
+              0.889,
+              0.9120050000000001
+            ],
+            "MRR": [
+              0.6785529825246456,
+              0.7135312422677933
+            ]
+          }
+        },
+        "timings": {
+          "index_build_s": 0.019879753999703098,
+          "search_total_s": 0.3437942649998149,
+          "search_per_query_ms": 0.06875885299996298,
+          "index_stats": {
+            "kind": "flat",
+            "dim": 512,
+            "params": {},
+            "ntotal": 1000,
+            "resolved": {},
+            "tombstones": 0,
+            "trained_on": 0,
+            "index_bytes": 2048045,
+            "vector_bytes": 2048000
+          }
+        }
+      },
+      "onnx": {
+        "task": "t2i",
+        "config": {
+          "model": "clip-vit-b32",
+          "overrides": {},
+          "split": "test",
+          "distractors": false,
+          "gallery_size": 1000,
+          "n_queries": 5000,
+          "index": "flat",
+          "index_params": {},
+          "depth": 1000,
+          "text_template": "{}",
+          "fingerprint": "2d2d8dbfe0ccede7",
+          "query_runtime": "onnx",
+          "query_precision": "int8"
+        },
+        "metrics": {
+          "R@1": 0.5846,
+          "R@5": 0.8326,
+          "R@10": 0.899,
+          "MRR": 0.6955419485195753,
+          "median_rank": 1.0,
+          "n_queries": 5000,
+          "ci95": {
+            "R@1": [
+              0.5616,
+              0.6036050000000001
+            ],
+            "R@5": [
+              0.8177949999999999,
+              0.847
+            ],
+            "R@10": [
+              0.8872,
+              0.910205
+            ],
+            "MRR": [
+              0.6776065440143483,
+              0.7117285205831441
+            ]
+          }
+        },
+        "timings": {
+          "index_build_s": 0.0025326430004497524,
+          "search_total_s": 0.4930415909993826,
+          "search_per_query_ms": 0.09860831819987652,
+          "index_stats": {
+            "kind": "flat",
+            "dim": 512,
+            "params": {},
+            "ntotal": 1000,
+            "resolved": {},
+            "tombstones": 0,
+            "trained_on": 0,
+            "index_bytes": 2048045,
+            "vector_bytes": 2048000
+          }
+        }
+      }
+    },
+    "t2i/30K": {
+      "torch": {
+        "task": "t2i",
+        "config": {
+          "model": "clip-vit-b32",
+          "overrides": {},
+          "split": "test",
+          "distractors": true,
+          "gallery_size": 29994,
+          "n_queries": 5000,
+          "index": "flat",
+          "index_params": {},
+          "depth": 1000,
+          "text_template": "{}",
+          "fingerprint": "2d2d8dbfe0ccede7"
+        },
+        "metrics": {
+          "R@1": 0.1984,
+          "R@5": 0.4028,
+          "R@10": 0.4978,
+          "MRR": 0.2987157091509726,
+          "median_rank": null,
+          "n_queries": 5000,
+          "ci95": {
+            "R@1": [
+              0.181595,
+              0.214205
+            ],
+            "R@5": [
+              0.38199500000000003,
+              0.4234
+            ],
+            "R@10": [
+              0.47659500000000005,
+              0.5192
+            ],
+            "MRR": [
+              0.2816420310873549,
+              0.314679656244375
+            ]
+          }
+        },
+        "timings": {
+          "index_build_s": 0.10061586499978148,
+          "search_total_s": 3.226989080000749,
+          "search_per_query_ms": 0.6453978160001498,
+          "index_stats": {
+            "kind": "flat",
+            "dim": 512,
+            "params": {},
+            "ntotal": 29994,
+            "resolved": {},
+            "tombstones": 0,
+            "trained_on": 0,
+            "index_bytes": 61427757,
+            "vector_bytes": 61427712
+          }
+        }
+      },
+      "onnx": {
+        "task": "t2i",
+        "config": {
+          "model": "clip-vit-b32",
+          "overrides": {},
+          "split": "test",
+          "distractors": true,
+          "gallery_size": 29994,
+          "n_queries": 5000,
+          "index": "flat",
+          "index_params": {},
+          "depth": 1000,
+          "text_template": "{}",
+          "fingerprint": "2d2d8dbfe0ccede7",
+          "query_runtime": "onnx",
+          "query_precision": "int8"
+        },
+        "metrics": {
+          "R@1": 0.2012,
+          "R@5": 0.4016,
+          "R@10": 0.4944,
+          "MRR": 0.29955125214899525,
+          "median_rank": null,
+          "n_queries": 5000,
+          "ci95": {
+            "R@1": [
+              0.183395,
+              0.21660999999999997
+            ],
+            "R@5": [
+              0.38079500000000005,
+              0.42260499999999995
+            ],
+            "R@10": [
+              0.4728,
+              0.515415
+            ],
+            "MRR": [
+              0.28258373976718143,
+              0.3147290198347726
+            ]
+          }
+        },
+        "timings": {
+          "index_build_s": 0.15149357999962376,
+          "search_total_s": 3.613328855999498,
+          "search_per_query_ms": 0.7226657711998996,
+          "index_stats": {
+            "kind": "flat",
+            "dim": 512,
+            "params": {},
+            "ntotal": 29994,
+            "resolved": {},
+            "tombstones": 0,
+            "trained_on": 0,
+            "index_bytes": 61427757,
+            "vector_bytes": 61427712
+          }
+        }
+      }
+    },
+    "i2i_category": {
+      "torch": {
+        "task": "i2i_category",
+        "config": {
+          "model": "dinov2-small",
+          "overrides": {},
+          "dataset": "imagewoof",
+          "split": "val",
+          "gallery_size": 3927,
+          "n_queries": 3928,
+          "fingerprint": "4a0d9ab4eff1c9d7"
+        },
+        "metrics": {
+          "R@1": 0.9366089613034623,
+          "R@5": 0.9834521384928717,
+          "R@10": 0.9893075356415478,
+          "MRR": 0.9571892565508484,
+          "mAP": 0.7501700336017056,
+          "median_rank": 1.0,
+          "n_queries": 3928,
+          "ci95": {
+            "R@1": [
+              0.9282013747454175,
+              0.9442464358452138
+            ],
+            "R@5": [
+              0.9793724541751527,
+              0.9875254582484725
+            ],
+            "R@10": [
+              0.9859979633401222,
+              0.9923625254582484
+            ],
+            "MRR": [
+              0.9511678184655851,
+              0.9627095103043812
+            ],
+            "mAP": [
+              0.7431120038493271,
+              0.7566143841590105
+            ]
+          },
+          "P@10": 0.9117871690427699,
+          "mAP_per_class": {
+            "Australian terrier": 0.6677774442533726,
+            "Border terrier": 0.785230017331753,
+            "English foxhound": 0.4285438175294733,
+            "Old English sheepdog": 0.765986543396182,
+            "Rhodesian ridgeback": 0.8212019216084161,
+            "Samoyed": 0.9203810202882975,
+            "Shih-Tzu": 0.7571494278489072,
+            "beagle": 0.6794312505504263,
+            "dingo": 0.7539397854646415,
+            "golden retriever": 0.7702363998084477
+          }
+        },
+        "timings": {
+          "index_build_s": 0.006164426000395906,
+          "search_total_s": 0.6742918350000764,
+          "search_per_query_ms": 0.1716628907841335,
+          "index_stats": {
+            "kind": "flat",
+            "dim": 384,
+            "params": {},
+            "ntotal": 3928,
+            "resolved": {},
+            "tombstones": 0,
+            "trained_on": 0,
+            "index_bytes": 6033453,
+            "vector_bytes": 6033408
+          }
+        }
+      },
+      "onnx": {
+        "task": "i2i_category",
+        "config": {
+          "model": "dinov2-small",
+          "overrides": {},
+          "dataset": "imagewoof",
+          "split": "val",
+          "gallery_size": 3927,
+          "n_queries": 3928,
+          "fingerprint": "4a0d9ab4eff1c9d7",
+          "query_runtime": "onnx",
+          "query_precision": "int8"
+        },
+        "metrics": {
+          "R@1": 0.9345723014256619,
+          "R@5": 0.9821792260692465,
+          "R@10": 0.9880346232179226,
+          "MRR": 0.9555064528360652,
+          "mAP": 0.7471016347003369,
+          "median_rank": 1.0,
+          "n_queries": 3928,
+          "ci95": {
+            "R@1": [
+              0.9266802443991853,
+              0.9422097759674134
+            ],
+            "R@5": [
+              0.9778513238289206,
+              0.9862525458248472
+            ],
+            "R@10": [
+              0.9847186863543789,
+              0.9915987780040734
+            ],
+            "MRR": [
+              0.9501334914587815,
+              0.9609483333693147
+            ],
+            "mAP": [
+              0.739864822201801,
+              0.7535393571623319
+            ]
+          },
+          "P@10": 0.9106924643584522,
+          "mAP_per_class": {
+            "Australian terrier": 0.6615918857565788,
+            "Border terrier": 0.7820494813512932,
+            "English foxhound": 0.42597596219225914,
+            "Old English sheepdog": 0.7592070947493841,
+            "Rhodesian ridgeback": 0.8163580348935707,
+            "Samoyed": 0.9155347999866854,
+            "Shih-Tzu": 0.7611854116958493,
+            "beagle": 0.6793368266914792,
+            "dingo": 0.7409802577678383,
+            "golden retriever": 0.7775448416155925
+          }
+        },
+        "timings": {
+          "index_build_s": 0.019952376000219374,
+          "search_total_s": 0.9334568850008509,
+          "search_per_query_ms": 0.23764177316722274,
+          "index_stats": {
+            "kind": "flat",
+            "dim": 384,
+            "params": {},
+            "ntotal": 3928,
+            "resolved": {},
+            "tombstones": 0,
+            "trained_on": 0,
+            "index_bytes": 6033453,
+            "vector_bytes": 6033408
+          }
+        }
+      }
+    }
+  },
+  "rows": [
+    [
+      "Flickr30k T\u2192I, 1K gallery",
+      "R@1",
+      58.84,
+      58.46,
+      -0.38,
+      "[-0.96, +0.18]"
+    ],
+    [
+      "Flickr30k T\u2192I, 1K gallery",
+      "R@5",
+      83.44,
+      83.26,
+      -0.18,
+      "[-0.58, +0.24]"
+    ],
+    [
+      "Flickr30k T\u2192I, 1K gallery",
+      "R@10",
+      90.08,
+      89.9,
+      -0.18,
+      "[-0.54, +0.18]"
+    ],
+    [
+      "Flickr30k T\u2192I, 30K gallery",
+      "R@1",
+      19.84,
+      20.12,
+      0.28,
+      "[-0.26, +0.86]"
+    ],
+    [
+      "Flickr30k T\u2192I, 30K gallery",
+      "R@5",
+      40.28,
+      40.16,
+      -0.12,
+      "[-0.68, +0.44]"
+    ],
+    [
+      "Flickr30k T\u2192I, 30K gallery",
+      "R@10",
+      49.78,
+      49.44,
+      -0.34,
+      "[-0.88, +0.22]"
+    ],
+    [
+      "Imagewoof I\u2192I (val, leave-one-out)",
+      "mAP",
+      75.02,
+      74.71,
+      -0.31,
+      "[-0.38, -0.23]"
+    ],
+    [
+      "Imagewoof I\u2192I (val, leave-one-out)",
+      "P@1",
+      93.66,
+      93.46,
+      -0.2,
+      "[-0.61, +0.15]"
+    ]
+  ],
+  "report": {
+    "title": "Slim runtime: ONNX query encoders vs torch fp32",
+    "description": "Queries encoded by the ONNX Runtime exports used by the slim server, against the same fp32 gallery vectors as the torch run. Text\u2192image: Flickr30k test captions, 1K and 30K galleries. Image\u2192image: Imagewoof val, leave-one-out. Exports: clip-vit-b32 int8, dinov2-small int8. \u0394 CI: clustered paired bootstrap.",
+    "tables": [
+      {
+        "title": "Query encoder runtime",
+        "columns": [
+          "Task",
+          "Metric",
+          "torch fp32",
+          "ONNX",
+          "\u0394",
+          "\u0394 95% CI"
+        ],
+        "rows": [
+          [
+            "Flickr30k T\u2192I, 1K gallery",
+            "R@1",
+            58.84,
+            58.46,
+            -0.38,
+            "[-0.96, +0.18]"
+          ],
+          [
+            "Flickr30k T\u2192I, 1K gallery",
+            "R@5",
+            83.44,
+            83.26,
+            -0.18,
+            "[-0.58, +0.24]"
+          ],
+          [
+            "Flickr30k T\u2192I, 1K gallery",
+            "R@10",
+            90.08,
+            89.9,
+            -0.18,
+            "[-0.54, +0.18]"
+          ],
+          [
+            "Flickr30k T\u2192I, 30K gallery",
+            "R@1",
+            19.84,
+            20.12,
+            0.28,
+            "[-0.26, +0.86]"
+          ],
+          [
+            "Flickr30k T\u2192I, 30K gallery",
+            "R@5",
+            40.28,
+            40.16,
+            -0.12,
+            "[-0.68, +0.44]"
+          ],
+          [
+            "Flickr30k T\u2192I, 30K gallery",
+            "R@10",
+            49.78,
+            49.44,
+            -0.34,
+            "[-0.88, +0.22]"
+          ],
+          [
+            "Imagewoof I\u2192I (val, leave-one-out)",
+            "mAP",
+            75.02,
+            74.71,
+            -0.31,
+            "[-0.38, -0.23]"
+          ],
+          [
+            "Imagewoof I\u2192I (val, leave-one-out)",
+            "P@1",
+            93.66,
+            93.46,
+            -0.2,
+            "[-0.61, +0.15]"
+          ]
+        ],
+        "notes": "",
+        "highlight_best": []
+      }
+    ]
+  }
+}

@@ -20,6 +20,7 @@ from typing import Any
 import numpy as np
 from PIL import Image, ImageEnhance, ImageFilter
 
+from visualsearch.embeddings import Embedder
 from visualsearch.eval.context import EvalContext
 from visualsearch.eval.metrics import (
     PerQuery,
@@ -75,12 +76,16 @@ def flickr_gallery(ctx: EvalContext, split: str, distractors: bool):
 # ------------------------------------------------------------------ t2i / i2t
 def t2i(ctx: EvalContext, model: str, split: str = "test", distractors: bool = False,
         index_kind: str = "flat", index_params: dict | None = None, depth: int | None = None,
-        text_template: str = "{}", **overrides: Any) -> TaskResult:
+        text_template: str = "{}", query_emb: Embedder | None = None,
+        **overrides: Any) -> TaskResult:
+    """``query_emb`` encodes the queries with another runtime of the same model
+    (e.g. the ONNX export) against the cached gallery vectors; not cached."""
     emb = ctx.embedder(model, **overrides)
     recs, gids = flickr_gallery(ctx, split, distractors)
     gvecs = ctx.image_vectors(emb, recs)
     texts, targets = ctx.flickr_queries(split)
-    qvecs = ctx.text_vectors(emb, [text_template.format(t) for t in texts])
+    texts = [text_template.format(t) for t in texts]
+    qvecs = ctx.text_vectors(emb, texts) if query_emb is None else query_emb.embed_texts(texts)
     # Truncating at 1000 changes MRR by < 1/1000 per query and nothing else reported.
     depth = depth or min(len(gids), MAX_DEPTH)
     ranked, _scores, timing = search_ranked(qvecs, gids, gvecs, depth, index_kind, index_params)
@@ -90,7 +95,7 @@ def t2i(ctx: EvalContext, model: str, split: str = "test", distractors: bool = F
         config={"model": model, "overrides": overrides, "split": split, "distractors": distractors,
                 "gallery_size": len(gids), "n_queries": len(texts), "index": index_kind,
                 "index_params": index_params or {}, "depth": depth, "text_template": text_template,
-                "fingerprint": emb.fingerprint},
+                "fingerprint": emb.fingerprint, **_query_runtime(query_emb)},
         metrics=summarize(pq, with_map=False), per_query=pq, ranked=ranked, query_ids=targets,
         timings=timing)
 
@@ -118,14 +123,17 @@ def i2t(ctx: EvalContext, model: str, split: str = "test", **overrides: Any) -> 
 
 
 # ---------------------------------------------------------------- i2i category
-def i2i_category(ctx: EvalContext, model: str, split: str = "val", **overrides: Any) -> TaskResult:
-    """Imagewoof leave-one-out: every image queries all others of the split."""
+def i2i_category(ctx: EvalContext, model: str, split: str = "val",
+                 query_emb: Embedder | None = None, **overrides: Any) -> TaskResult:
+    """Imagewoof leave-one-out: every image queries all others of the split.
+    ``query_emb``: as in :func:`t2i` (queries re-encoded, gallery from the cache)."""
     emb = ctx.embedder(model, **overrides)
     recs = ctx.records("imagewoof", [split])
     ids = np.array([r.id for r in recs], dtype=np.int64)
     labels = np.array([r.label for r in recs])
     vecs = ctx.image_vectors(emb, recs)
-    ranked, _, timing = search_ranked(vecs, ids, vecs, len(ids))
+    qvecs = vecs if query_emb is None else ctx.embed_uncached(query_emb, recs)
+    ranked, _, timing = search_ranked(qvecs, ids, vecs, len(ids))
     ranked = [r[r != q] for r, q in zip(ranked, ids)]  # drop the query itself
     label_of = dict(zip(ids.tolist(), labels.tolist()))
     rel = [ids[(labels == labels[n]) & (ids != q)] for n, q in enumerate(ids)]
@@ -140,8 +148,16 @@ def i2i_category(ctx: EvalContext, model: str, split: str = "val", **overrides: 
     return TaskResult(
         task="i2i_category",
         config={"model": model, "overrides": overrides, "dataset": "imagewoof", "split": split,
-                "gallery_size": len(ids) - 1, "n_queries": len(ids), "fingerprint": emb.fingerprint},
+                "gallery_size": len(ids) - 1, "n_queries": len(ids), "fingerprint": emb.fingerprint,
+                **_query_runtime(query_emb)},
         metrics=metrics, per_query=pq, ranked=ranked, query_ids=ids, timings=timing)
+
+
+def _query_runtime(query_emb: Embedder | None) -> dict[str, Any]:
+    if query_emb is None:
+        return {}
+    d = query_emb.describe()
+    return {"query_runtime": d.get("runtime"), "query_precision": d.get("precision")}
 
 
 # ---------------------------------------------------------------- i2i instance
