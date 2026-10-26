@@ -119,10 +119,11 @@ export function runSearch(
   return api.searchHybrid(req.form, signal);
 }
 
-/** Pick a model of a family for "Find similar (CLIP / DINOv2)", preferring defaults. */
+/** Pick a model of a family for "Find similar (CLIP / DINOv2)", preferring defaults.
+ *  Only models that can embed images count (the slim server's CLIP is text-only). */
 export function modelOfFamily(m: ModelsResponse | null, family: "clip" | "dinov2"): string | null {
   if (!m) return null;
-  const ofFamily = m.models.filter((x) => x.family?.toLowerCase().startsWith(family) ||
+  const ofFamily = imageModels(m).filter((x) => x.family?.toLowerCase().startsWith(family) ||
     x.key.toLowerCase().startsWith(family));
   if (!ofFamily.length) return null;
   const preferred = [m.default_image_model, m.default_text_model].find((k) =>

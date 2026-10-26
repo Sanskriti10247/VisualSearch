@@ -164,6 +164,9 @@ export interface ModelInfo {
   fingerprint: string;
   device: string;
   loaded?: boolean;
+  /** "onnx" for the slim server's exported query encoders. */
+  runtime?: string;
+  precision?: string | null;
   index: IndexStats | null;
   stale: boolean;
 }
@@ -181,6 +184,9 @@ export interface ModelsResponse {
   default_text_model: string;
   default_image_model: string;
   index_type: string;
+  embed_runtime?: string;
+  /** Indexing, deletion and job routes are disabled (403). */
+  read_only?: boolean;
   models: ModelInfo[];
   calibrations: CalibrationInfo[];
   rerankers: { text: Reranker[]; image: Reranker[] };
@@ -207,6 +213,8 @@ export interface HealthResponse {
   version: string;
   catalog_images: number;
   index_type: string;
+  embed_runtime?: string;
+  read_only?: boolean;
   models: Record<string, {
     ready: boolean;
     stale: boolean;

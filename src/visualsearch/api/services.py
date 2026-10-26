@@ -105,16 +105,19 @@ class Services:
         settings.ensure_dirs()
         catalog = Catalog(settings.catalog_path)
         manager = IndexManager(settings, catalog)
-        manager.open(build_missing=build_missing)
+        manager.open(build_missing=build_missing and not settings.read_only,
+                     rebuild_stale=not settings.read_only)
         for rt in manager.runtimes.values():
             # Warm up: load weights and run one forward pass so the first real query
             # does not pay CUDA/cuBLAS initialisation (measured ~1.7 s otherwise).
             rt.embedder.load()
-            rt.embedder.embed_images([Image.new("RGB", (64, 64))])
+            if rt.embedder.supports("image"):
+                rt.embedder.embed_images([Image.new("RGB", (64, 64))])
             if rt.embedder.supports("text"):
                 rt.embedder.embed_texts(["warm-up"])
         cross_encoder = None
-        if settings.enable_cross_encoder:
+        # BLIP needs torch; the onnx runtime serves without it.
+        if settings.enable_cross_encoder and settings.embed_runtime == "torch":
             from visualsearch.retrieval.cross_encoder import BlipITMReranker
 
             cross_encoder = BlipITMReranker(device=settings.device)  # loads lazily

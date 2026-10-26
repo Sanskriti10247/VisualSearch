@@ -105,6 +105,13 @@ def services(request: Request) -> Services:
 Svc = Annotated[Services, Depends(services)]
 
 
+def writable(request: Request) -> None:
+    """Routes that change the collection (or report on such changes) are off in read-only mode."""
+    if services(request).settings.read_only:
+        raise APIError(403, "read_only",
+                       "this server is read-only: indexing, deletion and jobs are disabled")
+
+
 async def read_upload(file: UploadFile, settings: Settings) -> bytes:
     """Read an upload with a hard size cap (never buffers more than cap+1 MB)."""
     limit = int(settings.max_upload_mb * 1024 * 1024)
@@ -164,6 +171,7 @@ def build_response(svc: Services, outcome: SearchOutcome, k: int, request_id: st
 # -------------------------------------------------------------------- routes
 router = APIRouter(prefix=API)
 ERRORS = {code: {"model": ErrorResponse} for code in (400, 404, 413, 415, 422, 500)}
+WRITE_ERRORS = {**ERRORS, 403: {"model": ErrorResponse}}
 
 
 @router.post("/search/text", response_model=SearchResponse, responses=ERRORS, tags=["search"])
@@ -227,7 +235,7 @@ async def search_hybrid(
 
 
 @router.post("/index/images", response_model=IndexJobAccepted, status_code=202,
-             responses=ERRORS, tags=["index"])
+             responses=WRITE_ERRORS, tags=["index"], dependencies=[Depends(writable)])
 async def index_images(
     svc: Svc,
     files: Annotated[list[UploadFile], File(description="images to ingest")],
@@ -257,7 +265,8 @@ async def index_images(
                             accepted_files=len(payload))
 
 
-@router.get("/jobs/{job_id}", response_model=JobInfo, responses=ERRORS, tags=["index"])
+@router.get("/jobs/{job_id}", response_model=JobInfo, responses=WRITE_ERRORS, tags=["index"],
+            dependencies=[Depends(writable)])
 async def get_job(job_id: str, svc: Svc) -> JobInfo:
     job = svc.catalog.get_job(job_id)
     if job is None:
@@ -282,14 +291,20 @@ def _image_file(svc: Services, image_id: int, thumb: bool) -> FileResponse:
     rec = svc.catalog.get(image_id)
     if rec is None or rec.deleted:
         raise APIError(404, "not_found", f"image {image_id} not found")
-    if thumb and rec.thumb_path:
+    cache = "public, max-age=31536000, immutable"
+    path = svc.settings.images_dir / rec.path
+    media = f"image/{(rec.format or 'jpeg').lower()}"
+    if rec.thumb_path and (thumb or not path.exists()):
+        # Deployments may ship thumbnails only; then the thumbnail stands in for the
+        # original, cached briefly in case the original appears later.
+        if not thumb:
+            cache = "public, max-age=3600"
         path, media = svc.settings.thumbs_dir / rec.thumb_path, "image/jpeg"
-    else:
-        path = svc.settings.images_dir / rec.path
-        media = f"image/{(rec.format or 'jpeg').lower()}"
+    if not path.exists():
+        raise APIError(404, "not_found", f"file for image {image_id} is missing")
     # Content-addressed files never change for a given id: cache aggressively.
     return FileResponse(path, media_type=media, headers={
-        "Cache-Control": "public, max-age=31536000, immutable", "ETag": f'"{rec.sha256}"'})
+        "Cache-Control": cache, "ETag": f'"{rec.sha256}"'})
 
 
 @router.get("/images/{image_id}/thumbnail", tags=["images"], responses=ERRORS)
@@ -302,7 +317,8 @@ async def get_file(image_id: int, svc: Svc):
     return _image_file(svc, image_id, thumb=False)
 
 
-@router.delete("/images/{image_id}", responses=ERRORS, tags=["images"], status_code=202)
+@router.delete("/images/{image_id}", responses=WRITE_ERRORS, tags=["images"], status_code=202,
+               dependencies=[Depends(writable)])
 async def delete_image(image_id: int, svc: Svc) -> dict[str, Any]:
     """Soft-delete (tombstone) an image; indexes drop it in a background sync."""
     if not svc.catalog.mark_deleted(image_id):
@@ -323,6 +339,7 @@ async def health(svc: Svc) -> dict[str, Any]:
                        "modalities": st["model"]["modalities"], "device": st["model"]["device"]}
     return {"status": "ok" if ok else "degraded", "version": svc.version,
             "catalog_images": svc.catalog.count(), "index_type": svc.manager.kind,
+            "embed_runtime": svc.settings.embed_runtime, "read_only": svc.settings.read_only,
             "models": models}
 
 
@@ -347,6 +364,9 @@ async def models(svc: Svc) -> dict[str, Any]:
         "default_text_model": svc.settings.default_text_model,
         "default_image_model": svc.settings.default_image_model,
         "index_type": svc.manager.kind,
+        "embed_runtime": svc.settings.embed_runtime,
+        # read_only: no /index/images, DELETE /images/{id} or /jobs (they return 403).
+        "read_only": svc.settings.read_only,
         "models": [{**v["model"], "index": v["index"], "stale": v["stale"]} for v in st.values()],
         "calibrations": svc.engine.calibrations.describe(),
         "rerankers": {"text": ["none", "prf", "visual_prf"] +

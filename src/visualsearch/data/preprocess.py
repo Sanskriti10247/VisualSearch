@@ -65,7 +65,7 @@ def decode_image(data: bytes, max_pixels: int = 40_000_000) -> DecodedImage:
         raise InvalidImageError(f"could not decode image: {e}") from e
     if getattr(img, "n_frames", 1) > 1:
         img.seek(0)  # animated GIF/WebP: use the first frame
-    img = ImageOps.exif_transpose(img)
+    ImageOps.exif_transpose(img, in_place=True)  # no copy when there is nothing to rotate
     if img.mode != "RGB":
         if img.mode in ("RGBA", "LA", "P"):
             # Composite transparency onto white instead of black.

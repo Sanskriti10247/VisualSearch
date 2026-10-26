@@ -62,6 +62,18 @@ class EvalContext:
         bar.close()
         return out
 
+    def embed_uncached(self, emb: Embedder, records: list[ImageRecord], chunk: int = 64
+                       ) -> np.ndarray:
+        """Image vectors computed by ``emb`` without touching the cache (for a
+        second runtime of a model, which shares the cached model's fingerprint)."""
+        out = []
+        with ThreadPoolExecutor(6) as pool:
+            for i in tqdm(range(0, len(records), chunk), desc=f"embed {emb.key} (uncached)"):
+                part = records[i:i + chunk]
+                imgs = list(pool.map(lambda r: load_rgb(self.settings.images_dir / r.path), part))
+                out.append(emb.embed_images(imgs))
+        return np.concatenate(out) if out else np.zeros((0, emb.dim), np.float32)
+
     def text_vectors(self, emb: Embedder, texts: list[str]) -> np.ndarray:
         if not emb.supports(TEXT):
             raise ValueError(f"{emb.key} has no text encoder")

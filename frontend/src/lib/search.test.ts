@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { emptyFilters } from "./filters";
-import { buildSearchRequest, defaultConfig, queryProblem, type QueryState } from "./search";
+import type { ModelInfo, ModelsResponse } from "../api";
+import { buildSearchRequest, defaultConfig, modelOfFamily, queryProblem, type QueryState } from "./search";
 
 const cfg = { ...defaultConfig(null), textModel: "clip-vit-b32", imageModel: "dinov2-small" };
 
@@ -40,5 +41,19 @@ describe("queryProblem", () => {
     expect(queryProblem({ mode: "text", text: " ", image: null })).not.toBeNull();
     expect(queryProblem({ mode: "hybrid", text: "x", image: null })).toBeNull();
     expect(queryProblem({ mode: "image", text: "x", image: null })).not.toBeNull();
+  });
+});
+
+describe("modelOfFamily", () => {
+  const model = (key: string, family: string, modalities: string[]) =>
+    ({ key, family, modalities }) as ModelInfo;
+  const models = (clipModalities: string[]) => ({
+    default_text_model: "clip-vit-b32", default_image_model: "dinov2-small",
+    models: [model("clip-vit-b32", "clip", clipModalities), model("dinov2-small", "dinov2", ["image"])],
+  }) as ModelsResponse;
+  it("picks image-capable models only", () => {
+    expect(modelOfFamily(models(["image", "text"]), "clip")).toBe("clip-vit-b32");
+    expect(modelOfFamily(models(["text"]), "clip")).toBeNull();  // slim server: text tower only
+    expect(modelOfFamily(models(["text"]), "dinov2")).toBe("dinov2-small");
   });
 });

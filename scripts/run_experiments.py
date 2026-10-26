@@ -27,6 +27,7 @@ from visualsearch.eval.experiments import (
     models,
     performance,
     rerank,
+    slim,
 )
 
 EXPERIMENTS = {
@@ -41,6 +42,7 @@ EXPERIMENTS = {
     "filters": filters.run,
     "throughput": performance.throughput,
     "latency": performance.query_latency,
+    "slim_runtime": slim.run,   # needs the ONNX exports (scripts/export_onnx.py)
 }
 log = logging.getLogger("experiments")
 

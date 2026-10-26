@@ -9,3 +9,6 @@ frontend/node_modules/
 frontend/dist/
 *.egg-info/
 .env
+
+# Serving bundle written by scripts/make_serving_bundle.py
+/bundle/

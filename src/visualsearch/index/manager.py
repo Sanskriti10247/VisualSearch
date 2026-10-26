@@ -95,7 +95,8 @@ def load_index(kind: str, directory: Path, dim: int, params: dict[str, Any],
 
         return QdrantIndex.load(directory, dim, params)
     return FaissIndex.load(directory, dim, params,
-                           brute_force_threshold=settings.brute_force_filter_threshold)
+                           brute_force_threshold=settings.brute_force_filter_threshold,
+                           mmap=settings.read_only)
 
 
 def dir_bytes(path: Path) -> int:
@@ -138,7 +139,10 @@ class IndexManager:
                     raise KeyError(f"model '{key}' not defined in {settings.models_path}")
                 embedders[key] = create_embedder(specs[key], device=settings.device,
                                                  batch_size=settings.batch_size,
-                                                 torch_threads=settings.torch_threads)
+                                                 torch_threads=settings.torch_threads,
+                                                 runtime=settings.embed_runtime,
+                                                 onnx_dir=settings.onnx_path,
+                                                 onnx_threads=settings.onnx_threads)
         self.runtimes = {k: ModelRuntime(e, settings) for k, e in embedders.items()}
         self._sync_lock = threading.RLock()  # serialises sync/rebuild per manager
 
@@ -153,14 +157,23 @@ class IndexManager:
 
     # ----------------------------------------------------------- lifecycle
     def open(self, build_missing: bool = True,
-             progress: Callable[[str, int, int], None] | None = None) -> None:
-        """Load every serving index; rebuild stale ones and (optionally) build missing ones."""
+             progress: Callable[[str, int, int], None] | None = None,
+             rebuild_stale: bool = True) -> None:
+        """Load every serving index; rebuild stale ones and (optionally) build missing ones.
+
+        With ``rebuild_stale=False`` (read-only serving) a stale index is an error:
+        it cannot be rebuilt in place and its scores would be meaningless."""
         for key, rt in self.runtimes.items():
             d = self.index_dir(key)
             manifest_file = d / "manifest.json"
             if manifest_file.exists():
                 manifest = json.loads(manifest_file.read_text())
                 if manifest.get("embedding_fingerprint") != rt.embedder.fingerprint:
+                    if not rebuild_stale:
+                        raise RuntimeError(
+                            f"index for {key} was built with embedding fingerprint "
+                            f"{manifest.get('embedding_fingerprint')}, but the model now has "
+                            f"{rt.embedder.fingerprint}; rebuild the index")
                     log.warning("index for %s is stale (fingerprint %s != %s); rebuilding", key,
                                 manifest.get("embedding_fingerprint"), rt.embedder.fingerprint)
                     self.rebuild(key, progress=progress)
