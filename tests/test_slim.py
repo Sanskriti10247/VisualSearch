@@ -282,7 +282,7 @@ SLIM_APP_CHECK = textwrap.dedent("""
 
 
 def test_slim_app_serves_without_torch(slim_env, tmp_path):
-    env, populated = slim_env
+    env, _ = slim_env
     query = tmp_path / "q.jpg"
     query.write_bytes(make_image((30, 200, 40), seed=99))
     script = tmp_path / "check.py"
@@ -290,7 +290,7 @@ def test_slim_app_serves_without_torch(slim_env, tmp_path):
     run_env = {k: v for k, v in os.environ.items() if not k.startswith("VS_")}
     run_env.update(env, VS_CONFIG=str(tmp_path / "none.yaml"))
     proc = subprocess.run([sys.executable, str(script), str(query)], cwd=PROJECT_ROOT,
-                          env=run_env, capture_output=True, text=True, timeout=120)
+                          env=run_env, capture_output=True, text=True, timeout=120, check=False)
     assert proc.returncode == 0, proc.stderr
     out = json.loads(proc.stdout.strip().splitlines()[-1])
     assert out["heavy_modules"] == []

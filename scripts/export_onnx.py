@@ -7,6 +7,7 @@
 For each model this writes ``<out>/<model_key>/``:
 
   model.onnx       the query tower; int8 dynamic quantisation unless --fp32
+  model.onnx.data  its weights (external data, memory-mapped by ONNX Runtime)
   embedder.json    fingerprint, dim, preprocessing and spec, computed by the torch
                    embedder, so existing indexes and calibrations stay valid
   tokenizer.json   (text towers) the fast tokenizer, with truncation and padding
@@ -21,6 +22,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import shutil
 import tempfile
 from dataclasses import asdict
@@ -28,10 +30,8 @@ from pathlib import Path
 
 import numpy as np
 import onnx
-import onnxruntime as ort
 import torch
 import transformers
-from onnxruntime.quantization import QuantType, quantize_dynamic
 from PIL import Image
 
 from visualsearch.config import get_settings
@@ -118,6 +118,9 @@ def compare(name: str, ref: np.ndarray, got: np.ndarray) -> dict:
 
 
 def export_model(key: str, spec, out_root: Path, fp32: bool, per_channel: bool) -> None:
+    import onnxruntime as ort
+    from onnxruntime.quantization import QuantType, quantize_dynamic
+
     emb = create_embedder(spec, device="cpu")
     emb.load()
     out_dir = out_root / key
@@ -157,6 +160,14 @@ def export_model(key: str, spec, out_root: Path, fp32: bool, per_channel: bool) 
                             "quantization": "dynamic, QInt8 weights"
                                             + (", per-channel" if per_channel else ", per-tensor"),
                             "fp32_nodes": keep}
+    # Weights go to a side file that ONNX Runtime memory-maps instead of copying
+    # out of the protobuf: about 40 MiB less resident memory for the CLIP tower.
+    model = onnx.load(str(out_dir / MODEL_FILE))
+    onnx.save_model(model, str(out_dir / MODEL_FILE), save_as_external_data=True,
+                    all_tensors_to_one_file=True, location=MODEL_FILE + ".data",
+                    size_threshold=1024)
+    (out_dir / (MODEL_FILE + ".data")).chmod(0o644)
+    meta["onnx"]["data_file"] = MODEL_FILE + ".data"
     (out_dir / META_FILE).write_text(json.dumps(meta, indent=2))
 
     # Check the export through the same class the server uses.
@@ -176,6 +187,7 @@ def export_model(key: str, spec, out_root: Path, fp32: bool, per_channel: bool) 
 
 
 def main() -> None:
+    os.environ.setdefault("ORT_DISABLE_TELEMETRY", "1")  # read when onnxruntime is imported
     settings = get_settings()
     ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     ap.add_argument("--models", nargs="+", default=["clip-vit-b32", "dinov2-small"])

@@ -18,6 +18,7 @@ exactly; tokenisation uses the fast tokenizer's ``tokenizer.json`` through the
 from __future__ import annotations
 
 import json
+import os
 from collections.abc import Sequence
 from pathlib import Path
 from typing import Any
@@ -86,15 +87,17 @@ def pixel_values(images: Sequence[Image.Image], cfg: dict[str, Any]) -> np.ndarr
     for img in images:
         if cfg.get("do_convert_rgb", True) and img.mode != "RGB":
             img = img.convert("RGB")
+        if img.mode not in ("RGB", "L"):
+            raise ValueError(f"unsupported image mode {img.mode}")
+        if cfg.get("do_resize"):
+            # transformers goes PIL -> uint8 array -> PIL -> resize; for RGB/L images
+            # that round trip is the identity, so resize the input directly (and skip
+            # two full-size copies of large uploads).
+            h, w = _resize_shape(img.height, img.width, cfg["size"])
+            img = img.resize((w, h), resample=int(cfg.get("resample", 2)))
         x = np.asarray(img)
         if x.ndim == 2:
             x = x[:, :, None]
-        if cfg.get("do_resize"):
-            h, w = _resize_shape(x.shape[0], x.shape[1], cfg["size"])
-            pil = Image.fromarray(x[:, :, 0] if x.shape[2] == 1 else x)
-            x = np.asarray(pil.resize((w, h), resample=int(cfg.get("resample", 2))))
-            if x.ndim == 2:
-                x = x[:, :, None]
         x = x.transpose(2, 0, 1)  # HWC -> CHW
         if cfg.get("do_center_crop"):
             x = _center_crop(x, int(cfg["crop_size"]["height"]), int(cfg["crop_size"]["width"]))
@@ -195,8 +198,12 @@ class OnnxEmbedder(Embedder):
         pass  # nothing to configure: no torch
 
     def _load(self) -> None:
+        # Recent ONNX Runtime builds ship usage telemetry on Linux too; a search
+        # server has no business sending it. Read when onnxruntime is first imported.
+        os.environ.setdefault("ORT_DISABLE_TELEMETRY", "1")
         import onnxruntime as ort
 
+        ort.disable_telemetry_events()
         opts = ort.SessionOptions()
         opts.intra_op_num_threads = self.threads
         opts.inter_op_num_threads = 1

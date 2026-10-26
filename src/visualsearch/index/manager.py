@@ -95,7 +95,8 @@ def load_index(kind: str, directory: Path, dim: int, params: dict[str, Any],
 
         return QdrantIndex.load(directory, dim, params)
     return FaissIndex.load(directory, dim, params,
-                           brute_force_threshold=settings.brute_force_filter_threshold)
+                           brute_force_threshold=settings.brute_force_filter_threshold,
+                           mmap=settings.read_only)
 
 
 def dir_bytes(path: Path) -> int:

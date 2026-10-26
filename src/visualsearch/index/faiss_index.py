@@ -257,12 +257,17 @@ class FaissIndex(VectorIndex):
 
     @classmethod
     def load(cls, directory: Path, dim: int, params: dict[str, Any],
-             brute_force_threshold: int = 5000) -> FaissIndex:
+             brute_force_threshold: int = 5000, mmap: bool = False) -> FaissIndex:
+        """``mmap``: map a flat index's vectors from the file instead of reading them
+        (page cache the kernel can evict, rather than process memory). The index is
+        then read-only: adding to it fails."""
         directory = Path(directory)
         state = json.loads((directory / "faiss_state.json").read_text())
         obj = cls(dim, state["kind"], state["params"], brute_force_threshold)
         if (directory / "index.faiss").exists():
-            obj.index = faiss.read_index(str(directory / "index.faiss"))
+            flags = faiss.IO_FLAG_MMAP_IFC | faiss.IO_FLAG_READ_ONLY \
+                if mmap and state["kind"] == "flat" else 0
+            obj.index = faiss.read_index(str(directory / "index.faiss"), flags)
         obj._ids = np.load(directory / "ids.npy")
         obj._deleted = np.load(directory / "deleted.npy")
         if obj.kind != "flat":  # flat: the vectors are read from index.faiss
