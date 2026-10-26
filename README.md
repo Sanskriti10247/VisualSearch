@@ -88,12 +88,13 @@ The image is CPU-only (the portable choice; this machine has no NVIDIA container
 indexes for whatever the catalogue holds on first start. Model weights are cached in a volume.
 
 [docs/deployment.md](docs/deployment.md) covers running it on a single server: HTTPS with
-Caddy, provisioning models and indexes, upgrades and sizing.
+Caddy, provisioning models and indexes, upgrades and sizing. A read-only variant without torch
+fits in 512 MB; see [Render free tier](docs/deployment.md#10-render-free-tier-512-mb).
 
 ### Tests
 
 ```bash
-uv run pytest            # 96 fast tests (fake embedder, no downloads), ~20 s
+uv run pytest            # 108 fast tests (fake embedder, no downloads), ~20 s
 uv run pytest -m slow    # real CLIP/DINOv2 checks (dims, normalisation, alignment)
 cd frontend && npm test && npm run typecheck && npm run build
 ```

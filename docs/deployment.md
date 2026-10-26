@@ -21,6 +21,7 @@ the internal Compose network.
 | `docker/Caddyfile` | TLS, request size limit, basic auth for write endpoints |
 | `docker/nginx.conf` | Serves the UI, proxies `/api`, `/docs`, `/openapi.json` |
 | `scripts/fetch_models.py` | Downloads the pinned model weights into the `models` volume |
+| `docker/api-slim.Dockerfile` | Slim read-only API without torch, for 512 MB hosts ([section 10](#10-render-free-tier-512-mb)) |
 
 The commands below use `dc` as shorthand:
 
@@ -299,3 +300,132 @@ The embedded Qdrant mode is exact brute force in Python. To use a real Qdrant se
 Flickr30k annotations and the Imagewoof/ImageNet images are licensed for non-commercial
 research, and Flickr images remain under their owners' terms. Serving them publicly is
 redistribution, so a public deployment should index its own images.
+
+## 10. Render free tier (512 MB)
+
+The setup above needs about 2 GB of RAM, almost all of it torch. A Render free instance has
+512 MB and half a CPU, so for it there is a slim, read-only variant of the API: same catalogue,
+indexes and calibrations, but the query encoders run in ONNX Runtime and the image contains
+neither torch nor transformers. The web UI is deployed separately (any static host).
+
+### What the slim mode keeps and drops
+
+Text queries go through CLIP ViT-B/32's text tower and image uploads through DINOv2-S, both
+exported from the pinned weights by `scripts/export_onnx.py` and quantised to int8 (dynamic
+quantisation; one MatMul in CLIP's first text layer stays fp32 because its input has outlier
+channels that per-tensor int8 cannot represent). Each export carries the fingerprint, dimension
+and preprocessing config of the torch model it came from, so the existing indexes and
+calibrations are used as they are. Image preprocessing is reimplemented with PIL and numpy and
+matches the transformers processor exactly; tokenisation uses the CLIP `tokenizer.json` through
+the `tokenizers` library. Both are covered by parity tests in `tests/test_slim.py`.
+
+Left out, to fit the memory:
+
+- CLIP's image tower. Uploaded images are searched with DINOv2-S only. "Find similar" in the
+  CLIP space still works for indexed images, because their vectors are in the index; an upload
+  with `model=clip-vit-b32` is rejected with 422 `unsupported_modality`.
+- The BLIP cross-encoder (`rerank=cross_encoder` returns 422). PRF and visual PRF work.
+- Writes. With `VS_READ_ONLY=true`, `POST /index/images`, `DELETE /images/{id}` and
+  `GET /jobs/{id}` return 403 with error code `read_only`, and indexes are never rebuilt: a
+  fingerprint mismatch stops the server at startup instead.
+- Original images. The bundle ships thumbnails only, and `/images/{id}/file` falls back to the
+  thumbnail when the original is missing.
+
+`/models` and `/health` report `embed_runtime`, `read_only` and, per model, the query
+modalities that are actually available (`text` for CLIP, `image` for DINOv2). The UI hides the
+Index tab and the CLIP image options accordingly.
+
+### Measured cost
+
+Memory, with the full 36k-image bundle, in `docker run --memory 512m --cpus 0.5`, over a script
+that runs health and `/models`, about 55 text searches and 25 image uploads (one of them a
+12 MP JPEG), find-similar in both spaces, filtered searches, `k=200`, hybrid searches and image
+fetches, twice:
+
+| | |
+|---|---|
+| RSS after startup | 230 MiB |
+| Peak RSS (`VmHWM` of the server process) | 399 MiB, 414 MiB with the bundle bind-mounted from the host |
+| Peak anonymous memory of the cgroup (sampled every 100 ms) | 227 MiB |
+| Peak `docker stats` usage | 244 MiB |
+| OOM kills | 0 |
+
+About 130 MiB of the RSS is the two flat indexes, which a read-only server memory-maps from
+`index.faiss`, and the ONNX weight files are mapped as well. Those pages are page cache, so under
+pressure the kernel drops them instead of killing the process (`memory.peak` of the cgroup
+reaches the limit for that reason, mostly with thumbnails). Startup takes about two seconds
+once the bundle is on disk. At half a CPU a text query takes 10–20 ms and an image upload about
+200 ms (under 1 s for 12 MP); the first few queries after a start are slower while the index
+pages are read in.
+
+Quality, from `scripts/run_experiments.py --only slim_runtime` (`results/slim_runtime.json`):
+the same fp32 gallery vectors, queries encoded by torch fp32 or by the int8 exports.
+
+| Task | Metric | torch fp32 | slim int8 | Δ |
+|---|---|---|---|---|
+| Flickr30k T→I, 1K test gallery | R@1 / R@5 / R@10 | 58.84 / 83.44 / 90.08 | 58.46 / 83.26 / 89.90 | −0.38 / −0.18 / −0.18 |
+| Flickr30k T→I, 30K gallery | R@1 / R@5 / R@10 | 19.84 / 40.28 / 49.78 | 20.12 / 40.16 / 49.44 | +0.28 / −0.12 / −0.34 |
+| Imagewoof I→I, val | mAP / P@1 | 75.02 / 93.66 | 74.71 / 93.46 | −0.31 / −0.20 |
+
+Only the Imagewoof mAP difference is outside its 95% bootstrap interval.
+
+### Environment variables
+
+| Variable | Set in the image | Meaning |
+|---|---|---|
+| `VS_EMBED_RUNTIME` | `onnx` | Use the ONNX exports instead of torch models |
+| `VS_ONNX_DIR` | unset | Where the exports are; default `<VS_DATA_DIR>/onnx` |
+| `VS_READ_ONLY` | `true` | No indexing, deletion or jobs; never rebuild indexes |
+| `VS_BUNDLE_REPO` | you set it | Hugging Face dataset repo with the bundle, e.g. `you/visualsearch-bundle` |
+| `HF_TOKEN` | you set it (secret) | Read token for a private bundle repo |
+| `PORT` | Render sets it | Port to listen on; default 8000 |
+| `VS_CORS_ORIGINS` | you set it | Origins of the UI, as JSON: `["https://your-ui.example"]` |
+| `VS_MAX_IMAGE_PIXELS` | `12000000` | Larger uploads are rejected (a decoded 40 MP image alone is 120 MB) |
+
+`VS_ONNX_THREADS=1`, `MALLOC_ARENA_MAX=2` and `ORT_DISABLE_TELEMETRY=1` are also set in
+`docker/api-slim.Dockerfile`.
+
+### Build and upload the bundle
+
+On a machine with the full data directory and the full install:
+
+```bash
+uv sync --extra cpu --extra export --extra slim
+uv run python scripts/export_onnx.py          # -> data/onnx/{clip-vit-b32,dinov2-small}
+uv run python scripts/make_serving_bundle.py  # -> bundle/
+hf auth login
+hf upload <user>/<repo> bundle . --repo-type dataset --private
+```
+
+The bundle holds `catalog.sqlite`, the flat index files (without `vectors.npy`, which a flat
+index does not need), the three calibration files that match the exports, the thumbnails, the
+ONNX models with their `embedder.json` and the CLIP `tokenizer.json`, and a `bundle.json` that
+lists them. With the full dataset it is 1.0 GiB, of which 754 MiB are thumbnails. The script
+refuses to run if an index was built with a different fingerprint from the export. To check the
+image locally, mount a copy of the bundle (the server writes SQLite journal files next to the
+catalogue, which should not end up in the upload), writable by uid 1000:
+`cp -r bundle /tmp/vs-data && docker run -p 8000:8000 -v /tmp/vs-data:/data visualsearch-api-slim`.
+
+On start, `docker/slim-entrypoint.sh` serves `/data` if it already holds a `bundle.json`;
+otherwise it downloads the repo with `huggingface_hub.snapshot_download` and then starts
+`visualsearch serve` on `$PORT`. The download runs in its own process, so it costs no serving
+memory.
+
+### Render settings
+
+Create a Web Service from the repository with:
+
+| Setting | Value |
+|---|---|
+| Language | Docker |
+| Dockerfile Path | `docker/api-slim.Dockerfile` |
+| Docker Build Context Directory | `.` |
+| Health Check Path | `/api/v1/health` |
+| Instance Type | Free |
+| Environment | `VS_BUNDLE_REPO`, `HF_TOKEN` (secret), `VS_CORS_ORIGINS` |
+
+Free instances have no persistent disk and stop after 15 minutes without traffic, so each
+cold start downloads the bundle again (about 1 GB) before the health check passes. Build the UI
+with `VITE_API_BASE=https://<service>.onrender.com npm run build` and host `frontend/dist`
+anywhere static; add its origin to `VS_CORS_ORIGINS`. The Flickr30k licence note in
+[Limitations](#9-limitations) applies here as well.
