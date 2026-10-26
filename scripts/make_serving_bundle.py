@@ -11,7 +11,10 @@ download it, as /data):
   indexes/<model>/<kind>/              serving index files (no vectors.npy for flat:
                                        the vectors are read from index.faiss)
   calibration/<model>__<modality>.json those matching the exported fingerprints
-  thumbs/                              thumbnails of the catalogued images only
+  thumbs.tar                           thumbnails of the catalogued images only, as one
+                                       uncompressed tar: tens of thousands of small files
+                                       download from the Hub at ~1-2 files/s, one archive
+                                       in about a minute. The entrypoint unpacks it.
   onnx/<model>/                        model.onnx, embedder.json, tokenizer.json
   bundle.json                          contents, fingerprints and sizes
 
@@ -27,6 +30,7 @@ import json
 import os
 import shutil
 import sqlite3
+import tarfile
 from pathlib import Path
 
 from visualsearch.config import PROJECT_ROOT, get_settings
@@ -79,8 +83,10 @@ def main() -> None:
     info: dict = {"created_at": now_iso(), "index_type": s.index_type, "models": {}}
 
     thumbs = copy_catalog(s.catalog_path, out / "catalog.sqlite")
-    for rel in thumbs:
-        link_or_copy(s.thumbs_dir / rel, out / "thumbs" / rel)
+    # JPEGs don't compress further, so the tar is stored uncompressed.
+    with tarfile.open(out / "thumbs.tar", "w") as tar:
+        for rel in thumbs:
+            tar.add(s.thumbs_dir / rel, arcname=rel)
     info["catalog_images"] = len(thumbs)
 
     for key in args.models:
