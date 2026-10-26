@@ -10,8 +10,10 @@ ARG APP_GID=1000
 # MALLOC_ARENA_MAX: fewer glibc malloc arenas for the request thread pool, which
 # otherwise holds on to freed memory per thread. VS_MAX_IMAGE_PIXELS: a decoded
 # 12 MP upload is 36 MB (the default 40 MP would be 120 MB). ORT_DISABLE_TELEMETRY:
-# onnxruntime's built-in usage telemetry stays off.
+# onnxruntime's built-in usage telemetry stays off. HF_HOME: the app user has no home
+# directory, and the bundle download needs a writable cache for metadata and xet logs.
 ENV PYTHONDONTWRITEBYTECODE=1 \
+    HF_HOME=/tmp/hf \
     PYTHONUNBUFFERED=1 \
     UV_COMPILE_BYTECODE=1 \
     UV_LINK_MODE=copy \
