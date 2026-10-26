@@ -43,6 +43,8 @@ function Shell() {
     system: <SystemView active={route === "system"} />,
   };
   const status = bootError ? "down" : loading && !models ? "pending" : "up";
+  // A read-only server has no indexing routes.
+  const tabs = models?.read_only ? TABS.filter((t) => t.route !== "index") : TABS;
 
   return (
     <>
@@ -58,7 +60,7 @@ function Shell() {
             <span>VisualSearch</span>
           </a>
           <nav className="tabs" aria-label="Main">
-            {TABS.map((t) => (
+            {tabs.map((t) => (
               <a key={t.route} href={`#/${t.route}`} className={route === t.route ? "active" : ""}
                 aria-current={route === t.route ? "page" : undefined}>
                 {t.label}

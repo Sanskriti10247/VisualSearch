@@ -51,6 +51,7 @@ export function SystemView({ active }: { active: boolean }) {
           <Stat label="version" value={h.version} />
           <Stat label="catalog images" value={fmtInt(h.catalog_images)} />
           <Stat label="index type" value={h.index_type} />
+          {h.read_only && <Stat label="mode" value="read-only" />}
           {snap.metrics && <Stat label="uptime" value={fmtDuration(snap.metrics.uptime_s)} />}
         </section>
       )}
@@ -77,6 +78,7 @@ export function SystemView({ active }: { active: boolean }) {
                     <dt>dim</dt><dd>{m.dim}</dd>
                     <dt>modalities</dt><dd>{m.modalities.join(", ")}</dd>
                     <dt>device</dt><dd>{m.device}{m.loaded === false ? " (not loaded)" : ""}</dd>
+                    {m.runtime && <><dt>runtime</dt><dd>{m.runtime}{m.precision ? ` · ${m.precision}` : ""}</dd></>}
                     <dt>index</dt>
                     <dd>{m.index ? <>{m.index.kind} · {fmtInt(m.index.ntotal)} vectors</> : <span className="muted">none</span>}</dd>
                     {typeof disk === "number" && <><dt>on disk</dt><dd>{fmtBytes(disk)}</dd></>}

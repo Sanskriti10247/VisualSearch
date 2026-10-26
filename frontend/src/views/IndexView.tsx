@@ -111,6 +111,17 @@ export function IndexView({ active }: { active: boolean }) {
   const serverRejected = parseRejected(job?.error);
   const pct = job && job.total ? Math.round((100 * job.progress) / job.total) : 0;
 
+  if (models?.read_only) {
+    return (
+      <div className="view narrow">
+        <section className="panel">
+          <h2>Add images to the index</h2>
+          <p className="hint">This server is read-only: indexing new images is turned off.</p>
+        </section>
+      </div>
+    );
+  }
+
   return (
     <div className="view narrow">
       <section className="panel">
