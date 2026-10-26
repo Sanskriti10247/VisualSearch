@@ -18,6 +18,13 @@ device: auto            # auto | cpu | cuda
 torch_threads: 0        # 0 = torch default
 batch_size: 32
 
+# Query encoders: torch, or onnx for the slim image without torch (exports from
+# scripts/export_onnx.py in onnx_dir, default <data_dir>/onnx). See docs/deployment.md.
+embed_runtime: torch
+onnx_threads: 1
+# Search only: ingestion, deletion and job routes return 403; indexes are never rebuilt.
+read_only: false
+
 # Upload limits
 max_upload_mb: 10
 max_image_pixels: 40000000

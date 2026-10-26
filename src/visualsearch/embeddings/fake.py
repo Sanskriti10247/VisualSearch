@@ -27,6 +27,9 @@ class FakeEmbedder(Embedder):
     def preprocessing_config(self) -> dict[str, Any]:
         return {"thumb": 8, "crop_mode": self.spec.crop_mode}
 
+    def _prepare_runtime(self) -> None:
+        pass  # numpy only
+
     def _load(self) -> None:
         rng = np.random.default_rng(int(self.spec.params.get("seed", 0)))
         self._proj = rng.standard_normal((8 * 8 * 3, self.dim)).astype(np.float32)

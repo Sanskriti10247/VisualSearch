@@ -133,23 +133,30 @@ class Embedder(ABC):
     def load(self) -> Embedder:
         with self._lock:
             if not self._loaded:
-                import torch
-
-                if self.torch_threads:
-                    torch.set_num_threads(self.torch_threads)
-                # Full fp32 on GPU (no TF32) so CPU- and GPU-computed vectors agree
-                # to ~1e-6 and can share one embedding cache.
-                torch.backends.cuda.matmul.allow_tf32 = False
-                torch.backends.cudnn.allow_tf32 = False
+                self._prepare_runtime()
                 self._load()
                 self._loaded = True
         return self
+
+    def _prepare_runtime(self) -> None:
+        import torch
+
+        if self.torch_threads:
+            torch.set_num_threads(self.torch_threads)
+        # Full fp32 on GPU (no TF32) so CPU- and GPU-computed vectors agree
+        # to ~1e-6 and can share one embedding cache.
+        torch.backends.cuda.matmul.allow_tf32 = False
+        torch.backends.cudnn.allow_tf32 = False
 
     @abstractmethod
     def _load(self) -> None: ...
 
     # -- inference -------------------------------------------------------------
     def embed_images(self, images: Sequence[Image.Image], batch_size: int | None = None) -> np.ndarray:
+        if not self.supports(IMAGE):
+            raise UnsupportedModalityError(
+                f"model '{self.key}' has no image encoder in this deployment; "
+                f"query it with an indexed image_id, or use another model for uploads")
         self.load()
         bs = batch_size or self.batch_size
         out = [np.zeros((0, self.dim), dtype=np.float32)]
@@ -225,7 +232,19 @@ def load_model_specs(path: str | Path) -> dict[str, ModelSpec]:
 
 
 def create_embedder(spec: ModelSpec, device: str = "auto", batch_size: int = 32,
-                    torch_threads: int = 0) -> Embedder:
+                    torch_threads: int = 0, runtime: str = "torch",
+                    onnx_dir: str | Path | None = None, onnx_threads: int = 1) -> Embedder:
+    """``runtime="onnx"`` loads the export of ``spec`` from ``onnx_dir/<key>``
+    (see ``embeddings/onnx.py``) instead of the family's torch implementation."""
+    if runtime == "onnx":
+        from visualsearch.embeddings.onnx import OnnxEmbedder
+
+        if onnx_dir is None:
+            raise ValueError("runtime 'onnx' needs onnx_dir")
+        return OnnxEmbedder(spec, Path(onnx_dir) / spec.key, batch_size=batch_size,
+                            threads=onnx_threads)
+    if runtime != "torch":
+        raise ValueError(f"unknown embedding runtime '{runtime}' (torch | onnx)")
     if spec.family not in _FAMILIES:
         raise KeyError(f"unknown model family '{spec.family}'; registered: {sorted(_FAMILIES)}")
     return _FAMILIES[spec.family](spec, device=device, batch_size=batch_size,

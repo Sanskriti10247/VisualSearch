@@ -43,6 +43,15 @@ class Settings(BaseSettings):
     torch_threads: int = 0
     batch_size: int = 32
 
+    # Query encoders: "torch" (transformers models, all towers) or "onnx" (the
+    # exports written by scripts/export_onnx.py; no torch needed at runtime).
+    embed_runtime: str = "torch"
+    onnx_dir: Path | None = None    # default: <data_dir>/onnx
+    onnx_threads: int = 1
+
+    # Serve search only: no ingestion, deletion or jobs, and never rebuild indexes.
+    read_only: bool = False
+
     max_upload_mb: float = 10
     max_image_pixels: int = 40_000_000
     max_batch_files: int = 200
@@ -93,6 +102,10 @@ class Settings(BaseSettings):
     @property
     def calibration_dir(self) -> Path:
         return self.root / "calibration"
+
+    @property
+    def onnx_path(self) -> Path:
+        return _resolve(self.onnx_dir) if self.onnx_dir else self.root / "onnx"
 
     @property
     def raw_dir(self) -> Path:
